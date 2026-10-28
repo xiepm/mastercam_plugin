@@ -1,0 +1,1511 @@
+{
+  "schemaVersion": 1,
+  "version": "2027.10.28.1",
+  "mastercam": "2027",
+  "api": 29,
+  "platform": "windows-x64",
+  "runtime": ".NET 10 Windows Desktop",
+  "moduleCount": 24,
+  "nativeBuild": [
+    {
+      "path": "NETHook3_0.dll",
+      "sha256": "A5F87967FB5E8CFB7EA2A66CF984C9F0E468FE67B0CB0AF5A7B334CF50D404FF"
+    },
+    {
+      "path": "MCCORE.dll",
+      "sha256": "0F9C445215D93A7A3C5C25337134BB1E2CB5884642EA0B736EC5BEBF403ED14E"
+    },
+    {
+      "path": "MCGeomSld.dll",
+      "sha256": "C73D6C39B110EC708D0989650DAFB8E1AA778D57B86ED8ED4ABADED263B85038"
+    },
+    {
+      "path": "PSKERNEL.dll",
+      "sha256": "44B9A90D60DB1ED231D171EBAD1BC68EED79B39DFB2088D8E3B341E57FD148A5"
+    }
+  ],
+  "files": [
+    {
+      "path": "chooks/AdvancedDrill2027.ft",
+      "bytes": 337,
+      "sha256": "D671027077BC2CFAA4AA45E90A54CEC8E45211B8A3F6FCC565AFCE16D804CD83",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/AdvancedDrill2027/AdvancedDrill2027.dll",
+      "bytes": 98816,
+      "sha256": "BFE58820F988BEB388E9896EEFC06C970A5E056EEEEE071513EB016FC35DAA95",
+      "assemblyVersion": "0.1.2.0"
+    },
+    {
+      "path": "chooks/AdvancedDrill2027/AdvancedDrill2027.runtimeconfig.json",
+      "bytes": 162,
+      "sha256": "D095AD81113245C4FB9AEA71371C038D2745C719322978C18F03566428D5EF83",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/AdvancedDrillTap2027.ft",
+      "bytes": 360,
+      "sha256": "2D6926FC3D19EB69DA4A1E5DE616CF15DA3A49116A96EFC9D8AD259C6146FEA2",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/AdvancedDrillTap2027/AdvancedDrillTap2027.dll",
+      "bytes": 105472,
+      "sha256": "F1056CC3C252B3221BF99D6E5359BEBB4E70B5E8F179323E12D1048FC5CD92A6",
+      "assemblyVersion": "0.1.3.0"
+    },
+    {
+      "path": "chooks/AdvancedDrillTap2027/AdvancedDrillTap2027.runtimeconfig.json",
+      "bytes": 162,
+      "sha256": "D095AD81113245C4FB9AEA71371C038D2745C719322978C18F03566428D5EF83",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/ChainTools2027.ft",
+      "bytes": 269,
+      "sha256": "FD86316C3A2B75275033736659F8F80AAB40F82551051D24E39CE6325D9BFB8C",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/ChainTools2027/ChainTools2027.Core.dll",
+      "bytes": 19968,
+      "sha256": "AA68C245E5E1ACC8784F773D573DAE0D55F7232F22A471A02B4BBFB525494E49",
+      "assemblyVersion": "1.0.2.0"
+    },
+    {
+      "path": "chooks/ChainTools2027/ChainTools2027.dll",
+      "bytes": 15360,
+      "sha256": "5509CC9A92547B32C769244D310445E60AFC3929AFFE71DAE8CFB05BEB018453",
+      "assemblyVersion": "1.0.2.0"
+    },
+    {
+      "path": "chooks/ChainTools2027/ChainTools2027.Resources.dll",
+      "bytes": 3072,
+      "sha256": "F616BD59EC19597ECB738848D12F51C8DD4645157CA47A7F43049A5EF2DB9AC0",
+      "assemblyVersion": "1.0.2.0"
+    },
+    {
+      "path": "chooks/ChainTools2027/ChainTools2027.runtimeconfig.json",
+      "bytes": 162,
+      "sha256": "D095AD81113245C4FB9AEA71371C038D2745C719322978C18F03566428D5EF83",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/ElectrodeReport2027.ft",
+      "bytes": 335,
+      "sha256": "6137FD66F7A7E2E9B93BF569FCCCA3D9EAAA8E6FF7AD02C00EFF0EF8E9DD0A96",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/ElectrodeReport2027/ElectrodeReport2027.Core.dll",
+      "bytes": 83456,
+      "sha256": "3350F72F7C9C890A6B3EA0C5E3E7BAF8F2FBDCBF63C829C1658A6F13D8D23DD6",
+      "assemblyVersion": "0.0.0.0"
+    },
+    {
+      "path": "chooks/ElectrodeReport2027/ElectrodeReport2027.dll",
+      "bytes": 41472,
+      "sha256": "520E320BCFDD8C1FD5077F70C252C85D9CD1BEC47B02AEB2CA28FADF5891AFEE",
+      "assemblyVersion": "0.0.0.0"
+    },
+    {
+      "path": "chooks/ElectrodeReport2027/ElectrodeReport2027.runtimeconfig.json",
+      "bytes": 100,
+      "sha256": "ED2598932801A65DAFC6157C366F098E4951A2E9789D4384AC7E61C5E52B69AF",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/ElectrodeReport2027/ElectrodeReport2027.UI.dll",
+      "bytes": 37888,
+      "sha256": "87D93888B15C21FE1BF74BE39F7D01ADB1BD320E98A87E567D2DFA0C1B1683F4",
+      "assemblyVersion": "0.0.0.0"
+    },
+    {
+      "path": "chooks/ElectrodeReport2027/ElectrodeReport2027.UI.runtimeconfig.json",
+      "bytes": 162,
+      "sha256": "D095AD81113245C4FB9AEA71371C038D2745C719322978C18F03566428D5EF83",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/FixtureTools2027.ft",
+      "bytes": 274,
+      "sha256": "07BAF9BC70B908E1485101FC5FCFD660E5E834946FF1AD025C026A2BB79745E8",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/FixtureTools2027/FixtureTools2027.Core.dll",
+      "bytes": 78848,
+      "sha256": "F3DD1FC3E67A5E5FB8E4F22718250DCAF7FEAEDC675D6525606E9002D5883F62",
+      "assemblyVersion": "1.1.0.0"
+    },
+    {
+      "path": "chooks/FixtureTools2027/FixtureTools2027.dll",
+      "bytes": 40960,
+      "sha256": "1FE6C23DC9229F87D347B079E5938A7C6987650C7B7D6BA12C90B78D345EEFCD",
+      "assemblyVersion": "1.1.1.0"
+    },
+    {
+      "path": "chooks/FixtureTools2027/FixtureTools2027.runtimeconfig.json",
+      "bytes": 162,
+      "sha256": "D095AD81113245C4FB9AEA71371C038D2745C719322978C18F03566428D5EF83",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/GeometryTools2027.ft",
+      "bytes": 1004,
+      "sha256": "C176215F95A6D97A19AEBDC5AAAFB8185A570708DBF92853B0703D207D0C4570",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/GeometryTools2027.NativeCommands.ft",
+      "bytes": 523,
+      "sha256": "FBF8CDE2D96F64CEA713A738D5978405C33D507D479C0809205C273A23FEA4E8",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/GeometryTools2027.NativeCommands/GeometryTools2027.NativeCommands.dll",
+      "bytes": 9216,
+      "sha256": "9FA36458BCED25E3FC96453D056A7A3F01CFE838DC7FEBBBFCA90F604CFDC4C9",
+      "assemblyVersion": "0.1.0.0"
+    },
+    {
+      "path": "chooks/GeometryTools2027.NativeCommands/GeometryTools2027.NativeCommands.runtimeconfig.json",
+      "bytes": 162,
+      "sha256": "D095AD81113245C4FB9AEA71371C038D2745C719322978C18F03566428D5EF83",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/GeometryTools2027/GeometryTools2027.dll",
+      "bytes": 78336,
+      "sha256": "F757257EB2E5F85647347D5E6E840D0658F84AE03314AC6A9360BA51410E5778",
+      "assemblyVersion": "0.1.1.0"
+    },
+    {
+      "path": "chooks/GeometryTools2027/GeometryTools2027.Resources.dll",
+      "bytes": 2560,
+      "sha256": "E5F80CEB8A8192B7C298769E03550F7A9CAA80062DB95DC93257C3B756A1B949",
+      "assemblyVersion": "0.0.0.0"
+    },
+    {
+      "path": "chooks/GeometryTools2027/GeometryTools2027.runtimeconfig.json",
+      "bytes": 162,
+      "sha256": "D095AD81113245C4FB9AEA71371C038D2745C719322978C18F03566428D5EF83",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/HirthTools2027.ft",
+      "bytes": 320,
+      "sha256": "297F6C8A6BA2ACAD313EE5C237B26395A04370BC8929EB3688F987664945B0FA",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/HirthTools2027/HirthTools2027.Core.dll",
+      "bytes": 19968,
+      "sha256": "C81DDBEEFE2A380829C37D5A8CDC5FB4CF95982ACA8296E4597681D7487C3958",
+      "assemblyVersion": "0.0.0.0"
+    },
+    {
+      "path": "chooks/HirthTools2027/HirthTools2027.dll",
+      "bytes": 44032,
+      "sha256": "5F764EABDA0887569A09CB7A685042490BBE574A35D99386843345023F2A4D8A",
+      "assemblyVersion": "0.0.0.0"
+    },
+    {
+      "path": "chooks/HirthTools2027/HirthTools2027.runtimeconfig.json",
+      "bytes": 162,
+      "sha256": "D095AD81113245C4FB9AEA71371C038D2745C719322978C18F03566428D5EF83",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/HolderTools2027.ft",
+      "bytes": 331,
+      "sha256": "67275EDB6EEA1513FC4CA9253DA7F2DDE3127C535B15C90E56E4E9E7D7624F48",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/HolderTools2027/HolderTools2027.dll",
+      "bytes": 51200,
+      "sha256": "13680CC47DD50D6641BC440CB5409CA1615AE1FB73460A6F7E040B4C17AC93FB",
+      "assemblyVersion": "0.1.0.0"
+    },
+    {
+      "path": "chooks/HolderTools2027/HolderTools2027.runtimeconfig.json",
+      "bytes": 162,
+      "sha256": "D095AD81113245C4FB9AEA71371C038D2745C719322978C18F03566428D5EF83",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/LevelExport2027.ft",
+      "bytes": 271,
+      "sha256": "4F16199A26D8584B57E911E57529C96C4F9442ADA88BCD950D04E90210FB665E",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/LevelExport2027/LevelExport2027.Core.dll",
+      "bytes": 32768,
+      "sha256": "B37CFE9EC90799CC5DEC3E7084CEA8508A8B519A557E7BF9423386FB306339CF",
+      "assemblyVersion": "1.0.0.0"
+    },
+    {
+      "path": "chooks/LevelExport2027/LevelExport2027.dll",
+      "bytes": 24064,
+      "sha256": "B4038A3C8B9E47BAB19BF4AFE75A22E2A8303FE817E8CBAEC2DF5E575E2195A2",
+      "assemblyVersion": "1.0.2.0"
+    },
+    {
+      "path": "chooks/LevelExport2027/LevelExport2027.runtimeconfig.json",
+      "bytes": 162,
+      "sha256": "D095AD81113245C4FB9AEA71371C038D2745C719322978C18F03566428D5EF83",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/LittleBee2027.ft",
+      "bytes": 1777,
+      "sha256": "1FE685B3EED0FA787846734C19B9158BC96B5BF50082213C95B6269EFD1D21E6",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/LittleBee2027/ChangeNci16.png",
+      "bytes": 247,
+      "sha256": "AF2AB3A6068D3708CC664B15481C95AA500200A38EF7D38AD28C70BFAC5046E4",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/LittleBee2027/ChangeNci32.png",
+      "bytes": 314,
+      "sha256": "E2B3349A866FF6AC8CA7A6947F5DE8C85B55B83EE66CF21C2756530C2100CD53",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/LittleBee2027/ChangeView16.png",
+      "bytes": 208,
+      "sha256": "5EAD7FB0D54906284D9AD3AA0D4956F24D2F39B2BD70E0CBD215EF21DFA53118",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/LittleBee2027/ChangeView32.png",
+      "bytes": 306,
+      "sha256": "6F78DC58F224BBA0F648D8102EA3C6B64A5F8BBE4017DE119113595B2076FF71",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/LittleBee2027/CopyOperation16.png",
+      "bytes": 197,
+      "sha256": "516F5FF40F9F3E834E7A25542FC2880A521430B70044D295F475AFCFA73C7153",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/LittleBee2027/CopyOperation32.png",
+      "bytes": 296,
+      "sha256": "D59C52AB96377F11C20F3F8896CFE79985FD684F322C4270B269A1CA5EB83153",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/LittleBee2027/EditCommonParameters16.png",
+      "bytes": 215,
+      "sha256": "46285480C095A015F53EA190708C769010D3EFCF6F3CC51629E4229BE189B72E",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/LittleBee2027/EditCommonParameters32.png",
+      "bytes": 271,
+      "sha256": "73403265B83314229413023C8F52CB503CF69529CEB94959C77D0C206E808D8E",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/LittleBee2027/EditOperation16.png",
+      "bytes": 171,
+      "sha256": "616AE25777B1434D8BE60A87F8D2F7849962443FF66DA6A239B1C5AD30B30169",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/LittleBee2027/EditOperation32.png",
+      "bytes": 208,
+      "sha256": "D7AC88C18D226779B7CC450C72F272947BEB9EBB63DFB4E0A2F414B747B8E80C",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/LittleBee2027/EditOperationGeometry16.png",
+      "bytes": 236,
+      "sha256": "BE67FFA9D5082B9E9316E94388CE0D2273E0FF7AB2C3DDB9B36E29111258403A",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/LittleBee2027/EditOperationGeometry32.png",
+      "bytes": 269,
+      "sha256": "F7D79EE7480A9C34C9D1FF4BF068E3FE21D4BF068A8B2389C9C7D0CB8C9B61F9",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/LittleBee2027/EditTool16.png",
+      "bytes": 246,
+      "sha256": "714D5BD6E4399987819FFD701149F936EAA293DE3EB4A824631E956A8B6FBEA6",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/LittleBee2027/EditTool32.png",
+      "bytes": 373,
+      "sha256": "8DB5050624AF4F9EC8DC0C7705074CE44E20BB253E0FB86E07E178D5264BD1A6",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/LittleBee2027/en/LittleBee2027.Resources.dll",
+      "bytes": 19968,
+      "sha256": "EE68BE09D3D532A2C710221A52D4B3A1CCB5D2337D7219C70724A97318CF1631",
+      "assemblyVersion": "2.0.0.0"
+    },
+    {
+      "path": "chooks/LittleBee2027/LittleBee16.png",
+      "bytes": 300,
+      "sha256": "DF4D1AC6BA9834B04A71FAD3D4BF4F9BF71931DE172BA97391DA22789F15E4A6",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/LittleBee2027/LittleBee2027.dll",
+      "bytes": 368128,
+      "sha256": "52C059253E5E63DE87457B00DB3D552340B486C9C7950ED2BAFB1E0D1E538975",
+      "assemblyVersion": "2.0.0.0"
+    },
+    {
+      "path": "chooks/LittleBee2027/LittleBee2027.Resources.dll",
+      "bytes": 19968,
+      "sha256": "EE68BE09D3D532A2C710221A52D4B3A1CCB5D2337D7219C70724A97318CF1631",
+      "assemblyVersion": "2.0.0.0"
+    },
+    {
+      "path": "chooks/LittleBee2027/LittleBee2027.runtimeconfig.json",
+      "bytes": 162,
+      "sha256": "D095AD81113245C4FB9AEA71371C038D2745C719322978C18F03566428D5EF83",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/LittleBee2027/LittleBee32.png",
+      "bytes": 397,
+      "sha256": "4F44B2EBA1B0EDF0948212A9A7224D4BD896E482EE74D1626D5DD849C6C6B199",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/LittleBee2027/PasteOperation16.png",
+      "bytes": 201,
+      "sha256": "A1297BD9A536C931744BC982A76FCFFEB1980DE9A3C5233D639A0A91AC60D8AE",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/LittleBee2027/PasteOperation32.png",
+      "bytes": 276,
+      "sha256": "9DDBA53D0B817C77AD210B4C07995D7385C496D00928E965E123C9904A887447",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/LittleBee2027/ReNameGroup16.png",
+      "bytes": 215,
+      "sha256": "AA2F5983EE1A15EDA5FE3412ABED2733FB2DF30AAA6A9749FFB0363275485F64",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/LittleBee2027/ReNameGroup32.png",
+      "bytes": 269,
+      "sha256": "F480FDC1AE0D450922714BAF25D16F9BF17BD624B3C64F18670C9BE548947DAF",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/LittleBee2027/SaveAs16.png",
+      "bytes": 204,
+      "sha256": "89FF6C392FDDFB162C40F09835C4CB68B0C457997950A5DEECCC3BD2F2BAB0F6",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/LittleBee2027/SaveAs32.png",
+      "bytes": 227,
+      "sha256": "65020F52858EF6EBD3AFC3FA45A28D1D25376730F9EE02642A0C0A44CDCABFD3",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/LittleBee2027/SaveFile16.png",
+      "bytes": 202,
+      "sha256": "AEAEDACA85A4E571EA50E9E3C985E57417775BD56B52511A19D9471A2B50A7DE",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/LittleBee2027/SaveFile32.png",
+      "bytes": 227,
+      "sha256": "71C6A995F4E675DECFD214AAD7738100998B5B52A03CB1C2F2E82114599CDB1F",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/LittleBee2027/zh-CN/LittleBee2027.Resources.dll",
+      "bytes": 19968,
+      "sha256": "EE68BE09D3D532A2C710221A52D4B3A1CCB5D2337D7219C70724A97318CF1631",
+      "assemblyVersion": "2.0.0.0"
+    },
+    {
+      "path": "chooks/MC2027SuiteStartup.ft",
+      "bytes": 285,
+      "sha256": "BB9CB6D9CEC5BDE4C5860AE3CF63A772C2DE8A209976B7CAE4ED75E76D460992",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/MC2027SuiteStartup/MC2027SuiteStartup.dll",
+      "bytes": 5120,
+      "sha256": "D442C260303BFEA36D31D4A5092F7031BD839DD7F67C78DBED4B917B6E10A51C",
+      "assemblyVersion": "1.0.0.0"
+    },
+    {
+      "path": "chooks/MC2027SuiteStartup/MC2027SuiteStartup.runtimeconfig.json",
+      "bytes": 162,
+      "sha256": "D095AD81113245C4FB9AEA71371C038D2745C719322978C18F03566428D5EF83",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/MiddleConfirm2027.ft",
+      "bytes": 621,
+      "sha256": "DA07CAA95F13979B7ECD15B3787909D455773DD71E740121EB83CB773D4CA2F7",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/MiddleConfirm2027/MiddleConfirm2027.dll",
+      "bytes": 23552,
+      "sha256": "4225A492BD8F586CE2A9C7792323355053FE0F8593869CC42B4A792F599DF22F",
+      "assemblyVersion": "1.1.0.0"
+    },
+    {
+      "path": "chooks/MiddleConfirm2027/MiddleConfirm2027.runtimeconfig.json",
+      "bytes": 269,
+      "sha256": "7C2DEDB4C8B418633422277FF0FC04CF7D6BA791573E6AF25A2D3B291EC76554",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/MiddleConfirm2027/settings.example.json",
+      "bytes": 79,
+      "sha256": "A6E887EBDF95D0DF7720FCC3F662A31042812423E27E31D176068FA6AA1DCD46",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/MPDesignRadiusSelect2027.ft",
+      "bytes": 373,
+      "sha256": "34D3BB217F9BC570C6D751E4D212552ED327EAC8DEC504B1DDD742A8699B8331",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/MPDesignRadiusSelect2027/MPDesignRadiusSelect2027.Core.dll",
+      "bytes": 22016,
+      "sha256": "0425445130FD2EDEB2A19887E431F7044D28B83C995F2349D96C0398CFA128D0",
+      "assemblyVersion": "1.0.0.0"
+    },
+    {
+      "path": "chooks/MPDesignRadiusSelect2027/MPDesignRadiusSelect2027.dll",
+      "bytes": 21504,
+      "sha256": "D4CBDC7306C6975D5A0CE368EB3189B5331BDC9F5CF3AFB9D47E8B87C3BB0E51",
+      "assemblyVersion": "1.0.0.0"
+    },
+    {
+      "path": "chooks/MPDesignRadiusSelect2027/MPDesignRadiusSelect2027.Resources.dll",
+      "bytes": 3072,
+      "sha256": "CB976736F9EDBC3B0B1FEDC180542FF9F6999ABD7B33940A9AE0D00C55D1D817",
+      "assemblyVersion": "1.0.0.0"
+    },
+    {
+      "path": "chooks/MPDesignRadiusSelect2027/MPDesignRadiusSelect2027.runtimeconfig.json",
+      "bytes": 162,
+      "sha256": "D095AD81113245C4FB9AEA71371C038D2745C719322978C18F03566428D5EF83",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/MPDesignSurfaceSelect2027.ft",
+      "bytes": 374,
+      "sha256": "F75374057DBB19D56ABB056365E2CD503974EE5B8038863E65796F4CD0750462",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/MPDesignSurfaceSelect2027/MPDesignSurfaceSelect2027.Core.dll",
+      "bytes": 12288,
+      "sha256": "6AB77574153363736776BCDCDC9B588E5BC20873194FDE92263E11F3ABA52B67",
+      "assemblyVersion": "1.0.0.0"
+    },
+    {
+      "path": "chooks/MPDesignSurfaceSelect2027/MPDesignSurfaceSelect2027.dll",
+      "bytes": 11776,
+      "sha256": "DFBAFC7B4AFBC3305D96F0A2E3E08148DC6572D1394BED389F83CCF0177F37E3",
+      "assemblyVersion": "1.0.0.0"
+    },
+    {
+      "path": "chooks/MPDesignSurfaceSelect2027/MPDesignSurfaceSelect2027.Resources.dll",
+      "bytes": 3072,
+      "sha256": "FD753434C5ACAF87F00B81731014BC28633EE42B329EB49D5EB9245185F31C46",
+      "assemblyVersion": "1.0.0.0"
+    },
+    {
+      "path": "chooks/MPDesignSurfaceSelect2027/MPDesignSurfaceSelect2027.runtimeconfig.json",
+      "bytes": 162,
+      "sha256": "D095AD81113245C4FB9AEA71371C038D2745C719322978C18F03566428D5EF83",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/MPDesignTools2027.ft",
+      "bytes": 321,
+      "sha256": "444FA9CD8DA1260B5D0BDEDFDBAB8343A9B000BDA3026B022EC5378FB68AA0B8",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/MPDesignTools2027/MPDesignTools2027.Core.dll",
+      "bytes": 10240,
+      "sha256": "79FB8A60CA01786973BC1AECE829BEE8767E33504139C2EBDE34BCCDDAF49704",
+      "assemblyVersion": "1.0.0.0"
+    },
+    {
+      "path": "chooks/MPDesignTools2027/MPDesignTools2027.dll",
+      "bytes": 10752,
+      "sha256": "D848AE847346C3982AFA20F46DBFF02B3E9EA4F075B0786EBB9D585E3C96BBFC",
+      "assemblyVersion": "1.0.0.0"
+    },
+    {
+      "path": "chooks/MPDesignTools2027/MPDesignTools2027.Resources.dll",
+      "bytes": 3072,
+      "sha256": "EB340E7FEC56652C7534DD910BA115ABD68A7DA31B785604A8E7ACD0067F4799",
+      "assemblyVersion": "1.0.0.0"
+    },
+    {
+      "path": "chooks/MPDesignTools2027/MPDesignTools2027.runtimeconfig.json",
+      "bytes": 162,
+      "sha256": "D095AD81113245C4FB9AEA71371C038D2745C719322978C18F03566428D5EF83",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/MPEdgeTools2027.ft",
+      "bytes": 367,
+      "sha256": "809825C530A2AD6B26A3C09C9A22C172B7D82EC3E85A2EE6847ED11E662312DD",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/MPEdgeTools2027/MPEdgeTools2027.dll",
+      "bytes": 128000,
+      "sha256": "E05CF119F65166500FD8C0FF38A3E7E2D82C3B60B25E8805D13BBC87C11C1D46",
+      "assemblyVersion": "0.1.0.0"
+    },
+    {
+      "path": "chooks/MPEdgeTools2027/MPEdgeTools2027.Resources.dll",
+      "bytes": 2560,
+      "sha256": "6B3E3417408CB440D857DFABE4CC774EDD9D8A8571F08670952BA5A6930AAFAF",
+      "assemblyVersion": "0.0.0.0"
+    },
+    {
+      "path": "chooks/MPEdgeTools2027/MPEdgeTools2027.runtimeconfig.json",
+      "bytes": 109,
+      "sha256": "0CB57839DC5391796BEB7F5AF89D39B9B8EDBD83397E8F016548E5CE4CF94956",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/OperationTools2027.ft",
+      "bytes": 1078,
+      "sha256": "1E27FB0A2E00A1B1957E7E4E95DF408D5B59586BBDBF8F3A1A0AAB02C49A77FE",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/OperationTools2027/OperationTools2027.dll",
+      "bytes": 109056,
+      "sha256": "26074B7E8EEBEE2C6B2CA52D1ED9744F42DDC894D245B86B4610E71C656A4B50",
+      "assemblyVersion": "1.0.3.0"
+    },
+    {
+      "path": "chooks/OperationTools2027/OperationTools2027.runtimeconfig.json",
+      "bytes": 162,
+      "sha256": "D095AD81113245C4FB9AEA71371C038D2745C719322978C18F03566428D5EF83",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/PorscheAdvanced2027.ft",
+      "bytes": 509,
+      "sha256": "A6139120336AA80ADB8512CCF43D345260E0E8A65573E4402D71EF4D5B7E59BD",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/PorscheAdvanced2027/PorscheAdvanced2027.dll",
+      "bytes": 163328,
+      "sha256": "DA8E4F21100013EB766CB5C62DF47768A039E59A8CB5E986FB2D7A2FA2F231CE",
+      "assemblyVersion": "1.0.0.0"
+    },
+    {
+      "path": "chooks/PorscheAdvanced2027/PorscheAdvanced2027.runtimeconfig.json",
+      "bytes": 162,
+      "sha256": "D095AD81113245C4FB9AEA71371C038D2745C719322978C18F03566428D5EF83",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/ScreenTools2027.ft",
+      "bytes": 459,
+      "sha256": "EFE7150493E63B9E3DF9949B33E40D9D1ABDE2BF33E16D3FCA4B7DC5C49F7FD0",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/ScreenTools2027/ScreenTools2027.dll",
+      "bytes": 79360,
+      "sha256": "88113B6686235E2647B98692955882E762AFC327C830503203DD897B7E80987E",
+      "assemblyVersion": "0.1.3.0"
+    },
+    {
+      "path": "chooks/ScreenTools2027/ScreenTools2027.Resources.dll",
+      "bytes": 2560,
+      "sha256": "43B7A3C8AD442A2BB2A4880965FAAD461CBD0C4BE8277B8271122E6319BA9A69",
+      "assemblyVersion": "0.0.0.0"
+    },
+    {
+      "path": "chooks/ScreenTools2027/ScreenTools2027.runtimeconfig.json",
+      "bytes": 162,
+      "sha256": "D095AD81113245C4FB9AEA71371C038D2745C719322978C18F03566428D5EF83",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/SetupSheets2027.ft",
+      "bytes": 583,
+      "sha256": "53D2387C62F172335AB5A08339DBA8B8BDF8B6DD76E0A6DA0A5D6BFFE4C17405",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/SetupSheets2027/SetupSheets2027.dll",
+      "bytes": 129024,
+      "sha256": "01235E4681F0A85F6054E04CD81B74B806672AA1DD66441F5DBC3C1A7BD00BD2",
+      "assemblyVersion": "1.1.0.0"
+    },
+    {
+      "path": "chooks/SetupSheets2027/SetupSheets2027.runtimeconfig.json",
+      "bytes": 162,
+      "sha256": "D095AD81113245C4FB9AEA71371C038D2745C719322978C18F03566428D5EF83",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/SolidBoundary2027.ft",
+      "bytes": 376,
+      "sha256": "4A34B0600446629BA680B0FD741C763933A2F7A3BF941FD297E871CB46DC26D8",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/SolidBoundary2027/SolidBoundary2027.dll",
+      "bytes": 260096,
+      "sha256": "F887E35629305917BA6968E3E762D8DBEA2B61F2F2FEB73C0F69FE47035C591A",
+      "assemblyVersion": "1.0.5.0"
+    },
+    {
+      "path": "chooks/SolidBoundary2027/SolidBoundary2027.runtimeconfig.json",
+      "bytes": 109,
+      "sha256": "0CB57839DC5391796BEB7F5AF89D39B9B8EDBD83397E8F016548E5CE4CF94956",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/SVGGeometry2027.ft",
+      "bytes": 364,
+      "sha256": "2FB1FE3484FA90156333F4C0C797B6E2CBF103B3EE7C252DCA705B21F13394D8",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/SVGGeometry2027/SVGGeometry2027.dll",
+      "bytes": 72192,
+      "sha256": "F76B550ABFD4648E0162F0E3A7EFDA221476E5D5DD46BBA74002CE7FA9FC3659",
+      "assemblyVersion": "0.1.0.0"
+    },
+    {
+      "path": "chooks/SVGGeometry2027/SVGGeometry2027.Resources.dll",
+      "bytes": 2560,
+      "sha256": "BB4542CCB3A2B7202AC22AA0B937425D23A3028BB1442EDD92541ED076CDBCA2",
+      "assemblyVersion": "0.0.0.0"
+    },
+    {
+      "path": "chooks/SVGGeometry2027/SVGGeometry2027.runtimeconfig.json",
+      "bytes": 162,
+      "sha256": "D095AD81113245C4FB9AEA71371C038D2745C719322978C18F03566428D5EF83",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/TpSketcher2027.ft",
+      "bytes": 320,
+      "sha256": "01D7711BD9131AE9388580519039344BE25CBDEB2C5297CB7645486983FB59D5",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/TpSketcher2027/TpSketcher2027.Core.dll",
+      "bytes": 43008,
+      "sha256": "A16D098692F9D445A9015AA31753535CCC86C0882696368D3BA13170AD28CDDE",
+      "assemblyVersion": "0.0.0.0"
+    },
+    {
+      "path": "chooks/TpSketcher2027/TpSketcher2027.dll",
+      "bytes": 75776,
+      "sha256": "AE215920D15B24C0C67A87D76B99DF2B78F3D1321C178B7CB12A3111E62F6069",
+      "assemblyVersion": "0.0.0.0"
+    },
+    {
+      "path": "chooks/TpSketcher2027/TpSketcher2027.runtimeconfig.json",
+      "bytes": 162,
+      "sha256": "D095AD81113245C4FB9AEA71371C038D2745C719322978C18F03566428D5EF83",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027.ft",
+      "bytes": 7854,
+      "sha256": "D39453BA038B1E21BF7DB14785B7E3D8DB33A24FA16F8BB91E961A1A2B534E62",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/AdvancedDrill16.png",
+      "bytes": 262,
+      "sha256": "5076701097438E1A02325041E9C48A5DA963FE68A804052EF516286EFF6FA779",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/AdvancedDrill32.png",
+      "bytes": 361,
+      "sha256": "8A6962338BEC6F281338B575C31992C2111864DC11AD868F3DF70941E52BBA41",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/AlignView16.png",
+      "bytes": 218,
+      "sha256": "D95BC958F6B53C0B20EB9FCC0401669A37E569030341554EA439C6E7BBE848B0",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/AlignView32.png",
+      "bytes": 245,
+      "sha256": "E2D3D93343771B487DD2B554A675D63AF3090CCC4C853D7B00BEAB86CB5EFB8F",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/AnalyticRadius16.png",
+      "bytes": 292,
+      "sha256": "986C39DC5C5BD0321DD1D51E66CD8995425739E895C2E9774FD705D563B88978",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/AnalyticRadius32.png",
+      "bytes": 384,
+      "sha256": "E420954E695D0CF68224F34628515CD8DF9F9219A5256FBFC44D02385F1D2580",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/BatchGroups16.png",
+      "bytes": 277,
+      "sha256": "38938D67C84C317E0FFC62E02F9E30B036BD30DEB0BA59EF70FDD06A96F28452",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/BatchGroups32.png",
+      "bytes": 373,
+      "sha256": "8A2C535C05F8AFA4AFD3DB18045AD6CCA125E5AB426C515DFB59DECA29206F85",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/BatchParameters16.png",
+      "bytes": 281,
+      "sha256": "28D448A00FA16429D125D0B9A969D3A44E913635D1EB6C85286FB158F3E02207",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/BatchParameters32.png",
+      "bytes": 435,
+      "sha256": "8E3835C9A4DCBC91AF117CE6E5A32856C24490F69F9BDE59A0F7C98AE97C2476",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/ChainTools16.png",
+      "bytes": 304,
+      "sha256": "87C2AF16AD0FCBA5AB89C3CC3923A6A9713521AB627BC2B13C0D38C76949861D",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/ChainTools32.png",
+      "bytes": 426,
+      "sha256": "E30DC644A4E62C18C37B85D4E8FAD313D7BBC5928A5B5B3D753F18C2E52C5706",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/CheckPlanes16.png",
+      "bytes": 253,
+      "sha256": "DDF9D58062C5FD0756E0C99AEA8A98517EBD1FE3680FEFDB93C7F0A166AB1C70",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/CheckPlanes32.png",
+      "bytes": 321,
+      "sha256": "D9095C8477CC231554F45F3851755061D7D1F07F2DC1B8AA4A771FD9143A132B",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/CommonParameters16.png",
+      "bytes": 265,
+      "sha256": "9406AF40FB2E34864639265738C4DB488FDEA4894E7B87B7D2D82147931EA172",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/CommonParameters32.png",
+      "bytes": 329,
+      "sha256": "B6E21C9FAB62E6CB3440BA1E5B92FF98DFE19497B2F8D2E2FD9D03D7C091F9A4",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/CopyOperations16.png",
+      "bytes": 267,
+      "sha256": "45A460AB89EC647A4D670A447F6CFE61CD3C861F0FD5E97CD218C4563A1EA2B1",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/CopyOperations32.png",
+      "bytes": 385,
+      "sha256": "7283FFC69F9E19F50A390F77037BA117642D9418884436D6C8A9B19D5C61A308",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/EditGeometry16.png",
+      "bytes": 291,
+      "sha256": "82EA293B5763AA7DF0727E3FD859078EE1324D7C7CB204E1BB4C6923CC6E7732",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/EditGeometry32.png",
+      "bytes": 425,
+      "sha256": "E20D02C1091927E1B48EB5F6226591DE987E380EB39834EE8EE4A0CB011C9441",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/EditOperation16.png",
+      "bytes": 258,
+      "sha256": "D7DA504A18B0A8C9F5B9480333B3467B5AFFCB0052E8D1AE405E4B2ECC0E06B7",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/EditOperation32.png",
+      "bytes": 366,
+      "sha256": "BC47F87158CB7C770915A8C89B702D599BA63CA08D70EE8F5CE0F20A332857D3",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/EditTool16.png",
+      "bytes": 234,
+      "sha256": "F5AB48DD9C51DCA44B20D69E7552205D93C580F1314ECEAFF0350A016ED81E85",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/EditTool32.png",
+      "bytes": 319,
+      "sha256": "6754D3D4A60A5B039B1E5AD488040A48FC45DBEB28DAF60D4AC60FE0F3F468C7",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/ElectrodeReport16.png",
+      "bytes": 225,
+      "sha256": "19D61DB427BDFF9B4B99AB1440E3E221348F2F72D83F91836CCE615E6AF4DAFB",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/ElectrodeReport32.png",
+      "bytes": 295,
+      "sha256": "45A974A511367178790EBE804319F6300C6EEDF93EF408433EE75D51E365BC6A",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/en/Workshop2027.Resources.dll",
+      "bytes": 104960,
+      "sha256": "E0BB1C956F5609E33511658F1E8A5AA5CA76E9788125ACE8A819F91966F43D78",
+      "assemblyVersion": "2.1.0.0"
+    },
+    {
+      "path": "chooks/Workshop2027/Fixtures16.png",
+      "bytes": 270,
+      "sha256": "1E075FCC368A624E3F8217B95F4A50EAE6316A8E54270AB2611261C621C2E3DD",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/Fixtures32.png",
+      "bytes": 406,
+      "sha256": "002A691AA6210789F27BAFD157B496D972A1CA175B6775DDA0F35CFA41005039",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/FollowPlanes16.png",
+      "bytes": 305,
+      "sha256": "98A6C86587F9ECE7F524C39EBB02E4AADAB072A829898181240622CBBF200893",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/FollowPlanes32.png",
+      "bytes": 446,
+      "sha256": "A6A481524E9E25586D69E2949CE275E314C22BF9836B7B6EF7B171C3EBB38094",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/GeometryTools16.png",
+      "bytes": 288,
+      "sha256": "E816725D7B478690BADDA86CAE92D3D0779C94211177B89D711F73B6CB16E99F",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/GeometryTools32.png",
+      "bytes": 421,
+      "sha256": "9FC6C55FA9E1125A2F99CD753C07DD0EFF101E2E38C931BB6894B4547A0AA0D7",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/HirthTools16.png",
+      "bytes": 278,
+      "sha256": "1DDA8F760943E90ADFB876392592DAAFF1F499F76DA4CCA1E6309585D9CCB7CB",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/HirthTools32.png",
+      "bytes": 374,
+      "sha256": "042FDDA89716B488ECBD317CC758217E519E3C208D0CB1D4FE21E4E48532DD59",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/HolderTools16.png",
+      "bytes": 299,
+      "sha256": "9B19BD34974CA429327C97D34E12A7A6368918EE664A9E289183F5D9F0FBF798",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/HolderTools32.png",
+      "bytes": 394,
+      "sha256": "C8078A0412E164B62A5DD59A2ABCB7E9039E3E88108DE0AD0A5DE1F0EBEA314C",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/ImportOperations16.png",
+      "bytes": 278,
+      "sha256": "B49B8D37BE5D4F9A704AF42FC823C183B5BB0037E7311D5832E4649C19110690",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/ImportOperations32.png",
+      "bytes": 394,
+      "sha256": "82769601416033DF7511155A9DD322FE5DA80920E200ACAF57F5666279631412",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/InsertAfter16.png",
+      "bytes": 254,
+      "sha256": "60A0F55BD0E55A02CC05C9B1FAA6DB6C12181EE11C451E52F487821564B51226",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/InsertAfter32.png",
+      "bytes": 330,
+      "sha256": "0954D0F77D29A2BAB79313D0608FA80A2E4CFCEFF6054345D1B233E539F5CEEE",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/LevelExport16.png",
+      "bytes": 252,
+      "sha256": "ECB51DBA20F91EEE1788FB430857E4970F42F1F704120349801C8DFA0EE477A5",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/LevelExport32.png",
+      "bytes": 357,
+      "sha256": "DDE6AE653E8F4F8DB06494300283E6DDC63AA5BFF74235314557BEC88C6B78DC",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/MatchPlanes16.png",
+      "bytes": 223,
+      "sha256": "23C266A03B0AFF270FC7111BEB25244EE56176D77BEB01F3B73EAB3E4480C4D8",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/MatchPlanes32.png",
+      "bytes": 267,
+      "sha256": "1C7FF4EEC6F9626D19F756666958049BDC6147535EA9ED9380383D213E58E70F",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/MiddleConfirm16.png",
+      "bytes": 313,
+      "sha256": "03DCBD920EE681CCBFBC089565A40B1FB893A7CE179B7EB6AE79531540162296",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/MiddleConfirm32.png",
+      "bytes": 452,
+      "sha256": "FD5400C765296C2D8F01BE944A2FDB5F4D642B3E181D5C35E809A0AB992D486B",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/MPEdges2D16.png",
+      "bytes": 290,
+      "sha256": "1AEF2DA5B04855573CF463694689FFA9A0F4500CC888BF64029142E0CDBC2103",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/MPEdges2D32.png",
+      "bytes": 411,
+      "sha256": "D2D56FDA0983B996E0802C23AF41AA94D053FB6F11EA2AFDAE733D6FAF641732",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/MPEdges3D16.png",
+      "bytes": 292,
+      "sha256": "95CDED59B30726A79B32B46EC002FBE7E346D8216EDCF999FBF5DF3A071BCF3B",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/MPEdges3D32.png",
+      "bytes": 392,
+      "sha256": "B8E7729B52104EB47EEA6828AF76BD94D11318178797BAC9AC7A8E6FDBFAF0FD",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/NativeGeometry16.png",
+      "bytes": 282,
+      "sha256": "F2A3DC85BB45C67A3A1BB83C9EB19E3AE6BDE1B3C93E116699E1E7FAA4019996",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/NativeGeometry32.png",
+      "bytes": 376,
+      "sha256": "F2A1B51FD785B2A6D88F66DE65DAE787FE4E2CB037CED22FC541444B28B07653",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/NearestView16.png",
+      "bytes": 221,
+      "sha256": "2575289AF5EC0DB5EBF3FBDF98F3384059941A04A41DB2F9C027B1B61ABC7342",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/NearestView32.png",
+      "bytes": 246,
+      "sha256": "1EC5216C2A0E5B1F5EA0FA410F18E1EE9B3D79F2C0E1FE9AE969F86DB0E88668",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/OpenHub16.png",
+      "bytes": 196,
+      "sha256": "8F27F37DA63830F370BE4EF487AE7794C3800BDF3CA829E5523A9074B0092216",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/OpenHub32.png",
+      "bytes": 226,
+      "sha256": "E0167A9C1AD16127AA78732BEF5A473825A74CF5EAE97A9D1855C903FD0964C8",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/OperationTools16.png",
+      "bytes": 315,
+      "sha256": "59732D91C0E496BAEBBB20F13A26EA204FDC3976C240D6DFA2359C921BDAA01D",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/OperationTools32.png",
+      "bytes": 435,
+      "sha256": "A440CB6A5ADB43EDDE52AF4A94DAB83BA7165DB0A4940A43A02C7AA2BA33D0B4",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/OriginalChainIt16.png",
+      "bytes": 307,
+      "sha256": "0B1C3D7A563D80A35F96F9455812CF9E204A66D1A17E7CCE1DA0F0C5478DC47F",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/OriginalChainIt32.png",
+      "bytes": 430,
+      "sha256": "793D9A199B125673A1AAED0EA46EF075D3C16690069FC4F0538AB660FAFFB7E1",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/OriginalElectrodes16.png",
+      "bytes": 305,
+      "sha256": "4571408B2F1019129AB06A188EE6114DE0F5DE8B5B9C641A4BC5E7D93E473BB0",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/OriginalElectrodes32.png",
+      "bytes": 483,
+      "sha256": "E1C8537EDB745D4D1DD9A0EC619BDE60F11A7704DF46DF52B3E40E9FD0C36029",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/OriginalFixtureSetup16.png",
+      "bytes": 300,
+      "sha256": "6D5A39FE2815E91DC87440469892B6C2B524C547B743C731361A3D51E8979914",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/OriginalFixtureSetup32.png",
+      "bytes": 442,
+      "sha256": "E285DE896312041B8D043DE4B85BCCA45461517CB164077DA64BE34F5C3C6085",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/OriginalHirth16.png",
+      "bytes": 226,
+      "sha256": "A5D2EB78E1AB72DB803121ED46103867DD73DE511AECC535F2ACCF46AD9EAD9C",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/OriginalHirth32.png",
+      "bytes": 271,
+      "sha256": "D8437E73C1364D29A2EDE0FD82A9131BCBB184FFE5332AB4903AF6FA2379459D",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/OriginalHolder16.png",
+      "bytes": 300,
+      "sha256": "C4B714BF4102C3F49EFED3F1F04B4F3EFB509A6E3FF34C318E75A05423617457",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/OriginalHolder32.png",
+      "bytes": 397,
+      "sha256": "D81D3130261068B783B0668329BD60A96CB3B18208EB66294E72D733B479AF19",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/OriginalMergeFixture16.png",
+      "bytes": 277,
+      "sha256": "1877113CEE9695412507298DBCB6AAED45BC8A1700C975661EF4FB1E27857E14",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/OriginalMergeFixture32.png",
+      "bytes": 409,
+      "sha256": "98D5BD7026699EEDFEEB3E874A51538F9D9825D3D7F6288670A5BD30D7DFD00C",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/OriginalOffset16.png",
+      "bytes": 282,
+      "sha256": "A59ED23D9C8FA14FF795F2633496D07AE99FB2264975F70AE5ACE960160ABE3E",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/OriginalOffset32.png",
+      "bytes": 388,
+      "sha256": "1A9434E5A8B71EE53FB1C48F83A81CB9B8DC5C5B954BB17C8ABF56AFC9AD305D",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/OriginalRenameNCI16.png",
+      "bytes": 256,
+      "sha256": "AEDCC1E6339706ED3325C0422B4E7236BDE11C412B64A12F6D59F26B38D2E17E",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/OriginalRenameNCI32.png",
+      "bytes": 359,
+      "sha256": "9D1586E90ED8EA4E84B0CC070B286EE47C0215D39825AE49FEDF0F218B5C706F",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/OriginalSetupSheet16.png",
+      "bytes": 242,
+      "sha256": "A4DCB1C7E916492E60F61B369B43E682513F02292FE7FCCC0B1F16513D4FB5A3",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/OriginalSetupSheet32.png",
+      "bytes": 308,
+      "sha256": "F58E0753A8D71A683DFF663939F5E7B44A32F60C4C6E4F64B65506B434378B9B",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/OriginalSketch16.png",
+      "bytes": 297,
+      "sha256": "4C7170DEABC6CDC32B0A3AAA7A3754B0229CC09451997C0539F9957B132EC5BB",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/OriginalSketch32.png",
+      "bytes": 479,
+      "sha256": "D6B3BE3AE871B89E23084A6A2B839A3CD9B59ECE125E5C2DF4A23405D8EF5C71",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/OriginalSnapshot16.png",
+      "bytes": 254,
+      "sha256": "D02F2C5AF255EDD92113655CA79E9541E68733928990B9425FB185250F4DCE86",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/OriginalSnapshot32.png",
+      "bytes": 348,
+      "sha256": "BA93AB42DE2870F9897A088D67A93D1E9888662DD6FCA4F2D0BC12A21EF6E2AB",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/OriginalSTL16.png",
+      "bytes": 257,
+      "sha256": "CC962F12291DA7F2AA723905E65CFA65E15F33B4346E21EA0C06C8C498F0218C",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/OriginalSTL32.png",
+      "bytes": 359,
+      "sha256": "9B9C55D3DC733ECEFC4CDEA865950DEFFBAA4884088EB1AE3B7D2927E89E6591",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/OriginalSVG16.png",
+      "bytes": 270,
+      "sha256": "0C6A5D023AAF162F9C8EBB33AF849BB7EEBED6B873B7B6CAA19A071E32C9F3B3",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/OriginalSVG32.png",
+      "bytes": 387,
+      "sha256": "01EB75A6F50BFE1A709751D3214C33F0C79CC640BEEE604CE76D08FBC4596CB6",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/OriginalSwitchBG16.png",
+      "bytes": 260,
+      "sha256": "B5F585EE9BAF35E12FA8E06F700A4C7BE4122830FDE6D07860E951E603C5B8F0",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/OriginalSwitchBG32.png",
+      "bytes": 354,
+      "sha256": "D92AD1E16032D3DC6490BBBE1AA35B63AC48C603ACC80050A131480C71878BC1",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/OriginalToolList16.png",
+      "bytes": 258,
+      "sha256": "5591067FA853B68D2253FC0FEAA925D10D5CD897D656F364D27B9BDC5EE3A465",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/OriginalToolList32.png",
+      "bytes": 366,
+      "sha256": "82AC8B72FE0B1A404B44D6D5B91AB254D5F31641AD289660DA0B6E96788B289C",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/PasteOperations16.png",
+      "bytes": 267,
+      "sha256": "915ECBA6E6668EEEA8A04C11CB2C5E77BBE5EDA2CFB17B0D16A6C396941C498D",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/PasteOperations32.png",
+      "bytes": 350,
+      "sha256": "017CAA837F038FBBA65489E8AE7C500D28F8BAF9392DF47060065DF7D2718047",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/PorscheBoundary16.png",
+      "bytes": 300,
+      "sha256": "7DE6FFA229A75B04ACDD3088E5F27DC18BDF7919FA7ABCFB98BAFC2E5E560988",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/PorscheBoundary32.png",
+      "bytes": 418,
+      "sha256": "1D572E30FD9F2A0B8B96B1A7889BE4E9466519BB1D067C517FD1F241F2D86BA8",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/PorscheHealing16.png",
+      "bytes": 283,
+      "sha256": "4116FEAB8E4C246399C0A3381331AF5AF5DF8B7130C834A28EA4A45ACBC2419D",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/PorscheHealing32.png",
+      "bytes": 406,
+      "sha256": "01175A366DD1A775D412B53F02622FD341DB3C3A5620C4E564D5DF5DD67F6D99",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/PorscheHoles16.png",
+      "bytes": 242,
+      "sha256": "7008E1AE96D469168BAACD66D552B984C7D8D6E12D7B41F5437862A74EB73DE9",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/PorscheHoles32.png",
+      "bytes": 338,
+      "sha256": "51357C26C3BFB3E5FF1174D712255FA80653BA2B435DC472F78A8C0A9DD0A62C",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/RenameNci16.png",
+      "bytes": 247,
+      "sha256": "F3BBB7FFFDB84699CC2E4804178B7A51B13CFD45D0FC2A4EC4D583CBED70A9FD",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/RenameNci32.png",
+      "bytes": 314,
+      "sha256": "63B8B4E67D69A8C1494E432B420AB5D8669783C77089753307D380CE978A5CCD",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/ScreenTools16.png",
+      "bytes": 254,
+      "sha256": "C72B6D8C6DBE4C92BE21A22697FCAA90756B754A0B656A4176FE810D9F15E978",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/ScreenTools32.png",
+      "bytes": 348,
+      "sha256": "A857030C9BAD73F6FB9AEAE011C7186FAC489C11491623AF416A66005DF5122F",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/SetupSheet16.png",
+      "bytes": 236,
+      "sha256": "3E5DF97AFCA358A21CAC2B99C85174648208268EAE874197415293D29F97403F",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/SetupSheet32.png",
+      "bytes": 305,
+      "sha256": "CF2AAB126EEFBE9A25E96865F7FBABD61A4E13C751914DAE7E625C25C4DB4322",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/SolidBoundary16.png",
+      "bytes": 251,
+      "sha256": "A8BEEB8DC907CCB466E1786FB2301E3E5B8A066DAC9DB8C60B2EA8C97866C73F",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/SolidBoundary32.png",
+      "bytes": 350,
+      "sha256": "5DFEAF05EE65470EB2A05CDB4739732CCD44E028B7C31AEFF0154DCBDEA1FE20",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/StockSetup16.png",
+      "bytes": 272,
+      "sha256": "C51A73F8F37E588EF77EE8515E82A3A6BD379145824317D1D27DA9E28D2E97B9",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/StockSetup32.png",
+      "bytes": 388,
+      "sha256": "2D8FE315666E11F55FE5B66E2C224509F2B968ABC1A194534F66EA975AC22433",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/SurfaceNormals16.png",
+      "bytes": 290,
+      "sha256": "507FDF063F7364003251729D85FDD59C422F8C6A43D880D889F96EFF1CAF0A7C",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/SurfaceNormals32.png",
+      "bytes": 408,
+      "sha256": "9F6CAEE1225553E7AD7BA1ED6A769028A44418210AD8FF5FCFAEF735AFAE1D66",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/SurfaceTypes16.png",
+      "bytes": 281,
+      "sha256": "2AD766AF17493CE3AC82828FF8A1B251C7E6DE07EC92A873D864FD4B322CF895",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/SurfaceTypes32.png",
+      "bytes": 423,
+      "sha256": "F670DD994A9DEFE5AA26DFB7FCF4FF10A1A05BE910DAD181EFE0DEF59573C8F4",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/SvgGeometry16.png",
+      "bytes": 240,
+      "sha256": "A2B035CFBA80D12F0AF1FFEEDEDE54DD256D6776AACC8A29DD625418A93450A6",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/SvgGeometry32.png",
+      "bytes": 331,
+      "sha256": "F47BAD29EE481AB6762AECF2A1DCF3916B04E5F5A4103B7B53F605EF98C6C49D",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/TapDrill16.png",
+      "bytes": 262,
+      "sha256": "84347C018DFD2DF4AB6D2E7CF5A51E73E82EB79843478A062C3D764A2347C542",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/TapDrill32.png",
+      "bytes": 348,
+      "sha256": "0E126A95D7ED47A1A11C4653B4C22E5A54B96B8A75FC0AAB1DB190EA7E2B58C8",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/Templates16.png",
+      "bytes": 283,
+      "sha256": "1441B0C2B020997D0EC3D483385F52316299D12B232DC15CCDC7A2A7DB533621",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/Templates32.png",
+      "bytes": 401,
+      "sha256": "991A996555AC57F9E30DEF0020290FE91EFEAD5F488F33F2125D892D32449B07",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/TpSketcher16.png",
+      "bytes": 297,
+      "sha256": "028FA9EAAE8E77F4D529D41EB74ABB5199F8BB9A06FDBB0F2ADEE2E04D18B0B1",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/TpSketcher32.png",
+      "bytes": 475,
+      "sha256": "7C62F9BFCE4095195092B60CD6D7AEC798A5700DA8FC651989B2CAA571E23E0B",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/Usage16.png",
+      "bytes": 234,
+      "sha256": "70B3126A735C11F5E2F9A2480AF47F0EDBD2DFCFFC536FCA02980EF97EE7FA13",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/Usage32.png",
+      "bytes": 307,
+      "sha256": "888D7D89A076421D7B76900DB6A1FCC383B73B710F70A9E8AE4840479069F5E1",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/ViewOptions16.png",
+      "bytes": 305,
+      "sha256": "96E83D53ADC502203DEEABDD015EA50D3FE899122D67AE0EEC5708A9CDBCA0E3",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/ViewOptions32.png",
+      "bytes": 445,
+      "sha256": "AF34F29CA268E6886C250029A0363E4C2EB6E52651B4B2F7FE2BC70DC31BC38B",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/Workshop2027.dll",
+      "bytes": 61952,
+      "sha256": "48ED950CA6B63C897C75DC03833A41A70855AEA590B5B86BDF29ECAC6972A910",
+      "assemblyVersion": "2.7.1.0"
+    },
+    {
+      "path": "chooks/Workshop2027/Workshop2027.Resources.dll",
+      "bytes": 104960,
+      "sha256": "E0BB1C956F5609E33511658F1E8A5AA5CA76E9788125ACE8A819F91966F43D78",
+      "assemblyVersion": "2.1.0.0"
+    },
+    {
+      "path": "chooks/Workshop2027/Workshop2027.runtimeconfig.json",
+      "bytes": 162,
+      "sha256": "D095AD81113245C4FB9AEA71371C038D2745C719322978C18F03566428D5EF83",
+      "assemblyVersion": null
+    },
+    {
+      "path": "chooks/Workshop2027/zh-CN/Workshop2027.Resources.dll",
+      "bytes": 104960,
+      "sha256": "E0BB1C956F5609E33511658F1E8A5AA5CA76E9788125ACE8A819F91966F43D78",
+      "assemblyVersion": "2.1.0.0"
+    }
+  ]
+}

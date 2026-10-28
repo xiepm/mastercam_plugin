@@ -1,0 +1,15 @@
+APPLICATION "ScreenTools2027"
+FUNC_DLL "chooks\ScreenTools2027\ScreenTools2027.dll"
+RES_DLL "ScreenTools2027.Resources.dll", "chooks\ScreenTools2027"
+dnRES_NAME "ScreenTools2027.CommandResources"
+CATEGORY "ScreenTools2027"
+
+FUNCTION NET "Show"
+ FNAME "白底截图与屏幕工具"
+END_FUNCTION
+FUNCTION NET "SwitchBackground"
+ FNAME "切换渐变背景（可恢复）"
+END_FUNCTION
+FUNCTION NET "RestoreBackground"
+ FNAME "恢复切换前背景"
+END_FUNCTION

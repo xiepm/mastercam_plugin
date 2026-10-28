@@ -1,0 +1,13 @@
+APPLICATION "SVGGeometry2027"
+FUNC_DLL "chooks\SVGGeometry2027\SVGGeometry2027.dll"
+RES_DLL "SVGGeometry2027.Resources.dll", "chooks\SVGGeometry2027"
+dnRES_NAME "SVGGeometry2027.CommandResources"
+CATEGORY "SVGGeometry2027"
+
+FUNCTION NET "Show"
+ FNAME "SVG轮廓导入"
+END_FUNCTION
+
+FUNCTION NET "ImportSvg"
+ FNAME "导入SVG几何（参数预检）"
+END_FUNCTION

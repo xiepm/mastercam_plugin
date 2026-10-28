@@ -1,0 +1,53 @@
+﻿APPLICATION "OperationTools2027"
+FUNC_DLL "CHOOKS\OperationTools2027\OperationTools2027.dll"
+RES_DLL "Workshop2027.Resources.dll", "chooks\Workshop2027"
+dnRES_NAME "Workshop2027.NETHook"
+CATEGORY "加工操作2027"
+
+FUNCTION NET "OpenHub"
+ FNAME "加工操作工具"
+END_FUNCTION
+
+FUNCTION NET "Finish"
+ FNAME "2D粗转精光"
+END_FUNCTION
+
+FUNCTION NET "Chamfer"
+ FNAME "2D轮廓转倒角"
+END_FUNCTION
+
+FUNCTION NET "Depth"
+ FNAME "2D深度修改"
+END_FUNCTION
+
+FUNCTION NET "Drill"
+ FNAME "自动钻孔"
+END_FUNCTION
+
+FUNCTION NET "DrillConfig"
+ FNAME "钻孔规则配置"
+END_FUNCTION
+
+FUNCTION NET "DetectHoles"
+ FNAME "实体孔检测报告"
+END_FUNCTION
+
+FUNCTION NET "AutoProgram"
+ FNAME "闭合边界三阶段编排"
+END_FUNCTION
+
+FUNCTION NET "ReplaceGeometry"
+ FNAME "替换工序几何"
+END_FUNCTION
+
+FUNCTION NET "Information"
+ FNAME "刀路信息与时间"
+END_FUNCTION
+
+FUNCTION NET "Reach"
+ FNAME "刀具轴向伸出量估算"
+END_FUNCTION
+
+FUNCTION NET "Rollback"
+ FNAME "回滚上一批次"
+END_FUNCTION

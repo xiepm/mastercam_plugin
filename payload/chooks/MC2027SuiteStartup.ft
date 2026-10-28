@@ -1,0 +1,8 @@
+﻿APPLICATION "MC2027SuiteStartup"
+FUNC_DLL "chooks\MC2027SuiteStartup\MC2027SuiteStartup.dll"
+RES_DLL "Workshop2027.Resources.dll", "chooks\Workshop2027"
+dnRES_NAME "Workshop2027.NETHook"
+CATEGORY "工艺助手"
+FUNCTION NET "Run"
+ FNAME "加载插件功能区"
+END_FUNCTION

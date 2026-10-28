@@ -1,0 +1,8 @@
+﻿APPLICATION "MPDesignRadiusSelect2027"
+FUNC_DLL "CHOOKS\MPDesignRadiusSelect2027\MPDesignRadiusSelect2027.dll"
+RES_DLL "MPDesignRadiusSelect2027.Resources.dll", "chooks\MPDesignRadiusSelect2027"
+dnRES_NAME "MPDesignRadiusSelect2027.NETHook"
+CATEGORY "MP 设计工具 2027"
+FUNCTION NET "SelectByAnalyticRadius"
+ FNAME "按解析面半径选择所属实体"
+END_FUNCTION

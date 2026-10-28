@@ -1,0 +1,11 @@
+APPLICATION "HirthTools2027"
+FUNC_DLL "CHOOKS\HirthTools2027\HirthTools2027.dll"
+RES_DLL "Workshop2027.Resources.dll", "chooks\Workshop2027"
+dnRES_NAME "Workshop2027.NETHook"
+CATEGORY "工艺助手 2027"
+
+FUNCTION NET "Show"
+ dnSPNG "NearestView16"
+ dnLPNG "NearestView32"
+ FNAME "双轴分度平面拟合"
+END_FUNCTION

@@ -1,0 +1,18 @@
+APPLICATION "GeometryTools2027.NativeCommands"
+FUNC_DLL "chooks\GeometryTools2027.NativeCommands\GeometryTools2027.NativeCommands.dll"
+RES_DLL "GeometryTools2027.Resources.dll", "chooks\GeometryTools2027"
+dnRES_NAME "GeometryTools2027.CommandResources"
+CATEGORY "GeometryTools2027"
+
+FUNCTION NET "Show"
+ FNAME "几何原生交互工具"
+END_FUNCTION
+
+FUNCTION NET "RemoveFaces"
+ FNAME "原生交互：移除所选实体面"
+END_FUNCTION
+
+FUNCTION NET "SilhouetteBoundary"
+ FNAME "原生交互：轮廓边界"
+END_FUNCTION
+

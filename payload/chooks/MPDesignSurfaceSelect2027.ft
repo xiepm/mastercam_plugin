@@ -1,0 +1,9 @@
+﻿APPLICATION "MPDesignSurfaceSelect2027"
+FUNC_DLL "CHOOKS\MPDesignSurfaceSelect2027\MPDesignSurfaceSelect2027.dll"
+RES_DLL "MPDesignSurfaceSelect2027.Resources.dll", "chooks\MPDesignSurfaceSelect2027"
+dnRES_NAME "MPDesignSurfaceSelect2027.NETHook"
+CATEGORY "MP 设计工具 2027"
+FUNCTION NET "SelectVisibleSurfaceTypes"
+ FNAME "按曲面类型加入选择"
+END_FUNCTION
+

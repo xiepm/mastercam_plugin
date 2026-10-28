@@ -1,0 +1,10 @@
+﻿APPLICATION "MPDesignTools2027"
+FUNC_DLL "CHOOKS\MPDesignTools2027\MPDesignTools2027.dll"
+RES_DLL "MPDesignTools2027.Resources.dll", "chooks\MPDesignTools2027"
+dnRES_NAME "MPDesignTools2027.NETHook"
+CATEGORY "MP 设计工具 2027"
+
+FUNCTION NET "ReverseSelectedNormals"
+ FNAME "反转选中曲面法向"
+END_FUNCTION
+

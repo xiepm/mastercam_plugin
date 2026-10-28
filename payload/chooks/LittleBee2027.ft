@@ -1,0 +1,81 @@
+﻿APPLICATION "LittleBee2027"
+FUNC_DLL "CHOOKS\LittleBee2027\LittleBee2027.dll"
+RES_DLL "LittleBee2027.Resources.dll", "chooks\LittleBee2027"
+dnRES_NAME "LittleBee.Rebuilt.NETHook"
+CATEGORY "小蜜蜂"
+
+FUNCTION NET "LittleBee"
+ dnSPNG "LittleBee16"
+ dnLPNG "LittleBee32"
+ FNAME "LB.功能集锦"
+END_FUNCTION
+
+FUNCTION NET "ChangeNci"
+ dnSPNG "ChangeNci16"
+ dnLPNG "ChangeNci32"
+ FNAME "LB`NCI更名"
+END_FUNCTION
+
+FUNCTION NET "ReNameGroup"
+ dnSPNG "ReNameGroup16"
+ dnLPNG "ReNameGroup32"
+ FNAME "LB`群组更名"
+END_FUNCTION
+
+FUNCTION NET "CopyOperation"
+ dnSPNG "CopyOperation16"
+ dnLPNG "CopyOperation32"
+ FNAME "LB~复制刀路"
+END_FUNCTION
+
+FUNCTION NET "PasteOperation"
+ dnSPNG "PasteOperation16"
+ dnLPNG "PasteOperation32"
+ FNAME "LB~粘贴刀路"
+END_FUNCTION
+
+FUNCTION NET "ChangeView"
+ dnSPNG "ChangeView16"
+ dnLPNG "ChangeView32"
+ FNAME "LB-Wcs跟随操作"
+END_FUNCTION
+
+FUNCTION NET "SaveFile"
+ dnSPNG "SaveFile16"
+ dnLPNG "SaveFile32"
+ FNAME "LB保存文档"
+END_FUNCTION
+
+FUNCTION NET "SaveAs"
+ dnSPNG "SaveAs16"
+ dnLPNG "SaveAs32"
+ FNAME "LB另存文档"
+END_FUNCTION
+
+FUNCTION NET "EditOperation"
+ dnSPNG "EditOperation16"
+ dnLPNG "EditOperation32"
+ FNAME "LB修改操作参数"
+END_FUNCTION
+
+FUNCTION NET "EditTool"
+ dnSPNG "EditTool16"
+ dnLPNG "EditTool32"
+ FNAME "LB修改操作刀具"
+END_FUNCTION
+
+FUNCTION NET "EditOperationGeometry"
+ dnSPNG "EditOperationGeometry16"
+ dnLPNG "EditOperationGeometry32"
+ FNAME "LB修改操作图形"
+END_FUNCTION
+
+FUNCTION NET "EditCommonParameters"
+ dnSPNG "EditCommonParameters16"
+ dnLPNG "EditCommonParameters32"
+ FNAME "LB修改公共参数"
+END_FUNCTION
+
+FUNCTION NET "InstallRibbon"
+ FNAME "安装小蜜蜂功能区"
+END_FUNCTION

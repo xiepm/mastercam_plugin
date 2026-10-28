@@ -1,0 +1,150 @@
+{
+    "suite":  "Portable installer",
+    "date":  "2026-10-28",
+    "powershell":  "5.1.26100.9711",
+    "payloadFiles":  247,
+    "checks":  [
+                   {
+                       "name":  "Full payload hashes verified",
+                       "passed":  true
+                   },
+                   {
+                       "name":  "Preview writes nothing",
+                       "passed":  true
+                   },
+                   {
+                       "name":  "Clean install at paths with spaces; both configs verified",
+                       "passed":  true
+                   },
+                   {
+                       "name":  "No previous hook / no machine IPC dependency",
+                       "passed":  true
+                   },
+                   {
+                       "name":  "UTF-16 config encoding retained",
+                       "passed":  true
+                   },
+                   {
+                       "name":  "Upgrade does not create a startup self-loop",
+                       "passed":  true
+                   },
+                   {
+                       "name":  "Repeat install retains original backup ownership",
+                       "passed":  true
+                   },
+                   {
+                       "name":  "Upgrade refuses modified installed file",
+                       "passed":  true
+                   },
+                   {
+                       "name":  "Uninstall refuses modified installed file",
+                       "passed":  true
+                   },
+                   {
+                       "name":  "Conflicting user edit preserved",
+                       "passed":  true
+                   },
+                   {
+                       "name":  "Injected partial upgrade fails",
+                       "passed":  true
+                   },
+                   {
+                       "name":  "Partial upgrade restores all file/config bytes and prior receipt",
+                       "passed":  true
+                   },
+                   {
+                       "name":  "Uninstall restores only startup and preserves later user settings",
+                       "passed":  true
+                   },
+                   {
+                       "name":  "Uninstall restores exact initial file set / bytes",
+                       "passed":  true
+                   },
+                   {
+                       "name":  "Receipt marked inactive, original backups retained",
+                       "passed":  true
+                   },
+                   {
+                       "name":  "Existing startup chained without copying its binary",
+                       "passed":  true
+                   },
+                   {
+                       "name":  "Uninstall verifies original backup before any write",
+                       "passed":  true
+                   },
+                   {
+                       "name":  "External startup change stops uninstall",
+                       "passed":  true
+                   },
+                   {
+                       "name":  "Previous files and hook restore exactly after two installs",
+                       "passed":  true
+                   },
+                   {
+                       "name":  "Different metric/inch hooks fail before writing",
+                       "passed":  true
+                   },
+                   {
+                       "name":  "Differing hook rejection changes nothing",
+                       "passed":  true
+                   },
+                   {
+                       "name":  "Manual-load installation leaves both configs unchanged",
+                       "passed":  true
+                   },
+                   {
+                       "name":  "Manual-load uninstall restores original file set",
+                       "passed":  true
+                   },
+                   {
+                       "name":  "Path traversal blocked",
+                       "passed":  true
+                   },
+                   {
+                       "name":  "Alternate data stream blocked",
+                       "passed":  true
+                   },
+                   {
+                       "name":  "Absolute manifest path blocked",
+                       "passed":  true
+                   },
+                   {
+                       "name":  "Injected first install failure",
+                       "passed":  true
+                   },
+                   {
+                       "name":  "Failed first install leaves no owned payload or receipt",
+                       "passed":  true
+                   },
+                   {
+                       "name":  "Crash recovery protects edits made after interruption",
+                       "passed":  true
+                   },
+                   {
+                       "name":  "Recovery conflict preserves manual edit",
+                       "passed":  true
+                   },
+                   {
+                       "name":  "Explicit recovery restores verified snapshot and clears pending marker",
+                       "passed":  true
+                   },
+                   {
+                       "name":  "Upgrade restores obsolete payload file to its original content",
+                       "passed":  true
+                   },
+                   {
+                       "name":  "Uninstall after file-set change preserves exact baseline",
+                       "passed":  true
+                   },
+                   {
+                       "name":  "Corrupt download rejected before installation",
+                       "passed":  true
+                   },
+                   {
+                       "name":  "Rejected corrupt package leaves destination unchanged",
+                       "passed":  true
+                   }
+               ],
+    "passed":  true,
+    "nativeHostUsed":  false
+}

@@ -1,0 +1,11 @@
+﻿APPLICATION "AdvancedDrill2027"
+FUNC_DLL "CHOOKS\AdvancedDrill2027\AdvancedDrill2027.dll"
+RES_DLL "Workshop2027.Resources.dll", "chooks\Workshop2027"
+dnRES_NAME "Workshop2027.NETHook"
+CATEGORY "高级钻孔编排 2027"
+
+FUNCTION NET "Show"
+ dnSPNG "OperationTools16"
+ dnLPNG "OperationTools32"
+ FNAME "高级钻孔编排"
+END_FUNCTION

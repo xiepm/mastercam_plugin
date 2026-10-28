@@ -1,0 +1,49 @@
+APPLICATION "GeometryTools2027"
+FUNC_DLL "chooks\GeometryTools2027\GeometryTools2027.dll"
+RES_DLL "GeometryTools2027.Resources.dll", "chooks\GeometryTools2027"
+dnRES_NAME "GeometryTools2027.CommandResources"
+CATEGORY "GeometryTools2027"
+
+FUNCTION NET "RelatedLevels"
+ FNAME "关联图层（操作串连引用）"
+END_FUNCTION
+
+FUNCTION NET "Show"
+ FNAME "几何工具"
+END_FUNCTION
+
+FUNCTION NET "Center"
+ FNAME "所选图素自动分中"
+END_FUNCTION
+
+FUNCTION NET "Rotate"
+ FNAME "模型整90度旋转"
+END_FUNCTION
+
+FUNCTION NET "Align"
+ FNAME "按当前构图平面摆正"
+END_FUNCTION
+
+FUNCTION NET "ColorZ"
+ FNAME "Z平面着色"
+END_FUNCTION
+
+FUNCTION NET "ColorVertical"
+ FNAME "垂直平面着色"
+END_FUNCTION
+
+FUNCTION NET "Dimensions"
+ FNAME "包围盒线框尺寸"
+END_FUNCTION
+
+FUNCTION NET "Merge"
+ FNAME "连续曲线合并NURBS"
+END_FUNCTION
+
+FUNCTION NET "Chamfer"
+ FNAME "选定实体边倒角"
+END_FUNCTION
+
+FUNCTION NET "SelectedLevel"
+ FNAME "所选图素指定图层"
+END_FUNCTION

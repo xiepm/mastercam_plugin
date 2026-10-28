@@ -1,0 +1,12 @@
+APPLICATION "MPEdgeTools2027"
+FUNC_DLL "chooks\MPEdgeTools2027\MPEdgeTools2027.dll"
+RES_DLL "MPEdgeTools2027.Resources.dll", "chooks\MPEdgeTools2027"
+dnRES_NAME "MPEdgeTools2027.CommandResources"
+CATEGORY "MP 实体边工具"
+
+FUNCTION NET "ShowEdges3D"
+ FNAME "实体3D直线边"
+END_FUNCTION
+FUNCTION NET "ShowEdges2D"
+ FNAME "实体2D直线边投影"
+END_FUNCTION

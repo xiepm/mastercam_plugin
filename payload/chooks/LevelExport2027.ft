@@ -1,0 +1,9 @@
+﻿APPLICATION "LevelExport2027"
+FUNC_DLL "CHOOKS\LevelExport2027\LevelExport2027.dll"
+RES_DLL "Workshop2027.Resources.dll", "chooks\Workshop2027"
+dnRES_NAME "Workshop2027.NETHook"
+CATEGORY "LevelExport2027"
+
+FUNCTION NET "Show"
+ FNAME "按图层导出 STL"
+END_FUNCTION

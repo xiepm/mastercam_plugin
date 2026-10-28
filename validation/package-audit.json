@@ -1,0 +1,15 @@
+{
+  "date": "2026-10-28",
+  "passed": true,
+  "checks": 1808,
+  "ftFiles": 25,
+  "payloadFiles": 247,
+  "categories": [
+    "SHA256",
+    "FT DLL and resource dependencies",
+    "Development data exclusion",
+    "Vendor binary exclusion",
+    "Module inventory",
+    "Frozen business binaries"
+  ]
+}

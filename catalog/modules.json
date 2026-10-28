@@ -1,0 +1,366 @@
+[
+  {
+    "id": "Workshop2027",
+    "files": [
+      "chooks/Workshop2027/AdvancedDrill16.png",
+      "chooks/Workshop2027/AdvancedDrill32.png",
+      "chooks/Workshop2027/AlignView16.png",
+      "chooks/Workshop2027/AlignView32.png",
+      "chooks/Workshop2027/AnalyticRadius16.png",
+      "chooks/Workshop2027/AnalyticRadius32.png",
+      "chooks/Workshop2027/BatchGroups16.png",
+      "chooks/Workshop2027/BatchGroups32.png",
+      "chooks/Workshop2027/BatchParameters16.png",
+      "chooks/Workshop2027/BatchParameters32.png",
+      "chooks/Workshop2027/ChainTools16.png",
+      "chooks/Workshop2027/ChainTools32.png",
+      "chooks/Workshop2027/CheckPlanes16.png",
+      "chooks/Workshop2027/CheckPlanes32.png",
+      "chooks/Workshop2027/CommonParameters16.png",
+      "chooks/Workshop2027/CommonParameters32.png",
+      "chooks/Workshop2027/CopyOperations16.png",
+      "chooks/Workshop2027/CopyOperations32.png",
+      "chooks/Workshop2027/EditGeometry16.png",
+      "chooks/Workshop2027/EditGeometry32.png",
+      "chooks/Workshop2027/EditOperation16.png",
+      "chooks/Workshop2027/EditOperation32.png",
+      "chooks/Workshop2027/EditTool16.png",
+      "chooks/Workshop2027/EditTool32.png",
+      "chooks/Workshop2027/ElectrodeReport16.png",
+      "chooks/Workshop2027/ElectrodeReport32.png",
+      "chooks/Workshop2027/en/Workshop2027.Resources.dll",
+      "chooks/Workshop2027/Fixtures16.png",
+      "chooks/Workshop2027/Fixtures32.png",
+      "chooks/Workshop2027/FollowPlanes16.png",
+      "chooks/Workshop2027/FollowPlanes32.png",
+      "chooks/Workshop2027/GeometryTools16.png",
+      "chooks/Workshop2027/GeometryTools32.png",
+      "chooks/Workshop2027/HirthTools16.png",
+      "chooks/Workshop2027/HirthTools32.png",
+      "chooks/Workshop2027/HolderTools16.png",
+      "chooks/Workshop2027/HolderTools32.png",
+      "chooks/Workshop2027/ImportOperations16.png",
+      "chooks/Workshop2027/ImportOperations32.png",
+      "chooks/Workshop2027/InsertAfter16.png",
+      "chooks/Workshop2027/InsertAfter32.png",
+      "chooks/Workshop2027/LevelExport16.png",
+      "chooks/Workshop2027/LevelExport32.png",
+      "chooks/Workshop2027/MatchPlanes16.png",
+      "chooks/Workshop2027/MatchPlanes32.png",
+      "chooks/Workshop2027/MiddleConfirm16.png",
+      "chooks/Workshop2027/MiddleConfirm32.png",
+      "chooks/Workshop2027/MPEdges2D16.png",
+      "chooks/Workshop2027/MPEdges2D32.png",
+      "chooks/Workshop2027/MPEdges3D16.png",
+      "chooks/Workshop2027/MPEdges3D32.png",
+      "chooks/Workshop2027/NativeGeometry16.png",
+      "chooks/Workshop2027/NativeGeometry32.png",
+      "chooks/Workshop2027/NearestView16.png",
+      "chooks/Workshop2027/NearestView32.png",
+      "chooks/Workshop2027/OpenHub16.png",
+      "chooks/Workshop2027/OpenHub32.png",
+      "chooks/Workshop2027/OperationTools16.png",
+      "chooks/Workshop2027/OperationTools32.png",
+      "chooks/Workshop2027/OriginalChainIt16.png",
+      "chooks/Workshop2027/OriginalChainIt32.png",
+      "chooks/Workshop2027/OriginalElectrodes16.png",
+      "chooks/Workshop2027/OriginalElectrodes32.png",
+      "chooks/Workshop2027/OriginalFixtureSetup16.png",
+      "chooks/Workshop2027/OriginalFixtureSetup32.png",
+      "chooks/Workshop2027/OriginalHirth16.png",
+      "chooks/Workshop2027/OriginalHirth32.png",
+      "chooks/Workshop2027/OriginalHolder16.png",
+      "chooks/Workshop2027/OriginalHolder32.png",
+      "chooks/Workshop2027/OriginalMergeFixture16.png",
+      "chooks/Workshop2027/OriginalMergeFixture32.png",
+      "chooks/Workshop2027/OriginalOffset16.png",
+      "chooks/Workshop2027/OriginalOffset32.png",
+      "chooks/Workshop2027/OriginalRenameNCI16.png",
+      "chooks/Workshop2027/OriginalRenameNCI32.png",
+      "chooks/Workshop2027/OriginalSetupSheet16.png",
+      "chooks/Workshop2027/OriginalSetupSheet32.png",
+      "chooks/Workshop2027/OriginalSketch16.png",
+      "chooks/Workshop2027/OriginalSketch32.png",
+      "chooks/Workshop2027/OriginalSnapshot16.png",
+      "chooks/Workshop2027/OriginalSnapshot32.png",
+      "chooks/Workshop2027/OriginalSTL16.png",
+      "chooks/Workshop2027/OriginalSTL32.png",
+      "chooks/Workshop2027/OriginalSVG16.png",
+      "chooks/Workshop2027/OriginalSVG32.png",
+      "chooks/Workshop2027/OriginalSwitchBG16.png",
+      "chooks/Workshop2027/OriginalSwitchBG32.png",
+      "chooks/Workshop2027/OriginalToolList16.png",
+      "chooks/Workshop2027/OriginalToolList32.png",
+      "chooks/Workshop2027/PasteOperations16.png",
+      "chooks/Workshop2027/PasteOperations32.png",
+      "chooks/Workshop2027/PorscheBoundary16.png",
+      "chooks/Workshop2027/PorscheBoundary32.png",
+      "chooks/Workshop2027/PorscheHealing16.png",
+      "chooks/Workshop2027/PorscheHealing32.png",
+      "chooks/Workshop2027/PorscheHoles16.png",
+      "chooks/Workshop2027/PorscheHoles32.png",
+      "chooks/Workshop2027/RenameNci16.png",
+      "chooks/Workshop2027/RenameNci32.png",
+      "chooks/Workshop2027/ScreenTools16.png",
+      "chooks/Workshop2027/ScreenTools32.png",
+      "chooks/Workshop2027/SetupSheet16.png",
+      "chooks/Workshop2027/SetupSheet32.png",
+      "chooks/Workshop2027/SolidBoundary16.png",
+      "chooks/Workshop2027/SolidBoundary32.png",
+      "chooks/Workshop2027/StockSetup16.png",
+      "chooks/Workshop2027/StockSetup32.png",
+      "chooks/Workshop2027/SurfaceNormals16.png",
+      "chooks/Workshop2027/SurfaceNormals32.png",
+      "chooks/Workshop2027/SurfaceTypes16.png",
+      "chooks/Workshop2027/SurfaceTypes32.png",
+      "chooks/Workshop2027/SvgGeometry16.png",
+      "chooks/Workshop2027/SvgGeometry32.png",
+      "chooks/Workshop2027/TapDrill16.png",
+      "chooks/Workshop2027/TapDrill32.png",
+      "chooks/Workshop2027/Templates16.png",
+      "chooks/Workshop2027/Templates32.png",
+      "chooks/Workshop2027/TpSketcher16.png",
+      "chooks/Workshop2027/TpSketcher32.png",
+      "chooks/Workshop2027/Usage16.png",
+      "chooks/Workshop2027/Usage32.png",
+      "chooks/Workshop2027/ViewOptions16.png",
+      "chooks/Workshop2027/ViewOptions32.png",
+      "chooks/Workshop2027/Workshop2027.dll",
+      "chooks/Workshop2027.ft",
+      "chooks/Workshop2027/Workshop2027.Resources.dll",
+      "chooks/Workshop2027/Workshop2027.runtimeconfig.json",
+      "chooks/Workshop2027/zh-CN/Workshop2027.Resources.dll"
+    ]
+  },
+  {
+    "id": "MiddleConfirm2027",
+    "files": [
+      "chooks/MiddleConfirm2027/MiddleConfirm2027.dll",
+      "chooks/MiddleConfirm2027.ft",
+      "chooks/MiddleConfirm2027/MiddleConfirm2027.runtimeconfig.json",
+      "chooks/MiddleConfirm2027/settings.example.json"
+    ]
+  },
+  {
+    "id": "SetupSheets2027",
+    "files": [
+      "chooks/SetupSheets2027/SetupSheets2027.dll",
+      "chooks/SetupSheets2027.ft",
+      "chooks/SetupSheets2027/SetupSheets2027.runtimeconfig.json"
+    ]
+  },
+  {
+    "id": "OperationTools2027",
+    "files": [
+      "chooks/OperationTools2027/OperationTools2027.dll",
+      "chooks/OperationTools2027.ft",
+      "chooks/OperationTools2027/OperationTools2027.runtimeconfig.json"
+    ]
+  },
+  {
+    "id": "PorscheAdvanced2027",
+    "files": [
+      "chooks/PorscheAdvanced2027/PorscheAdvanced2027.dll",
+      "chooks/PorscheAdvanced2027.ft",
+      "chooks/PorscheAdvanced2027/PorscheAdvanced2027.runtimeconfig.json"
+    ]
+  },
+  {
+    "id": "GeometryTools2027",
+    "files": [
+      "chooks/GeometryTools2027/GeometryTools2027.dll",
+      "chooks/GeometryTools2027.ft",
+      "chooks/GeometryTools2027/GeometryTools2027.Resources.dll",
+      "chooks/GeometryTools2027/GeometryTools2027.runtimeconfig.json"
+    ]
+  },
+  {
+    "id": "GeometryTools2027.NativeCommands",
+    "files": [
+      "chooks/GeometryTools2027.NativeCommands/GeometryTools2027.NativeCommands.dll",
+      "chooks/GeometryTools2027.NativeCommands.ft",
+      "chooks/GeometryTools2027.NativeCommands/GeometryTools2027.NativeCommands.runtimeconfig.json"
+    ]
+  },
+  {
+    "id": "FixtureTools2027",
+    "files": [
+      "chooks/FixtureTools2027/FixtureTools2027.Core.dll",
+      "chooks/FixtureTools2027/FixtureTools2027.dll",
+      "chooks/FixtureTools2027.ft",
+      "chooks/FixtureTools2027/FixtureTools2027.runtimeconfig.json"
+    ]
+  },
+  {
+    "id": "LevelExport2027",
+    "files": [
+      "chooks/LevelExport2027/LevelExport2027.Core.dll",
+      "chooks/LevelExport2027/LevelExport2027.dll",
+      "chooks/LevelExport2027.ft",
+      "chooks/LevelExport2027/LevelExport2027.runtimeconfig.json"
+    ]
+  },
+  {
+    "id": "ChainTools2027",
+    "files": [
+      "chooks/ChainTools2027/ChainTools2027.Core.dll",
+      "chooks/ChainTools2027/ChainTools2027.dll",
+      "chooks/ChainTools2027.ft",
+      "chooks/ChainTools2027/ChainTools2027.Resources.dll",
+      "chooks/ChainTools2027/ChainTools2027.runtimeconfig.json"
+    ]
+  },
+  {
+    "id": "SVGGeometry2027",
+    "files": [
+      "chooks/SVGGeometry2027/SVGGeometry2027.dll",
+      "chooks/SVGGeometry2027.ft",
+      "chooks/SVGGeometry2027/SVGGeometry2027.Resources.dll",
+      "chooks/SVGGeometry2027/SVGGeometry2027.runtimeconfig.json"
+    ]
+  },
+  {
+    "id": "HirthTools2027",
+    "files": [
+      "chooks/HirthTools2027/HirthTools2027.Core.dll",
+      "chooks/HirthTools2027/HirthTools2027.dll",
+      "chooks/HirthTools2027.ft",
+      "chooks/HirthTools2027/HirthTools2027.runtimeconfig.json"
+    ]
+  },
+  {
+    "id": "SolidBoundary2027",
+    "files": [
+      "chooks/SolidBoundary2027/SolidBoundary2027.dll",
+      "chooks/SolidBoundary2027.ft",
+      "chooks/SolidBoundary2027/SolidBoundary2027.runtimeconfig.json"
+    ]
+  },
+  {
+    "id": "AdvancedDrill2027",
+    "files": [
+      "chooks/AdvancedDrill2027/AdvancedDrill2027.dll",
+      "chooks/AdvancedDrill2027.ft",
+      "chooks/AdvancedDrill2027/AdvancedDrill2027.runtimeconfig.json"
+    ]
+  },
+  {
+    "id": "AdvancedDrillTap2027",
+    "files": [
+      "chooks/AdvancedDrillTap2027/AdvancedDrillTap2027.dll",
+      "chooks/AdvancedDrillTap2027.ft",
+      "chooks/AdvancedDrillTap2027/AdvancedDrillTap2027.runtimeconfig.json"
+    ]
+  },
+  {
+    "id": "TpSketcher2027",
+    "files": [
+      "chooks/TpSketcher2027/TpSketcher2027.Core.dll",
+      "chooks/TpSketcher2027/TpSketcher2027.dll",
+      "chooks/TpSketcher2027.ft",
+      "chooks/TpSketcher2027/TpSketcher2027.runtimeconfig.json"
+    ]
+  },
+  {
+    "id": "HolderTools2027",
+    "files": [
+      "chooks/HolderTools2027/HolderTools2027.dll",
+      "chooks/HolderTools2027.ft",
+      "chooks/HolderTools2027/HolderTools2027.runtimeconfig.json"
+    ]
+  },
+  {
+    "id": "ScreenTools2027",
+    "files": [
+      "chooks/ScreenTools2027/ScreenTools2027.dll",
+      "chooks/ScreenTools2027.ft",
+      "chooks/ScreenTools2027/ScreenTools2027.Resources.dll",
+      "chooks/ScreenTools2027/ScreenTools2027.runtimeconfig.json"
+    ]
+  },
+  {
+    "id": "MPDesignTools2027",
+    "files": [
+      "chooks/MPDesignTools2027/MPDesignTools2027.Core.dll",
+      "chooks/MPDesignTools2027/MPDesignTools2027.dll",
+      "chooks/MPDesignTools2027.ft",
+      "chooks/MPDesignTools2027/MPDesignTools2027.Resources.dll",
+      "chooks/MPDesignTools2027/MPDesignTools2027.runtimeconfig.json"
+    ]
+  },
+  {
+    "id": "MPDesignSurfaceSelect2027",
+    "files": [
+      "chooks/MPDesignSurfaceSelect2027/MPDesignSurfaceSelect2027.Core.dll",
+      "chooks/MPDesignSurfaceSelect2027/MPDesignSurfaceSelect2027.dll",
+      "chooks/MPDesignSurfaceSelect2027.ft",
+      "chooks/MPDesignSurfaceSelect2027/MPDesignSurfaceSelect2027.Resources.dll",
+      "chooks/MPDesignSurfaceSelect2027/MPDesignSurfaceSelect2027.runtimeconfig.json"
+    ]
+  },
+  {
+    "id": "MPDesignRadiusSelect2027",
+    "files": [
+      "chooks/MPDesignRadiusSelect2027/MPDesignRadiusSelect2027.Core.dll",
+      "chooks/MPDesignRadiusSelect2027/MPDesignRadiusSelect2027.dll",
+      "chooks/MPDesignRadiusSelect2027.ft",
+      "chooks/MPDesignRadiusSelect2027/MPDesignRadiusSelect2027.Resources.dll",
+      "chooks/MPDesignRadiusSelect2027/MPDesignRadiusSelect2027.runtimeconfig.json"
+    ]
+  },
+  {
+    "id": "MPEdgeTools2027",
+    "files": [
+      "chooks/MPEdgeTools2027/MPEdgeTools2027.dll",
+      "chooks/MPEdgeTools2027.ft",
+      "chooks/MPEdgeTools2027/MPEdgeTools2027.Resources.dll",
+      "chooks/MPEdgeTools2027/MPEdgeTools2027.runtimeconfig.json"
+    ]
+  },
+  {
+    "id": "ElectrodeReport2027",
+    "files": [
+      "chooks/ElectrodeReport2027/ElectrodeReport2027.Core.dll",
+      "chooks/ElectrodeReport2027/ElectrodeReport2027.dll",
+      "chooks/ElectrodeReport2027.ft",
+      "chooks/ElectrodeReport2027/ElectrodeReport2027.runtimeconfig.json",
+      "chooks/ElectrodeReport2027/ElectrodeReport2027.UI.dll",
+      "chooks/ElectrodeReport2027/ElectrodeReport2027.UI.runtimeconfig.json"
+    ]
+  },
+  {
+    "id": "LittleBee2027",
+    "files": [
+      "chooks/LittleBee2027/ChangeNci16.png",
+      "chooks/LittleBee2027/ChangeNci32.png",
+      "chooks/LittleBee2027/ChangeView16.png",
+      "chooks/LittleBee2027/ChangeView32.png",
+      "chooks/LittleBee2027/CopyOperation16.png",
+      "chooks/LittleBee2027/CopyOperation32.png",
+      "chooks/LittleBee2027/EditCommonParameters16.png",
+      "chooks/LittleBee2027/EditCommonParameters32.png",
+      "chooks/LittleBee2027/EditOperation16.png",
+      "chooks/LittleBee2027/EditOperation32.png",
+      "chooks/LittleBee2027/EditOperationGeometry16.png",
+      "chooks/LittleBee2027/EditOperationGeometry32.png",
+      "chooks/LittleBee2027/EditTool16.png",
+      "chooks/LittleBee2027/EditTool32.png",
+      "chooks/LittleBee2027/en/LittleBee2027.Resources.dll",
+      "chooks/LittleBee2027/LittleBee16.png",
+      "chooks/LittleBee2027/LittleBee2027.dll",
+      "chooks/LittleBee2027.ft",
+      "chooks/LittleBee2027/LittleBee2027.Resources.dll",
+      "chooks/LittleBee2027/LittleBee2027.runtimeconfig.json",
+      "chooks/LittleBee2027/LittleBee32.png",
+      "chooks/LittleBee2027/PasteOperation16.png",
+      "chooks/LittleBee2027/PasteOperation32.png",
+      "chooks/LittleBee2027/ReNameGroup16.png",
+      "chooks/LittleBee2027/ReNameGroup32.png",
+      "chooks/LittleBee2027/SaveAs16.png",
+      "chooks/LittleBee2027/SaveAs32.png",
+      "chooks/LittleBee2027/SaveFile16.png",
+      "chooks/LittleBee2027/SaveFile32.png",
+      "chooks/LittleBee2027/zh-CN/LittleBee2027.Resources.dll"
+    ]
+  }
+]

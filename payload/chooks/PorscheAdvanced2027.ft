@@ -1,0 +1,20 @@
+﻿APPLICATION "PorscheAdvanced2027"
+FUNC_DLL "CHOOKS\PorscheAdvanced2027\PorscheAdvanced2027.dll"
+RES_DLL "Workshop2027.Resources.dll", "chooks\Workshop2027"
+dnRES_NAME "Workshop2027.NETHook"
+CATEGORY "保时捷 / V++ 2027"
+FUNCTION NET "Show"
+ FNAME "保时捷 / V++ 实体加工"
+END_FUNCTION
+
+FUNCTION NET "Boundary"
+ FNAME "实体自动轮廓"
+END_FUNCTION
+
+FUNCTION NET "Healing"
+ FNAME "自动删孔补面"
+END_FUNCTION
+
+FUNCTION NET "Holes"
+ FNAME "复杂孔自动工序"
+END_FUNCTION

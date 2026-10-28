@@ -1,0 +1,25 @@
+﻿APPLICATION "SetupSheets2027"
+FUNC_DLL "CHOOKS\SetupSheets2027\SetupSheets2027.dll"
+RES_DLL "Workshop2027.Resources.dll", "chooks\Workshop2027"
+dnRES_NAME "Workshop2027.NETHook"
+CATEGORY "程序单与夹具报告"
+
+FUNCTION NET "Show"
+ FNAME "程序单与刀具报告"
+END_FUNCTION
+
+FUNCTION NET "ShowReport"
+ FNAME "程序单与刀具报告"
+END_FUNCTION
+
+FUNCTION NET "SelectedToolSheet"
+ FNAME "选中工序程序单"
+END_FUNCTION
+
+FUNCTION NET "AllToolSheet"
+ FNAME "全部工序程序单"
+END_FUNCTION
+
+FUNCTION NET "FixtureReport"
+ FNAME "夹具说明报告"
+END_FUNCTION

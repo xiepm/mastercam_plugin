@@ -1,0 +1,11 @@
+﻿APPLICATION "AdvancedDrillTap2027"
+FUNC_DLL "CHOOKS\AdvancedDrillTap2027\AdvancedDrillTap2027.dll"
+RES_DLL "Workshop2027.Resources.dll", "chooks\Workshop2027"
+dnRES_NAME "Workshop2027.NETHook"
+CATEGORY "高级钻孔 G84 候选 AD013"
+
+FUNCTION NET "Show"
+ dnSPNG "OperationTools16"
+ dnLPNG "OperationTools32"
+ FNAME "高级钻孔 · G84 候选"
+END_FUNCTION

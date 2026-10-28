@@ -1,0 +1,11 @@
+APPLICATION "SolidBoundary2027"
+FUNC_DLL "chooks\SolidBoundary2027\SolidBoundary2027.dll"
+RES_DLL "Workshop2027.Resources.dll", "chooks\Workshop2027"
+dnRES_NAME "Workshop2027.NETHook"
+CATEGORY "SolidBoundary2027 限定几何"
+
+FUNCTION NET "Show"
+ dnSPNG "GeometryTools16"
+ dnLPNG "GeometryTools32"
+ FNAME "凸多面体真实轮廓投影（仅已有可见层）"
+END_FUNCTION

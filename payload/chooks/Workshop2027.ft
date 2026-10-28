@@ -1,0 +1,375 @@
+﻿APPLICATION "Workshop2027"
+FUNC_DLL "CHOOKS\Workshop2027\Workshop2027.dll"
+RES_DLL "Workshop2027.Resources.dll", "chooks\Workshop2027"
+dnRES_NAME "Workshop2027.NETHook"
+CATEGORY "工艺助手 2027"
+
+FUNCTION NET "OpenHub"
+ dnSPNG "OpenHub16"
+ dnLPNG "OpenHub32"
+ FNAME "工艺助手"
+END_FUNCTION
+
+FUNCTION NET "BatchGroups"
+ dnSPNG "BatchGroups16"
+ dnLPNG "BatchGroups32"
+ FNAME "批量群组"
+END_FUNCTION
+
+FUNCTION NET "BatchParameters"
+ dnSPNG "BatchParameters16"
+ dnLPNG "BatchParameters32"
+ FNAME "批量参数"
+END_FUNCTION
+
+FUNCTION NET "CheckPlanes"
+ dnSPNG "CheckPlanes16"
+ dnLPNG "CheckPlanes32"
+ FNAME "检查三面"
+END_FUNCTION
+
+FUNCTION NET "MatchPlanes"
+ dnSPNG "MatchPlanes16"
+ dnLPNG "MatchPlanes32"
+ FNAME "统一三面"
+END_FUNCTION
+
+FUNCTION NET "AlignView"
+ dnSPNG "AlignView16"
+ dnLPNG "AlignView32"
+ FNAME "视图摆正"
+END_FUNCTION
+
+FUNCTION NET "EditOperation"
+ dnSPNG "EditOperation16"
+ dnLPNG "EditOperation32"
+ FNAME "刀路参数"
+END_FUNCTION
+
+FUNCTION NET "EditTool"
+ dnSPNG "EditTool16"
+ dnLPNG "EditTool32"
+ FNAME "编辑刀具"
+END_FUNCTION
+
+FUNCTION NET "EditGeometry"
+ dnSPNG "EditGeometry16"
+ dnLPNG "EditGeometry32"
+ FNAME "图形管理"
+END_FUNCTION
+
+FUNCTION NET "CommonParameters"
+ dnSPNG "CommonParameters16"
+ dnLPNG "CommonParameters32"
+ FNAME "共同参数"
+END_FUNCTION
+
+FUNCTION NET "FollowPlanes"
+ dnSPNG "FollowPlanes16"
+ dnLPNG "FollowPlanes32"
+ FNAME "平面跟随"
+END_FUNCTION
+
+FUNCTION NET "RenameNci"
+ dnSPNG "RenameNci16"
+ dnLPNG "RenameNci32"
+ FNAME "NC 名称"
+END_FUNCTION
+
+FUNCTION NET "CopyOperations"
+ dnSPNG "CopyOperations16"
+ dnLPNG "CopyOperations32"
+ FNAME "复制刀路"
+END_FUNCTION
+
+FUNCTION NET "PasteOperations"
+ dnSPNG "PasteOperations16"
+ dnLPNG "PasteOperations32"
+ FNAME "粘贴刀路"
+END_FUNCTION
+
+FUNCTION NET "Templates"
+ dnSPNG "Templates16"
+ dnLPNG "Templates32"
+ FNAME "刀路模板"
+END_FUNCTION
+
+FUNCTION NET "SetupSheet"
+ dnSPNG "SetupSheet16"
+ dnLPNG "SetupSheet32"
+ FNAME "程序单"
+END_FUNCTION
+
+FUNCTION NET "MiddleConfirm"
+ dnSPNG "MiddleConfirm16"
+ dnLPNG "MiddleConfirm32"
+ FNAME "中键确认"
+END_FUNCTION
+
+FUNCTION NET "Usage"
+ dnSPNG "Usage16"
+ dnLPNG "Usage32"
+ FNAME "说明与记录"
+END_FUNCTION
+
+FUNCTION NET "NearestView"
+ dnSPNG "NearestView16"
+ dnLPNG "NearestView32"
+ FNAME "最近正交视图"
+END_FUNCTION
+
+FUNCTION NET "ViewOptions"
+ dnSPNG "ViewOptions16"
+ dnLPNG "ViewOptions32"
+ FNAME "正交跟随设置"
+END_FUNCTION
+
+FUNCTION NET "StockSetup"
+ dnSPNG "StockSetup16"
+ dnLPNG "StockSetup32"
+ FNAME "矩形毛坯"
+END_FUNCTION
+
+FUNCTION NET "InsertAfter"
+ dnSPNG "InsertAfter16"
+ dnLPNG "InsertAfter32"
+ FNAME "插入箭头后移"
+END_FUNCTION
+
+FUNCTION NET "ImportOperations"
+ dnSPNG "ImportOperations16"
+ dnLPNG "ImportOperations32"
+ FNAME "导入刀路"
+END_FUNCTION
+
+FUNCTION NET "OperationTools"
+ dnSPNG "OperationTools16"
+ dnLPNG "OperationTools32"
+ FNAME "加工操作"
+END_FUNCTION
+
+FUNCTION NET "GeometryTools"
+ dnSPNG "GeometryTools16"
+ dnLPNG "GeometryTools32"
+ FNAME "几何工具"
+END_FUNCTION
+
+FUNCTION NET "Fixtures"
+ dnSPNG "Fixtures16"
+ dnLPNG "Fixtures32"
+ FNAME "夹具库"
+END_FUNCTION
+
+FUNCTION NET "NativeGeometry"
+ dnSPNG "NativeGeometry16"
+ dnLPNG "NativeGeometry32"
+ FNAME "原生几何工具"
+END_FUNCTION
+
+FUNCTION NET "LevelExport"
+ dnSPNG "LevelExport16"
+ dnLPNG "LevelExport32"
+ FNAME "按图层导出 STL"
+END_FUNCTION
+
+FUNCTION NET "ChainTools"
+ dnSPNG "ChainTools16"
+ dnLPNG "ChainTools32"
+ FNAME "串连选择"
+END_FUNCTION
+
+FUNCTION NET "SvgGeometry"
+ dnSPNG "SvgGeometry16"
+ dnLPNG "SvgGeometry32"
+ FNAME "SVG 轮廓导入"
+END_FUNCTION
+
+FUNCTION NET "HirthTools"
+ dnSPNG "HirthTools16"
+ dnLPNG "HirthTools32"
+ FNAME "分度平面"
+END_FUNCTION
+
+FUNCTION NET "SolidBoundary"
+ dnSPNG "SolidBoundary16"
+ dnLPNG "SolidBoundary32"
+ FNAME "实体平面边界"
+END_FUNCTION
+
+FUNCTION NET "AdvancedDrill"
+ dnSPNG "AdvancedDrill16"
+ dnLPNG "AdvancedDrill32"
+ FNAME "分阶段钻孔"
+END_FUNCTION
+
+FUNCTION NET "TpSketcher"
+ dnSPNG "TpSketcher16"
+ dnLPNG "TpSketcher32"
+ FNAME "草绘刀具路径"
+END_FUNCTION
+
+FUNCTION NET "HolderTools"
+ dnSPNG "HolderTools16"
+ dnLPNG "HolderTools32"
+ FNAME "刀柄截面"
+END_FUNCTION
+
+FUNCTION NET "ScreenTools"
+ dnSPNG "ScreenTools16"
+ dnLPNG "ScreenTools32"
+ FNAME "白底截图"
+END_FUNCTION
+
+FUNCTION NET "SurfaceNormals"
+ dnSPNG "SurfaceNormals16"
+ dnLPNG "SurfaceNormals32"
+ FNAME "反转曲面法向"
+END_FUNCTION
+
+FUNCTION NET "SurfaceTypes"
+ dnSPNG "SurfaceTypes16"
+ dnLPNG "SurfaceTypes32"
+ FNAME "按曲面类型选择"
+END_FUNCTION
+
+FUNCTION NET "TapDrill"
+ dnSPNG "TapDrill16"
+ dnLPNG "TapDrill32"
+ FNAME "分阶段钻孔与攻牙"
+END_FUNCTION
+
+FUNCTION NET "MPEdges3D"
+ dnSPNG "MPEdges3D16"
+ dnLPNG "MPEdges3D32"
+ FNAME "提取三维直边"
+END_FUNCTION
+
+FUNCTION NET "MPEdges2D"
+ dnSPNG "MPEdges2D16"
+ dnLPNG "MPEdges2D32"
+ FNAME "直边投影到XY"
+END_FUNCTION
+
+FUNCTION NET "AnalyticRadius"
+ dnSPNG "AnalyticRadius16"
+ dnLPNG "AnalyticRadius32"
+ FNAME "按解析面半径选实体"
+END_FUNCTION
+
+FUNCTION NET "OriginalSwitchBG"
+ dnSPNG "OriginalSwitchBG16"
+ dnLPNG "OriginalSwitchBG32"
+ FNAME "背景切换"
+END_FUNCTION
+
+FUNCTION NET "OriginalChainIt"
+ dnSPNG "OriginalChainIt16"
+ dnLPNG "OriginalChainIt32"
+ FNAME "串连选择"
+END_FUNCTION
+
+FUNCTION NET "OriginalHirth"
+ dnSPNG "OriginalHirth16"
+ dnLPNG "OriginalHirth32"
+ FNAME "分度拟合平面"
+END_FUNCTION
+
+FUNCTION NET "OriginalSetupSheet"
+ dnSPNG "OriginalSetupSheet16"
+ dnLPNG "OriginalSetupSheet32"
+ FNAME "加工报表"
+END_FUNCTION
+
+FUNCTION NET "OriginalToolList"
+ dnSPNG "OriginalToolList16"
+ dnLPNG "OriginalToolList32"
+ FNAME "刀具清单"
+END_FUNCTION
+
+FUNCTION NET "OriginalElectrodes"
+ dnSPNG "OriginalElectrodes16"
+ dnLPNG "OriginalElectrodes32"
+ FNAME "电极报告"
+END_FUNCTION
+
+FUNCTION NET "OriginalMergeFixture"
+ dnSPNG "OriginalMergeFixture16"
+ dnLPNG "OriginalMergeFixture32"
+ FNAME "添加夹具"
+END_FUNCTION
+
+FUNCTION NET "OriginalFixtureSetup"
+ dnSPNG "OriginalFixtureSetup16"
+ dnLPNG "OriginalFixtureSetup32"
+ FNAME "夹具设置"
+END_FUNCTION
+
+FUNCTION NET "OriginalSketch"
+ dnSPNG "OriginalSketch16"
+ dnLPNG "OriginalSketch32"
+ FNAME "草绘刀路"
+END_FUNCTION
+
+FUNCTION NET "OriginalSnapshot"
+ dnSPNG "OriginalSnapshot16"
+ dnLPNG "OriginalSnapshot32"
+ FNAME "白底框选截图"
+END_FUNCTION
+
+FUNCTION NET "OriginalRenameNCI"
+ dnSPNG "OriginalRenameNCI16"
+ dnLPNG "OriginalRenameNCI32"
+ FNAME "重命名NCI"
+END_FUNCTION
+
+FUNCTION NET "OriginalHolder"
+ dnSPNG "OriginalHolder16"
+ dnLPNG "OriginalHolder32"
+ FNAME "几何创建刀柄"
+END_FUNCTION
+
+FUNCTION NET "OriginalSVG"
+ dnSPNG "OriginalSVG16"
+ dnLPNG "OriginalSVG32"
+ FNAME "SVG导入"
+END_FUNCTION
+
+FUNCTION NET "OriginalSTL"
+ dnSPNG "OriginalSTL16"
+ dnLPNG "OriginalSTL32"
+ FNAME "图层导出STL"
+END_FUNCTION
+
+FUNCTION NET "OriginalOffset"
+ dnSPNG "OriginalOffset16"
+ dnLPNG "OriginalOffset32"
+ FNAME "操作坐标系编号"
+END_FUNCTION
+
+FUNCTION NET "ElectrodeReport"
+ dnSPNG "ElectrodeReport16"
+ dnLPNG "ElectrodeReport32"
+ FNAME "电极几何报表"
+END_FUNCTION
+
+FUNCTION NET "PorscheBoundary"
+ dnSPNG "PorscheBoundary16"
+ dnLPNG "PorscheBoundary32"
+ FNAME "实体自动轮廓"
+END_FUNCTION
+
+FUNCTION NET "PorscheHealing"
+ dnSPNG "PorscheHealing16"
+ dnLPNG "PorscheHealing32"
+ FNAME "自动删孔补面"
+END_FUNCTION
+
+FUNCTION NET "PorscheHoles"
+ dnSPNG "PorscheHoles16"
+ dnLPNG "PorscheHoles32"
+ FNAME "复杂孔自动工序"
+END_FUNCTION
+
+FUNCTION NET "InstallRibbon"
+ FNAME "加载工艺助手功能区"
+END_FUNCTION

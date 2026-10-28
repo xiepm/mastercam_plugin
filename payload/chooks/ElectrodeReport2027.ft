@@ -1,0 +1,11 @@
+APPLICATION "ElectrodeReport2027.UI"
+FUNC_DLL "CHOOKS\ElectrodeReport2027\ElectrodeReport2027.UI.dll"
+RES_DLL "Workshop2027.Resources.dll", "chooks\Workshop2027"
+dnRES_NAME "Workshop2027.NETHook"
+CATEGORY "工艺助手 2027"
+
+FUNCTION NET "Show"
+ dnSPNG "NearestView16"
+ dnLPNG "NearestView32"
+ FNAME "电极几何报表"
+END_FUNCTION

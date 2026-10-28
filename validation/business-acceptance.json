@@ -1,0 +1,47 @@
+{
+  "date": "2026-10-28",
+  "scope": "Existing native acceptance, before portable startup integration",
+  "sourceSummarySha256": "8CC475D989EB7488016AF4DF63AD6E65665AB0C53A07D79D7C3EC2EDBC876BC8",
+  "module": "PorscheAdvanced2027",
+  "version": "1.0.0.0",
+  "moduleSha256": "DA8E4F21100013EB766CB5C62DF47768A039E59A8CB5E986FB2D7A2FA2F231CE",
+  "offlineProjectionChecks": 10,
+  "nativeChecks": 91.0,
+  "evidence": [
+    {
+      "file": "persistence-readback-20261028-181910.json",
+      "sha256": "C3DC36089DBEDECE80D244509958399835F707F19210D7431FFF5AA8B0A4C40A",
+      "checks": 11,
+      "error": null
+    },
+    {
+      "file": "boundary-native-20261028-181910.json",
+      "sha256": "AB96EF806686AA8D43DB1E38226C5860A7BA467C33EF1BF1B20A7AB90E15A26F",
+      "checks": 11,
+      "error": null
+    },
+    {
+      "file": "complex-hole-flow-native-20261028-181911.json",
+      "sha256": "952C124D955C45129B926EAC168E281589C7E59911CACCBB89E6AB759AAB49F7",
+      "checks": 21,
+      "error": null
+    },
+    {
+      "file": "hole-variants-native-20261028-181912.json",
+      "sha256": "21199C1C2647558550E66E3E49926398AED75C915B7343A2BBB70894B996B233",
+      "checks": 26,
+      "error": null
+    },
+    {
+      "file": "boundary-sequence-native-20261028-181914.json",
+      "sha256": "C9DA185C5F02F511A77E60E860BA43EA3EC592B1296B0431F16C65207A05F86E",
+      "checks": 22,
+      "error": null
+    }
+  ],
+  "operationTools": {
+    "version": "1.0.3.0",
+    "sha256": "26074B7E8EEBEE2C6B2CA52D1ED9744F42DDC894D245B86B4610E71C656A4B50"
+  },
+  "portableIntegrationNativeAcceptance": false
+}

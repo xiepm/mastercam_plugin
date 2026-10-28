@@ -1,0 +1,9 @@
+﻿APPLICATION "FixtureTools2027"
+FUNC_DLL "CHOOKS\FixtureTools2027\FixtureTools2027.dll"
+RES_DLL "Workshop2027.Resources.dll", "chooks\Workshop2027"
+dnRES_NAME "Workshop2027.NETHook"
+CATEGORY "FixtureTools2027"
+
+FUNCTION NET "Show"
+ FNAME "夹具几何管理"
+END_FUNCTION

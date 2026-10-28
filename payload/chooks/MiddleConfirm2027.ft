@@ -1,0 +1,29 @@
+﻿APPLICATION "MiddleConfirm2027"
+FUNC_DLL "chooks\MiddleConfirm2027\MiddleConfirm2027.dll"
+RES_DLL "Workshop2027.Resources.dll", "chooks\Workshop2027"
+dnRES_NAME "Workshop2027.NETHook"
+CATEGORY "中键确认 2027"
+
+FUNCTION NET "Start"
+ FNAME "加载中键确认"
+END_FUNCTION
+
+FUNCTION NET "Enable"
+ FNAME "启用中键确认"
+END_FUNCTION
+
+FUNCTION NET "Toggle"
+ FNAME "切换中键确认"
+END_FUNCTION
+
+FUNCTION NET "Disable"
+ FNAME "禁用中键确认"
+END_FUNCTION
+
+FUNCTION NET "Configure"
+ FNAME "中键确认设置"
+END_FUNCTION
+
+FUNCTION NET "Stop"
+ FNAME "停止中键确认（本次会话）"
+END_FUNCTION
