@@ -1,0 +1,9 @@
+APPLICATION "Level2STL"
+FUNC_DLL "chooks\X+\level2stl.dll"
+RES_DLL "chooks\X+\level2stlRes.dll"
+FUNCTION CPP "m_main"
+    SPNG 18001
+    LPNG 18002
+    TIP  1
+END_FUNCTION
+

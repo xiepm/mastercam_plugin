@@ -1,0 +1,9 @@
+APPLICATION "ElectrodesReport"
+FUNC_DLL "chooks\X+\ElectrodesReport.dll"
+RES_DLL  "chooks\X+\ElectrodesReportRes.dll"
+FUNCTION CPP "m_main"
+ TIP  1
+ SPNG 18010
+ LPNG 18009
+END_FUNCTION
+

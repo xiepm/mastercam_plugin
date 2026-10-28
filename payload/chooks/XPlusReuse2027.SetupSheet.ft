@@ -1,0 +1,10 @@
+APPLICATION "SetupSheet"
+FUNC_DLL "chooks\X+\setupsheet.dll"
+RES_DLL "chooks\X+\XPlusRes.dll"
+FUNCTION CPP "m_main"
+	INLINE
+    SPNG 18001
+    LPNG 18002
+    TIP  1
+END_FUNCTION
+

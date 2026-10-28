@@ -1,0 +1,10 @@
+APPLICATION "ToolList"
+FUNC_DLL "chooks\X+\toollist.dll"
+RES_DLL "chooks\X+\XPlusRes.dll"
+FUNCTION CPP "m_main"
+	INLINE
+    SPNG 18010
+    LPNG 18011
+    TIP  2
+END_FUNCTION
+

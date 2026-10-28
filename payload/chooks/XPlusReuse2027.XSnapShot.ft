@@ -1,0 +1,9 @@
+APPLICATION "XSnapShot"
+FUNC_DLL "chooks\X+\XSnapShot.dll"
+RES_DLL "chooks\X+\XPlusRes.dll"
+FUNCTION CPP "m_main"
+    SPNG 18027
+    LPNG 18026
+    TIP  5
+END_FUNCTION
+

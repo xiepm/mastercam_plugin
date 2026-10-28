@@ -1,0 +1,12 @@
+APPLICATION "ChainIt"
+FUNC_DLL "chooks\X+\ChainIt.dll"
+RES_DLL "chooks\X+\XPlusRes.dll"
+CATEGORY "X+"
+FUNCTION CPP "m_main"
+    SPNG 18028
+    LPNG 18029
+    TIP  6
+END_FUNCTION
+
+
+

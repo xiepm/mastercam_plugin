@@ -1,0 +1,9 @@
+APPLICATION "RenameNCI"
+FUNC_DLL "chooks\X+\renamenci.dll"
+RES_DLL "chooks\X+\XPlusRes.dll"
+FUNCTION CPP "m_main"
+    SPNG 18031
+    LPNG 18032
+    TIP  7
+END_FUNCTION
+

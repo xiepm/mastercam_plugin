@@ -4,10 +4,12 @@ param(
     [string]$MastercamRoot,
     [string]$ConfigDirectory,
     [switch]$SkipStartup,
+    [switch]$WithCimco,
     [switch]$Interactive
 )
 $ErrorActionPreference='Stop'
 . (Join-Path $PSScriptRoot 'scripts\Package.Core.ps1')
+. (Join-Path $PSScriptRoot 'scripts\Cimco.ps1')
 try {
     if ($Action -eq 'CheckPackage') {
         $m=Read-Package $PSScriptRoot
@@ -41,6 +43,7 @@ try {
             foreach ($arg in @($PSScriptRoot,$MastercamRoot,$ConfigDirectory)) { if ($arg -match '["\r\n]') { throw 'Unsupported path characters.' } }
             $args='-NoProfile -ExecutionPolicy Bypass -File "'+$PSCommandPath+'" -Action '+$Action+' -MastercamRoot "'+$MastercamRoot+'" -ConfigDirectory "'+$ConfigDirectory+'"'
             if ($SkipStartup) { $args+=' -SkipStartup' }
+            if ($WithCimco) { $args+=' -WithCimco' }
             $p=Start-Process -FilePath 'powershell.exe' -ArgumentList $args -Verb RunAs -Wait -PassThru
             exit $p.ExitCode
         }
@@ -50,14 +53,36 @@ try {
     switch ($Action) {
         'Preview' { Invoke-SuiteInstall $MastercamRoot $ConfigDirectory $PSScriptRoot -Preview -SkipStartup:$SkipStartup | Format-List }
         'Install' {
+            $cimcoInstaller=$null
+            if ($WithCimco) {
+                # Finish preflight and download before mutating any suite files.
+                $null=Invoke-SuiteInstall $MastercamRoot $ConfigDirectory $PSScriptRoot -Preview -SkipStartup:$SkipStartup
+                $cimco=Get-CimcoState $MastercamRoot
+                Write-Host ('CIMCO: '+$cimco.reason)
+                if ($cimco.action -eq 'Stop') { throw $cimco.reason }
+                if ($cimco.action -eq 'Install') {
+                    Assert-CimcoHostRegistration $MastercamRoot
+                    $cimcoInstaller=Get-CimcoInstaller (Join-Path ([Environment]::GetFolderPath('LocalApplicationData')) 'MC2027PluginSuite\Downloads')
+                }
+            }
             Invoke-SuiteInstall $MastercamRoot $ConfigDirectory $PSScriptRoot -SkipStartup:$SkipStartup | Format-List
-            Write-Output 'Restart Mastercam. Tabs: LittleBee / Workshop / X+ Tools / MP Design Tools.'
+            if ($WithCimco) {
+                $vendor=Invoke-CimcoInstall $MastercamRoot $cimcoInstaller (Join-Safe $MastercamRoot 'chooks/.MC2027PluginSuite/vendor')
+                $vendor | Format-List
+                if ($vendor.restartRequired) { Write-Warning 'Windows restart required by CIMCO. Reboot and run Install.cmd again.'; exit 3010 }
+            }
+            Write-Output 'Restart Mastercam. Tabs: LittleBee / Workshop / X+ Tools / X+ Original / HSM / MP Design Tools.'
         }
         'Verify' {
             $r=Read-Receipt $MastercamRoot
             if (!$r) { throw 'No active installation receipt.' }
             Assert-ReceiptClean $MastercamRoot $r -CheckConfigs
             Write-Output ("Installed files and startup: OK ({0} files)" -f @($r.files).Count)
+            if ($WithCimco) {
+                $cimco=Get-CimcoState $MastercamRoot
+                if ($cimco.action -ne 'Skip') { throw ('CIMCO verification: '+$cimco.reason) }
+                Write-Output ('CIMCO verified: '+$cimco.version)
+            }
         }
         'Uninstall' { Invoke-SuiteUninstall $MastercamRoot | Format-List }
         'Recover' {

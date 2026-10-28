@@ -1,0 +1,9 @@
+APPLICATION "Hirth"
+FUNC_DLL "chooks\X+\Hirth.dll"
+RES_DLL "chooks\X+\HirthRes.dll"
+FUNCTION CPP "m_main"
+    SPNG 18001
+    LPNG 18002
+    TIP  1
+END_FUNCTION
+

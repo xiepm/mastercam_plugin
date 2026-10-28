@@ -1,0 +1,6 @@
+{
+  "name": "PorscheAdvanced2027",
+  "sha256": "DA8E4F21100013EB766CB5C62DF47768A039E59A8CB5E986FB2D7A2FA2F231CE",
+  "installPath": "CHOOKS\\PorscheAdvanced2027\\PorscheAdvanced2027.dll",
+  "usage": "Frozen GeometrySelection only, including its hash-pinned attribute-only native selection helper."
+}

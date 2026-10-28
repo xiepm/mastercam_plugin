@@ -43,6 +43,15 @@ public sealed partial class Main
     public MCamReturn MPEdges2D(int p) => Forward("MPEdgeTools2027","ShowEdges2D");
     public MCamReturn AnalyticRadius(int p) => Forward("MPDesignRadiusSelect2027","SelectByAnalyticRadius");
     public MCamReturn SurfaceTypes(int p) => Forward("MPDesignSurfaceSelect2027","SelectVisibleSurfaceTypes");
+    public MCamReturn HsmPocket(int p) => Forward("HSMRebuild2027","CreatePocket");
+    public MCamReturn HsmReadback(int p) => Forward("HSMRebuild2027","Readback");
+    public MCamReturn HsmCalculate(int p) => Forward("HSMRebuild2027","Recalculate");
+    public MCamReturn HsmRollback(int p) => Forward("HSMRebuild2027","Rollback");
+    public MCamReturn MpSections(int p) => Forward("MPRebuild2027","Sections");
+    public MCamReturn MpSliceStack(int p) => Forward("MPRebuild2027","SliceStack");
+    public MCamReturn MpDraft(int p) => Forward("MPRebuild2027","DraftAnalysis");
+    public MCamReturn MpParting(int p) => Forward("MPRebuild2027","PartingPreparation");
+    public MCamReturn MpNormals(int p) => Forward("MPRebuild2027","FacetNormals");
     public MCamReturn ElectrodeReport(int p) => Forward("ElectrodeReport2027.UI","Show");
     public MCamReturn OriginalSwitchBG(int p) => Forward("SwitchBG","m_main");
     public MCamReturn OriginalChainIt(int p) => Forward("ChainIt","m_main");

@@ -2,7 +2,7 @@
     "suite":  "Portable installer",
     "date":  "2026-10-28",
     "powershell":  "5.1.26100.9711",
-    "payloadFiles":  247,
+    "payloadFiles":  295,
     "checks":  [
                    {
                        "name":  "Full payload hashes verified",
@@ -134,6 +134,14 @@
                    },
                    {
                        "name":  "Uninstall after file-set change preserves exact baseline",
+                       "passed":  true
+                   },
+                   {
+                       "name":  "UTF8 JSON receipt preserves localized paths and Chinese startup labels in PowerShell 5",
+                       "passed":  true
+                   },
+                   {
+                       "name":  "Localized installation uninstalls with exact original config bytes",
                        "passed":  true
                    },
                    {

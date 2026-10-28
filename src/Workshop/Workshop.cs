@@ -13,7 +13,7 @@ using Mastercam.IO;
 using Mastercam.Operations;
 using Mastercam.Support;
 
-[assembly: System.Reflection.AssemblyVersion("2.7.1.0")]
+[assembly: System.Reflection.AssemblyVersion("2.8.0.0")]
 [assembly: System.Runtime.Versioning.TargetFramework(".NETCoreApp,Version=v10.0")]
 namespace Workshop2027;
 
@@ -170,6 +170,8 @@ public static class Ui
 public static class Ribbon
 {
     public static readonly (string method,string label)[] Commands={
+        ("HsmPocket","高速摆线挖槽"),("HsmReadback","挖槽参数回读"),("HsmCalculate","计算本批挖槽"),("HsmRollback","回滚本批挖槽"),
+        ("MpSections","任意平面截面"),("MpSliceStack","平行切片"),("MpDraft","网格拔模角分析"),("MpParting","网格分模准备"),("MpNormals","网格法线箭头"),
         ("PorscheBoundary","实体自动轮廓"),("PorscheHealing","自动删孔补面"),("PorscheHoles","复杂孔自动工序"),("OpenHub","工艺助手"),("BatchGroups","批量群组"),("BatchParameters","批量参数"),("CheckPlanes","检查三面"),("MatchPlanes","统一三面"),("AlignView","视图摆正"),
         ("EditOperation","刀路参数"),("EditTool","编辑刀具"),("EditGeometry","图形管理"),("CommonParameters","共同参数"),("FollowPlanes","平面跟随"),("RenameNci","NC 名称"),("CopyOperations","复制刀路"),("PasteOperations","粘贴刀路"),("Templates","刀路模板"),("SetupSheet","程序单"),("MiddleConfirm","中键确认"),("Usage","说明与记录"),
         ("NearestView","最近正交视图"),("ViewOptions","正交跟随设置"),("StockSetup","矩形毛坯"),("InsertAfter","插入箭头后移"),("ImportOperations","导入刀路"),("OperationTools","加工操作"),("GeometryTools","几何工具"),("Fixtures","夹具库"),("NativeGeometry","原生几何工具"),("LevelExport","按图层导出 STL"),
@@ -193,9 +195,10 @@ public static class Ribbon
             b.Append("</Groups></Tab>");
         }
         Tab("X+ 工具","XP",new[]{("几何与坐标",new[]{"ChainTools","HirthTools","SvgGeometry","SolidBoundary"}),("刀路与刀具",new[]{"AdvancedDrill","TapDrill","TpSketcher","HolderTools"}),("报表与截图",new[]{"ElectrodeReport","SetupSheet","ScreenTools","LevelExport"})});
-        if (new[]{"ChainIt","Hirth","SVGImage","SetWorkoffset","TpSketcher","Holder_CH","MergeFixture","FixtureSetup","SetupSheet","ToolList","ElectrodesReport","Level2STL","RenameNCI","SwitchBG","XSnapShot"}.All(n => File.Exists(Path.GetFullPath(Path.Combine(Path.GetDirectoryName(typeof(Main).Assembly.Location), "..", n + ".ft")))))
+        if (new[]{"ChainIt","Hirth","SVGImage","SetWorkoffset","TpSketcher","Holder_CH","MergeFixture","FixtureSetup","SetupSheet","ToolList","ElectrodesReport","Level2STL","RenameNCI","SwitchBG","XSnapShot"}.All(n => File.Exists(Path.GetFullPath(Path.Combine(Path.GetDirectoryName(typeof(Main).Assembly.Location), "..", "XPlusReuse2027." + n + ".ft")))))
         Tab("X+ 原版","XO",new[]{("几何与坐标",new[]{"OriginalChainIt","OriginalHirth","OriginalSVG","OriginalOffset"}),("刀路与夹具",new[]{"OriginalSketch","OriginalHolder","OriginalMergeFixture","OriginalFixtureSetup"}),("报告与输出",new[]{"OriginalSetupSheet","OriginalToolList","OriginalElectrodes","OriginalSTL","OriginalRenameNCI"}),("显示",new[]{"OriginalSwitchBG","OriginalSnapshot"})});
-        Tab("MP 设计工具","MP",new[]{("曲面",new[]{"SurfaceNormals","SurfaceTypes","AnalyticRadius"}),("实体边线",new[]{"MPEdges3D","MPEdges2D"})});
+        Tab("HSM 加工","HS",new[]{("二维挖槽",new[]{"HsmPocket","HsmReadback","HsmCalculate","HsmRollback"})});
+        Tab("MP 设计工具","MP",new[]{("曲面",new[]{"SurfaceNormals","SurfaceTypes","AnalyticRadius"}),("实体边线",new[]{"MPEdges3D","MPEdges2D"}),("截面与切片",new[]{"MpSections","MpSliceStack"}),("网格分析",new[]{"MpDraft","MpParting","MpNormals"})});
         b.Append("</Ribbon>");installed=Mastercam.UI.Ribbon.InsertThirdPartyRibbonTabs(b.ToString());File.WriteAllText(Path.Combine(Work.DataRoot,"ribbon.log"),DateTime.Now.ToString("s")+" result="+installed);return installed;
     }
 }

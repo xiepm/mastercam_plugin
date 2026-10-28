@@ -1,0 +1,11 @@
+{
+  "date": "2026-10-28",
+  "installedState": "AlreadyInstalled",
+  "installedVersion": "26.9.11.46240",
+  "officialDownloadVerified": true,
+  "sha256": "0925229394EFCBA51E0B14F59456F2CADDC18128971F3F4BC039F9F8DA40E72E",
+  "signatureValid": true,
+  "installerExecuted": false,
+  "existingInstallationUnchanged": true,
+  "validation": "Read-only registration/file/signature detection and real pinned official download."
+}

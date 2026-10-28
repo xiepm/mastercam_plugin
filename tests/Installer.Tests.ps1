@@ -38,15 +38,16 @@ function Snapshot($Fixture) {
 }
 try {
     $m=Read-Package $repo
-    Check 'Full payload hashes verified' (@($m.files).Count -eq 247)
+    $payloadCount=@(Get-ChildItem -LiteralPath (Join-Path $repo 'payload') -File -Recurse).Count
+    Check 'Full payload hashes verified' (@($m.files).Count -eq $payloadCount -and $payloadCount -gt 0)
     $f=Fixture 'full payload'
     $before=Snapshot $f
     $preview=Invoke-SuiteInstall $f.root $f.config $repo -Preview
-    Check 'Preview writes nothing' (($preview.files -eq 247) -and (Snapshot $f) -eq $before -and !(Test-Path (Join-Path $f.root 'chooks\.MC2027PluginSuite')))
+    Check 'Preview writes nothing' (($preview.files -eq $payloadCount) -and (Snapshot $f) -eq $before -and !(Test-Path (Join-Path $f.root 'chooks\.MC2027PluginSuite')))
     Invoke-SuiteInstall $f.root $f.config $repo | Out-Null
     $r=Read-Receipt $f.root
     Assert-ReceiptClean $f.root $r -CheckConfigs
-    Check 'Clean install at paths with spaces; both configs verified' (@($r.files).Count -eq 247 -and @($r.configs).Count -eq 2)
+    Check 'Clean install at paths with spaces; both configs verified' (@($r.files).Count -eq $payloadCount -and @($r.configs).Count -eq 2)
     Check 'No previous hook / no machine IPC dependency' (!(Test-Path (Join-Path $f.root 'chooks\MC2027SuitePrevious.ft')))
     Check 'UTF-16 config encoding retained' (([IO.File]::ReadAllBytes((Join-Path $f.config 'mcamx.config')))[0] -eq 255)
     $initial=($r.files|ForEach-Object { $_.path+'='+$_.originalHash }) -join "`n"
@@ -158,12 +159,24 @@ try {
     Check 'Upgrade restores obsolete payload file to its original content' ([IO.File]::ReadAllText($to) -eq 'pre-suite content')
     Invoke-SuiteUninstall $f.root | Out-Null
     Check 'Uninstall after file-set change preserves exact baseline' ((Snapshot $f) -eq $before)
+    $unicodeName=-join ([char[]]@(0x4e2d,0x6587))
+    $f=Fixture $unicodeName 'chooks\previous.dll'
+    $metricConfig=Join-Path $f.config 'mcamxm.config'
+    $localized=[IO.File]::ReadAllText($metricConfig).Replace('Startup?',(-join ([char[]]@(0x542f,0x52a8)))+'?')
+    [IO.File]::WriteAllText($metricConfig,$localized,[Text.UTF8Encoding]::new($false))
+    $before=Snapshot $f
+    Invoke-SuiteInstall $f.root $f.config $small | Out-Null
+    $unicodeReceipt=Read-Receipt $f.root
+    Assert-ReceiptClean $f.root $unicodeReceipt -CheckConfigs
+    Check 'UTF8 JSON receipt preserves localized paths and Chinese startup labels in PowerShell 5' ($unicodeReceipt.root -eq $f.root -and $unicodeReceipt.configs[0].installedLine.Contains((-join ([char[]]@(0x542f,0x52a8)))))
+    Invoke-SuiteUninstall $f.root | Out-Null
+    Check 'Localized installation uninstalls with exact original config bytes' ((Snapshot $f) -eq $before)
     $bad=Join-Safe (Join-Path $small 'payload') $smallManifest.files[0].path
     [IO.File]::WriteAllText($bad,'tamper')
     Must-Fail 'Corrupt download rejected before installation' { Invoke-SuiteInstall $f.root $f.config $small }
     Check 'Rejected corrupt package leaves destination unchanged' ((Snapshot $f) -eq $before)
 
-    $report=[ordered]@{suite='Portable installer';date='2026-10-28';powershell=$PSVersionTable.PSVersion.ToString();payloadFiles=247;checks=@($script:Checks.ToArray());passed=$true;nativeHostUsed=$false}
+    $report=[ordered]@{suite='Portable installer';date='2026-10-28';powershell=$PSVersionTable.PSVersion.ToString();payloadFiles=$payloadCount;checks=@($script:Checks.ToArray());passed=$true;nativeHostUsed=$false}
     [void][IO.Directory]::CreateDirectory((Join-Path $repo 'validation'))
     Write-Json (Join-Path $repo ('validation/installer-'+$PSVersionTable.PSVersion.Major+'.json')) $report
     Write-Output ("ALL PASS: {0} checks" -f $script:Checks.Count)

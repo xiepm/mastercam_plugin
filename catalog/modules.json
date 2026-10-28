@@ -362,5 +362,71 @@
       "chooks/LittleBee2027/SaveFile32.png",
       "chooks/LittleBee2027/zh-CN/LittleBee2027.Resources.dll"
     ]
+  },
+  {
+    "id": "XPlusOriginal2027",
+    "kind": "original-api29-components",
+    "files": [
+      "chooks/X+/SwitchBG.dll",
+      "chooks/X+/ChainIt.dll",
+      "chooks/X+/Hirth.dll",
+      "chooks/X+/HirthRes.dll",
+      "chooks/X+/XPlusRes.dll",
+      "chooks/XPlusReuse2027.ChainIt.ft",
+      "chooks/XPlusReuse2027.Hirth.ft",
+      "chooks/XPlusReuse2027.SwitchBG.ft",
+      "chooks/X+/ElectrodesReport.dll",
+      "chooks/X+/FixtureSetup.dll",
+      "chooks/X+/Holder_CH.dll",
+      "chooks/X+/level2stl.dll",
+      "chooks/X+/MergeFixture.dll",
+      "chooks/X+/renamenci.dll",
+      "chooks/X+/SetupSheet.dll",
+      "chooks/X+/SetWorkoffset.dll",
+      "chooks/X+/SVGImage.dll",
+      "chooks/X+/SwitchBG_CHS.dll",
+      "chooks/X+/ToolList.dll",
+      "chooks/X+/ToolList_CHS.dll",
+      "chooks/X+/tpsketcher.dll",
+      "chooks/X+/XSnapShot.dll",
+      "chooks/X+/ElectrodesReportRes.dll",
+      "chooks/X+/FixtureSetupRes.dll",
+      "chooks/X+/level2stlRes.dll",
+      "chooks/X+/MergeFixtureRes.dll",
+      "chooks/X+/SVGImageRes.dll",
+      "chooks/XPlusReuse2027.SetupSheet.ft",
+      "chooks/XPlusReuse2027.ToolList.ft",
+      "chooks/XPlusReuse2027.ElectrodesReport.ft",
+      "chooks/XPlusReuse2027.MergeFixture.ft",
+      "chooks/XPlusReuse2027.FixtureSetup.ft",
+      "chooks/XPlusReuse2027.TpSketcher.ft",
+      "chooks/XPlusReuse2027.XSnapShot.ft",
+      "chooks/XPlusReuse2027.RenameNCI.ft",
+      "chooks/XPlusReuse2027.Holder_CH.ft",
+      "chooks/XPlusReuse2027.SVGImage.ft",
+      "chooks/XPlusReuse2027.Level2STL.ft",
+      "chooks/XPlusReuse2027.SetWorkoffset.ft"
+    ]
+  },
+  {
+    "id": "HSMRebuild2027",
+    "kind": "independent-rebuild",
+    "files": [
+      "chooks/HSMRebuild2027/HSMRebuild2027.dll",
+      "chooks/HSMRebuild2027.ft",
+      "chooks/HSMRebuild2027/HSMRebuild2027.runtimeconfig.json"
+    ]
+  },
+  {
+    "id": "MPRebuild2027",
+    "kind": "independent-rebuild",
+    "files": [
+      "chooks/MPRebuild2027/dependencies.json",
+      "chooks/MPRebuild2027/MPRebuild2027.Core.dll",
+      "chooks/MPRebuild2027/MPRebuild2027.dll",
+      "chooks/MPRebuild2027.ft",
+      "chooks/MPRebuild2027/MPRebuild2027.Resources.dll",
+      "chooks/MPRebuild2027/MPRebuild2027.runtimeconfig.json"
+    ]
   }
 ]

@@ -1,20 +1,19 @@
-# 外部组件与模板
+# 原版组件与模板
 
-以下项目已整理进目录，但**不包含在本仓库的重建安装包中**。原版插件的 DLL、厂商安装器、许可数据和本仓库编写的重建模块应分别管理。
-
-| 项目 | 2027 状态与获取方式 | 本包处理 |
+| 项目 | 合集中处理方式 | 范围 |
 |---|---|---|
-| CIMCO Edit / Verify | [CIMCO 官网](https://www.cimco.com/software/cimco-edit/)；[Verify 下载](https://www.cimcoverify.com/download)已列明 Mastercam 2027 支持 | 保留已有安装，不覆盖 CIMCO 文件 |
-| HSM Performance Pack / 花生米 | 本地曾加载 HSM27，但加工验收受现有许可维护期限制；应从原供应方取得对应 2027 版本和许可 | 不分发许可证、不把旧版 DLL 当作 2027 已验收 |
-| 原版 X+ | 已发现 15 个 API29 功能入口；旧 Ribbon 为 API28，FlowTo5Axis 功能 DLL 缺失。原版请向来源供应方取得完整包 | 原创“X+ 工具”已包含；检测到完整原版 FT 才显示“X+ 原版” |
-| Moldplus / MP Design Tools | [Moldplus 官方下载](https://www.moldplus.com/downloads/)需要客户登录；[官网](https://www.moldplus.com/)列出 Design Tools 15.0 支持 Mastercam 2027 | 本包包含独立实现的 MP 辅助工具，不分发旧 2026 厂商安装器 |
-| 旧保时捷／V++ | 旧插件存在版本差异；本仓库提供已列明范围的 PorscheAdvanced2027 重建模块 | 不附带旧二进制、激活器或厂商许可文件 |
-| 刀路模板 / 花生米模板 | 本机原模板已另存为 2027 格式，共 623 道工序；文件转换通过不代表其中刀路已重新计算。HSM 工序仍依赖匹配内核 | 不自动写入公共模板库，使用者导入自己的模板 |
+| CIMCO Verify | `Install.cmd` 自动检测；缺少时下载并调用官方签名安装器 | 固定 26.9.11.46240，选择 2027 组件；完整匹配安装跳过，较新版本不降级。仓库不转存厂商安装器或许可证。 |
+| CIMCO Edit 独立编辑器 | 保留已有安装 | 与 Mastercam 内的 Verify 插件不同；不是本套件自动安装项目。 |
+| HSM 加工重构 | DLL 和 FT 已直接包含在 ZIP | 高速摆线及两种螺旋挖槽流程；见 [HSM/MP 功能](HSM-MP.md)。 |
+| HSM 原厂完整产品 | 不装入缺内核的升级包 | 官方 27 升级包不含完整内核；未以混搭内核或旧授权替代。 |
+| X+ 原版 | 15 个 API29 入口、39 个文件已直接包含 | 原始 DLL 不修改；API28 Ribbon 不装；FlowTo5Axis DLL 缺失，因此不列为可用功能。 |
+| MP 设计工具重构 | 原有模块与 MPRebuild2027 已直接包含 | 曲面/实体辅助、截面、切片和网格分析；未声称完整 Moldplus 等价。 |
+| Moldplus / Design Tools 原厂产品 | 不安装 2026 旧包 | 官方 Design Tools 15.0 对应 2027，下载要求客户登录。 |
+| 旧保时捷／V++ | 使用已验收的 PorscheAdvanced2027 重构模块 | 不附带旧激活器或厂商许可文件。 |
+| 刀路模板 / 花生米模板 | 通过现有导入入口导入自己的模板 | 不上传开发机模板或私人零件；旧 HSM 工序不会由重构模块自动转换。 |
 
-外部官网链接核对日期：2026-10-28。供应方版本可能更新，以对应下载页为准。
+官方来源：[CIMCO Verify 下载](https://www.cimcoverify.com/download)、[HSM 升级包说明](https://www.mastercam.dk/hsm-performance-pack/download/hsm/)、[Moldplus 下载](https://www.moldplus.com/downloads/)。核对日期 2026-10-28。
 
-## 导入已有模板
+CIMCO 安装包固定哈希及下载地址写在 `scripts/Cimco.ps1`；原版 X+ 文件来源与字节校验保存在 `validation/xplus-provenance.json`。本套件不上传开发机许可证、私人配置、SDK 或商业内核。
 
-在 Mastercam 的刀路管理器中选择“导入”，选择自己的 `.mcam` 或操作库，再勾选所需工序。也可以通过小蜜蜂的模板/导入入口打开。建议先另存新项目，核对单位、机床群组、刀具与坐标，再计算刀路。
-
-本仓库未上传开发机的模板工程、原版商业安装包、测试零件、许可证、历史备份和私人配置。需要这些外部组件时，按表内来源单独安装，不要用开发机的安装记录代替本机安装。
+在 Mastercam 刀路管理器选择“导入”，或使用小蜜蜂模板入口，选择自己的 `.mcam` 或操作库。先另存项目并核对单位、机床群组、刀具与坐标，再计算刀路。

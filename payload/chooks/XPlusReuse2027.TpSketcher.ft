@@ -1,0 +1,9 @@
+APPLICATION "TpSketcher"
+FUNC_DLL "chooks\X+\TpSketcher.dll"
+RES_DLL "chooks\X+\XPlusRes.dll"
+FUNCTION CPP "m_main"
+    SPNG 18022
+    LPNG 18021
+    TIP  3
+END_FUNCTION
+

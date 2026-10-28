@@ -1,0 +1,192 @@
+{
+  "date": "2026-10-28",
+  "packageVersion": "2027.10.28.2",
+  "workshopVersion": "2.8.0.0",
+  "installedPayloadFiles": 295,
+  "generatedPreviousStartupFt": 1,
+  "realInstallVerified": true,
+  "restartedAfterInstall": true,
+  "previousStartupSucceeded": true,
+  "startupEntries": {
+    "LittleBee": true,
+    "Workshop": true,
+    "Middle": true
+  },
+  "visibleRibbonTabs": [
+    "CIMCO Verify",
+    "小蜜蜂",
+    "工艺助手",
+    "X+ 工具",
+    "X+ 原版",
+    "HSM 加工",
+    "MP 设计工具"
+  ],
+  "uiChecks": [
+    {
+      "application": "HSMRebuild2027",
+      "command": "OpenHub",
+      "caption": "HSM Rebuild 2027 · 原生挖槽编排",
+      "returned": true,
+      "seen": true,
+      "expectedMode": null,
+      "modes": [],
+      "modeOK": true,
+      "textsOK": true
+    },
+    {
+      "application": "Workshop2027",
+      "command": "HsmPocket",
+      "caption": "新建原生高速 / 摆线挖槽",
+      "returned": true,
+      "seen": true,
+      "expectedMode": null,
+      "modes": [],
+      "modeOK": true,
+      "textsOK": true
+    },
+    {
+      "application": "Workshop2027",
+      "command": "MpSections",
+      "caption": "MP 高级几何 2027",
+      "returned": true,
+      "seen": true,
+      "expectedMode": 0,
+      "modes": [
+        0
+      ],
+      "modeOK": true,
+      "textsOK": true
+    },
+    {
+      "application": "Workshop2027",
+      "command": "MpSliceStack",
+      "caption": "MP 高级几何 2027",
+      "returned": true,
+      "seen": true,
+      "expectedMode": 1,
+      "modes": [
+        1
+      ],
+      "modeOK": true,
+      "textsOK": true
+    },
+    {
+      "application": "Workshop2027",
+      "command": "MpDraft",
+      "caption": "MP 高级几何 2027",
+      "returned": true,
+      "seen": true,
+      "expectedMode": 2,
+      "modes": [
+        2
+      ],
+      "modeOK": true,
+      "textsOK": true
+    },
+    {
+      "application": "Workshop2027",
+      "command": "MpParting",
+      "caption": "MP 高级几何 2027",
+      "returned": true,
+      "seen": true,
+      "expectedMode": 3,
+      "modes": [
+        3
+      ],
+      "modeOK": true,
+      "textsOK": true
+    },
+    {
+      "application": "Workshop2027",
+      "command": "MpNormals",
+      "caption": "MP 高级几何 2027",
+      "returned": true,
+      "seen": true,
+      "expectedMode": 4,
+      "modes": [
+        4
+      ],
+      "modeOK": true,
+      "textsOK": true
+    }
+  ],
+  "baselinePreservedAfterCancel": true,
+  "directMpFtChecks": [
+    {
+      "application": "MPRebuild2027",
+      "command": "Sections",
+      "caption": "MP 高级几何 2027",
+      "returned": true,
+      "seen": true,
+      "expectedMode": 0,
+      "modes": [
+        0
+      ],
+      "modeOK": true,
+      "textsOK": true
+    },
+    {
+      "application": "MPRebuild2027",
+      "command": "SliceStack",
+      "caption": "MP 高级几何 2027",
+      "returned": true,
+      "seen": true,
+      "expectedMode": 1,
+      "modes": [
+        1
+      ],
+      "modeOK": true,
+      "textsOK": true
+    },
+    {
+      "application": "MPRebuild2027",
+      "command": "DraftAnalysis",
+      "caption": "MP 高级几何 2027",
+      "returned": true,
+      "seen": true,
+      "expectedMode": 2,
+      "modes": [
+        2
+      ],
+      "modeOK": true,
+      "textsOK": true
+    },
+    {
+      "application": "MPRebuild2027",
+      "command": "PartingPreparation",
+      "caption": "MP 高级几何 2027",
+      "returned": true,
+      "seen": true,
+      "expectedMode": 3,
+      "modes": [
+        3
+      ],
+      "modeOK": true,
+      "textsOK": true
+    },
+    {
+      "application": "MPRebuild2027",
+      "command": "FacetNormals",
+      "caption": "MP 高级几何 2027",
+      "returned": true,
+      "seen": true,
+      "expectedMode": 4,
+      "modes": [
+        4
+      ],
+      "modeOK": true,
+      "textsOK": true
+    }
+  ],
+  "directMpBaselinePreserved": true,
+  "uiSourceSha256": "CCACDC2A9358F42B9AC0D11720A0029B2BBE91C3A41AC761EC8C4BD8FD13657A",
+  "directMpUiSourceSha256": "10E4214745AAA6C96FE743A8280A6459CC683F93584560743144B29B100496B0",
+  "hsmFtSha256": "8F7519744171938741978CAD4B914C667B09E2C1BFA14B32DC278BF84572DE21",
+  "hsmFtFix": "Added managed resource DLL and resource namespace declarations; no business DLL recompilation.",
+  "cimcoExistingInstallationChanged": false,
+  "limits": [
+    "One installed local Mastercam 2027 build; no second-machine host acceptance.",
+    "Menu tests opened each expected dialog and canceled; native business tests recorded separately.",
+    "Original X+ full business behavior not retested in this release."
+  ]
+}

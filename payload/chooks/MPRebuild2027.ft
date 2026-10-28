@@ -1,0 +1,21 @@
+﻿APPLICATION "MPRebuild2027"
+FUNC_DLL "CHOOKS\MPRebuild2027\MPRebuild2027.dll"
+RES_DLL "MPRebuild2027.Resources.dll", "chooks\MPRebuild2027"
+dnRES_NAME "MPRebuild2027.NETHook"
+CATEGORY "MP 高级几何 2027"
+
+FUNCTION NET "Sections"
+ FNAME "任意平面截面（网格）"
+END_FUNCTION
+FUNCTION NET "SliceStack"
+ FNAME "平行毛坯切片（网格）"
+END_FUNCTION
+FUNCTION NET "DraftAnalysis"
+ FNAME "拔模角分析（网格）"
+END_FUNCTION
+FUNCTION NET "PartingPreparation"
+ FNAME "分模准备：拔模分区边"
+END_FUNCTION
+FUNCTION NET "FacetNormals"
+ FNAME "网格法线箭头"
+END_FUNCTION

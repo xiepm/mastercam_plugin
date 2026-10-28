@@ -64,13 +64,13 @@ function New-StartupLine([string]$Line) {
 function Read-Receipt([string]$Root) {
     $path=Join-Safe $Root 'chooks\.MC2027PluginSuite\receipt.json'
     if (!(Test-Path -LiteralPath $path)) { return $null }
-    $r=Get-Content -LiteralPath $path -Raw | ConvertFrom-Json
+    $r=Get-Content -LiteralPath $path -Raw -Encoding UTF8 | ConvertFrom-Json
     if ($r.schemaVersion -ne 1 -or $r.root -ne [IO.Path]::GetFullPath($Root).TrimEnd('\')) { throw 'Receipt does not match the selected Mastercam directory.' }
     if (!$r.active) { return $null }
     return $r
 }
 function Read-Package([string]$PackageRoot) {
-    $manifest=Get-Content -LiteralPath (Join-Path $PackageRoot 'catalog\package.json') -Raw | ConvertFrom-Json
+    $manifest=Get-Content -LiteralPath (Join-Path $PackageRoot 'catalog\package.json') -Raw -Encoding UTF8 | ConvertFrom-Json
     if ($manifest.schemaVersion -ne 1 -or @($manifest.files).Count -lt 1) { throw 'Invalid package manifest.' }
     $seen=@{}
     foreach ($f in $manifest.files) {
@@ -151,7 +151,7 @@ function Invoke-FileTransaction([string]$Root,$Actions,[string]$ReceiptPath,$New
     }
 }
 function Restore-Journal([string]$Root,[string]$Path,[switch]$StrictCurrent) {
-    $j=Get-Content -LiteralPath $Path -Raw | ConvertFrom-Json
+    $j=Get-Content -LiteralPath $Path -Raw -Encoding UTF8 | ConvertFrom-Json
     if ($j.root -ne $Root -or $j.schemaVersion -ne 1) { throw 'Recovery journal mismatch.' }
     # Recovery only targets paths from this local transaction; verify every backup first.
     foreach ($e in $j.entries) {

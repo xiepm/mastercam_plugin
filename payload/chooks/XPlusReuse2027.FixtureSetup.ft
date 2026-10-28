@@ -1,0 +1,9 @@
+APPLICATION "FixtureSetup"
+FUNC_DLL "chooks\X+\FixtureSetup.dll"
+RES_DLL "chooks\X+\FixtureSetupRes.dll"
+FUNCTION CPP "m_main"
+    SPNG 18001
+    LPNG 18002
+    TIP  18053
+END_FUNCTION
+

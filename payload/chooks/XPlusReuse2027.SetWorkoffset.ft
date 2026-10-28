@@ -1,0 +1,9 @@
+APPLICATION "SetWorkoffset"
+FUNC_DLL "chooks\X+\SetWorkoffset.dll"
+RES_DLL "chooks\X+\XPlusRes.dll"
+FUNCTION CPP "m_main"
+    SPNG 18054
+    LPNG 18055
+    TIP  9
+END_FUNCTION
+

@@ -1,0 +1,75 @@
+{
+  "date": "2026-10-28",
+  "module": "MPRebuild2027",
+  "version": "1.0.1.0",
+  "sha256": "6935E289BC9D8DC39EEB564A9723B5CAF574870C333D1492490B0F2635224564",
+  "passed": true,
+  "installedDllTested": true,
+  "assertions": 11301,
+  "stepGroups": 12,
+  "steps": [
+    {
+      "name": "preflight / exact disposable-copy gate",
+      "status": "PASS"
+    },
+    {
+      "name": "create exact-ID box and cylinder fixtures",
+      "status": "PASS"
+    },
+    {
+      "name": "guarded Stamp true/false / exact original-plus-fixture selection and source proof",
+      "status": "PASS"
+    },
+    {
+      "name": "single Z=3 / separate box and cylinder closed contours",
+      "status": "PASS"
+    },
+    {
+      "name": "native section line readback and exact Rollback",
+      "status": "PASS"
+    },
+    {
+      "name": "stack Z=1,3,5 / positions, closure, areas and perimeters",
+      "status": "PASS"
+    },
+    {
+      "name": "oblique box / x+z=108 closed rectangle",
+      "status": "PASS"
+    },
+    {
+      "name": "draft +Z / threshold 3 / normal and transition native outputs",
+      "status": "PASS"
+    },
+    {
+      "name": "draft -Z / threshold 3 / normal and transition native outputs",
+      "status": "PASS"
+    },
+    {
+      "name": "afterCommit #2 injected failure / exact cleanup and preserved source stamps",
+      "status": "PASS"
+    },
+    {
+      "name": "stale fixture selection stamp rejected without changing geometry",
+      "status": "PASS"
+    },
+    {
+      "name": "changed original selection rejected and original timestamp/face map preserved",
+      "status": "PASS"
+    }
+  ],
+  "baselineGeometry": 57,
+  "finalGeometry": 57,
+  "baselineOperations": 13,
+  "finalOperations": 13,
+  "contextUnchanged": true,
+  "changedOriginalStampIds": [],
+  "cleanup": true,
+  "cleanupErrors": [],
+  "guardedSelectionReadPassed": true,
+  "sourceSha256": "C35D7D316D3C4D1D15EBCA9BB14253D404030172BC2AACEE1DCDCE7FE346FEED",
+  "limits": [
+    "Fixture-based acceptance, not arbitrary industrial-model coverage.",
+    "Tolerance-based mesh geometry, not exact B-rep or full original Moldplus equivalence.",
+    "UI acceptance is recorded separately."
+  ]
+}

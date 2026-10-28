@@ -1,0 +1,9 @@
+APPLICATION "Holder_CH"
+FUNC_DLL "chooks\X+\Holder_CH.dll"
+RES_DLL "chooks\X+\XPlusRes.dll"
+FUNCTION CPP "m_main"
+    SPNG 18052
+    LPNG 18053
+    TIP  8
+END_FUNCTION
+

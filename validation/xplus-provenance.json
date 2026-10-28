@@ -1,0 +1,209 @@
+{
+  "source": "User-provided SetupX+_2027.zip; API29 selected modules",
+  "sourceZipSha256": "38F58CDF3DE606978FC4F42F017D34F39F24AD18786286AD97D7D651017B5968",
+  "fileCount": 39,
+  "nativeBinariesModified": false,
+  "entries": 15,
+  "limitations": [
+    "XPlusRibbon API28 excluded",
+    "FlowTo5Axis function DLL absent",
+    "Most original entries only verified to open; not all original machining behavior certified"
+  ],
+  "files": [
+    {
+      "path": "chooks/X+/SwitchBG.dll",
+      "sha256": "F21806DE4E79A27345CF86E70E71DA54E24C0B609BA3EDFA497E02811E5BD016",
+      "bytes": 14848
+    },
+    {
+      "path": "chooks/X+/ChainIt.dll",
+      "sha256": "BEDCF65E03D2AFD74D9E0C0239D523906D261DE3ED1001CD622D9616A93D32EF",
+      "bytes": 16384
+    },
+    {
+      "path": "chooks/X+/Hirth.dll",
+      "sha256": "8D10FD13CC452B455CFC74578A347418CB242DCA615F8808E3E8AC6D14DCB1FE",
+      "bytes": 97792
+    },
+    {
+      "path": "chooks/X+/HirthRes.dll",
+      "sha256": "D8416F8FD9D851ED02ADB5A59524F45172EC2E479CC798813AADF388380E634A",
+      "bytes": 16384
+    },
+    {
+      "path": "chooks/X+/XPlusRes.dll",
+      "sha256": "B23AD96024A10BF11EE9E8B7DCAE3A398AD63E9F811E22E996C2EBF17B8C282D",
+      "bytes": 36864
+    },
+    {
+      "path": "chooks/XPlusReuse2027.ChainIt.ft",
+      "sha256": "FDD23D87F924A17DBAA814323204871C9D7631B4D22C30A5D7A46D642A70A52D",
+      "bytes": 193
+    },
+    {
+      "path": "chooks/XPlusReuse2027.Hirth.ft",
+      "sha256": "19B6DA9462FECD0BB6B30C40392EFB041A050C099F0F448B2947780E74AAB7C6",
+      "bytes": 170
+    },
+    {
+      "path": "chooks/XPlusReuse2027.SwitchBG.ft",
+      "sha256": "834A66BBBF2A89F8CFEA1421E7213BA6F5DB1B592FD57CE477269FE3839219FC",
+      "bytes": 189
+    },
+    {
+      "path": "chooks/X+/ElectrodesReport.dll",
+      "sha256": "4D3CB504EEC015AFF974A3B1B53792687771B3FB29FFD2A78138E3FD436AD581",
+      "bytes": 244736
+    },
+    {
+      "path": "chooks/X+/FixtureSetup.dll",
+      "sha256": "E8B2BD002465746C7A36A9FE25EDD4B510AF4EE194BD249FDDA20AA14C7A5F09",
+      "bytes": 126976
+    },
+    {
+      "path": "chooks/X+/Holder_CH.dll",
+      "sha256": "C87325237A8F349B2B250A9F90C42462595FC0181F29B7B58F60D69D47C09E92",
+      "bytes": 98816
+    },
+    {
+      "path": "chooks/X+/level2stl.dll",
+      "sha256": "FCFCED50408885BDEC0E00EBEA6F3F6FC0B133C669E330277C40D1B47E4F14B5",
+      "bytes": 69632
+    },
+    {
+      "path": "chooks/X+/MergeFixture.dll",
+      "sha256": "4505C3169309D5B61A1C0ACB28FF842439369B1F076EDB0FBA358FABF3649731",
+      "bytes": 102912
+    },
+    {
+      "path": "chooks/X+/renamenci.dll",
+      "sha256": "C4C171BFA8B0317309900DB5CD2F752EECE08981663B4D97EDFADC7EAA3EC2B5",
+      "bytes": 83968
+    },
+    {
+      "path": "chooks/X+/SetupSheet.dll",
+      "sha256": "350A7F9738F7C87EEF2C7D313DC10BEF215EA2581101B0E17DDDDAD90A51259F",
+      "bytes": 267264
+    },
+    {
+      "path": "chooks/X+/SetWorkoffset.dll",
+      "sha256": "FA720608DC8D9EBBD40AF7CF2FD9E95D930900BD77AB0BC39815E8E0F269F68E",
+      "bytes": 22528
+    },
+    {
+      "path": "chooks/X+/SVGImage.dll",
+      "sha256": "5CAAA76B93B2A8A9938C37BABA962BBA04E9628EB47CEC32C3C9146704D0DB3B",
+      "bytes": 105984
+    },
+    {
+      "path": "chooks/X+/SwitchBG_CHS.dll",
+      "sha256": "F21806DE4E79A27345CF86E70E71DA54E24C0B609BA3EDFA497E02811E5BD016",
+      "bytes": 14848
+    },
+    {
+      "path": "chooks/X+/ToolList.dll",
+      "sha256": "AF40D974A737F9F745E368D03C9405C817EC8005A9D700673C3B7B3D10AA7AAD",
+      "bytes": 275456
+    },
+    {
+      "path": "chooks/X+/ToolList_CHS.dll",
+      "sha256": "AF40D974A737F9F745E368D03C9405C817EC8005A9D700673C3B7B3D10AA7AAD",
+      "bytes": 275456
+    },
+    {
+      "path": "chooks/X+/tpsketcher.dll",
+      "sha256": "1F23D0B42E8159AB3CA4116EF6D2CAA6C529AE39151325C239FD92B5EF49C809",
+      "bytes": 81408
+    },
+    {
+      "path": "chooks/X+/XSnapShot.dll",
+      "sha256": "5990FB08E0D84932C292C80CA262C0ABBEDDE4A3F8DB30A3D1F71B7292F4AF37",
+      "bytes": 39936
+    },
+    {
+      "path": "chooks/X+/ElectrodesReportRes.dll",
+      "sha256": "F2F20F8D56AA19DE101F9C650DD4B5BFE55C75D6442E9090FA1C5922D8E9105B",
+      "bytes": 37888
+    },
+    {
+      "path": "chooks/X+/FixtureSetupRes.dll",
+      "sha256": "330257875DDC4376BF99D63AD907126BF2D92048FB256DA393B9CD05FB110EF1",
+      "bytes": 73728
+    },
+    {
+      "path": "chooks/X+/level2stlRes.dll",
+      "sha256": "43CE2E6D4C32B74BAF5FA19A36480DC08D36C811FAAB6165345F93B0C3101005",
+      "bytes": 15872
+    },
+    {
+      "path": "chooks/X+/MergeFixtureRes.dll",
+      "sha256": "6B9E9FADA247AAD09C0774CDBF5103C7B9E9C39B1948A48753E48F40EAC71074",
+      "bytes": 13824
+    },
+    {
+      "path": "chooks/X+/SVGImageRes.dll",
+      "sha256": "E01E8A1C1B130441E241A0005680ACE4F38287F20D1F22B9FA5D5EA2D9E8B9BC",
+      "bytes": 5120
+    },
+    {
+      "path": "chooks/XPlusReuse2027.SetupSheet.ft",
+      "sha256": "BE2ACD3F8A09A868AB5765EC41C9FB4A642B73DAB5BA2736BA2900421B3CBD3E",
+      "bytes": 189
+    },
+    {
+      "path": "chooks/XPlusReuse2027.ToolList.ft",
+      "sha256": "F37697A37E2B71F65572DD908780DD7F382B2EB5630FF3A47B9C9C65365A93FA",
+      "bytes": 185
+    },
+    {
+      "path": "chooks/XPlusReuse2027.ElectrodesReport.ft",
+      "sha256": "ABE430C9B516CDBA9838809032FC9A45150023C5480324562BBCB0F2861C93C1",
+      "bytes": 195
+    },
+    {
+      "path": "chooks/XPlusReuse2027.MergeFixture.ft",
+      "sha256": "C7A44CA944F361DA803B275E4569C7202364D665F9073E9576976F2FBECFB78A",
+      "bytes": 191
+    },
+    {
+      "path": "chooks/XPlusReuse2027.FixtureSetup.ft",
+      "sha256": "D630E6F54503F93D9453BE2C128C2D834555D40E5C2EFB5337EA3FDC680DBFE0",
+      "bytes": 195
+    },
+    {
+      "path": "chooks/XPlusReuse2027.TpSketcher.ft",
+      "sha256": "D6B8EFFBB9841C2CC33D10089154EED06DF6367797F09339781976BBF4E784AC",
+      "bytes": 180
+    },
+    {
+      "path": "chooks/XPlusReuse2027.XSnapShot.ft",
+      "sha256": "82858834FFF1D683F1D160B244A9A077DF91DC4A09BC691DBE2759CFE1E37DE1",
+      "bytes": 178
+    },
+    {
+      "path": "chooks/XPlusReuse2027.RenameNCI.ft",
+      "sha256": "BD9AA1A720F594875248AEC825082CC7DECA39055790AD49B51A45675528BF12",
+      "bytes": 178
+    },
+    {
+      "path": "chooks/XPlusReuse2027.Holder_CH.ft",
+      "sha256": "5D08799642F95D8698C6F74C8C84AA8024200B2FAEF31D3FCD76386883BE278F",
+      "bytes": 178
+    },
+    {
+      "path": "chooks/XPlusReuse2027.SVGImage.ft",
+      "sha256": "FF86DA79B7D002ACA406E4853AC7074F31CF5B45E7B5290C69B32831DF8AC2ED",
+      "bytes": 179
+    },
+    {
+      "path": "chooks/XPlusReuse2027.Level2STL.ft",
+      "sha256": "930CF9188133CC96CADAA31502FDBCD72EDEACA36EF6B3FFB0CA1203F8896981",
+      "bytes": 182
+    },
+    {
+      "path": "chooks/XPlusReuse2027.SetWorkoffset.ft",
+      "sha256": "F964CCBD01B8E9E9EF29B20FB6BA4F88681FC04505BA448383E3D0A34CE18220",
+      "bytes": 186
+    }
+  ]
+}

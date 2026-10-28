@@ -1,0 +1,42 @@
+{
+  "date": "2026-10-28",
+  "module": "HSMRebuild2027",
+  "version": "0.1.0.0",
+  "sha256": "2862C7CD7E7203FE373F89EDDC1F58CB2627002CB94D224F9C383D98D30BC69C",
+  "moduleMvid": "246d79f5-d70b-4ca0-855d-13b7ab6276d6",
+  "passed": true,
+  "nativeTestGroups": [
+    "HighSpeed + trochoidal + helix persisted and explicit rollback",
+    "ConstantOverlapSpiral + ramp persisted and rollback",
+    "TrueSpiral persisted and rollback",
+    "Injected exception after native commit explicitly cleans created operation",
+    "Invalid settings rejected without operation writes",
+    "Later edit blocks rollback"
+  ],
+  "baselinePreserved": true,
+  "originalOperations": 13,
+  "originalGeometry": 57,
+  "logicTestGroups": 16,
+  "nativeCalculations": [
+    {
+      "strategy": "ConstantOverlapSpiral",
+      "returned": true,
+      "dirty": false,
+      "evidenceSha256": "32E11D23F37DC1350E3977E01C97B3A69A067688B30EE9182C3C0ED432066D6E"
+    },
+    {
+      "strategy": "HighSpeed",
+      "returned": true,
+      "dirty": false,
+      "evidenceSha256": "995C4EF224D3788C859EA62751039B4A2DAFFE348F86941B5B7B58FDE4FC9940"
+    }
+  ],
+  "matchingFieldReadbacks": 492,
+  "sourceFile": "hsm-native-20261028-195106-152.json",
+  "sourceSha256": "F87BB41F109437233980D6DF954584187268E02E13E78B6D178856656EAEF52C",
+  "limits": [
+    "Single closed world-Top fixture; no collision or machine/post certification.",
+    "TrueSpiral persistence verified, not regenerated in this acceptance.",
+    "Not a complete Dynamic Mill, OptiRough or original HSM implementation."
+  ]
+}

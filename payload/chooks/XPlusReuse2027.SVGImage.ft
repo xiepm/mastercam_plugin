@@ -1,0 +1,9 @@
+APPLICATION "SVGImage"
+FUNC_DLL "chooks\X+\SVGImage.dll"
+RES_DLL "chooks\X+\SVGImageRes.dll"
+FUNCTION CPP "m_main"
+    SPNG 18001
+    LPNG 18002
+    TIP  1
+END_FUNCTION
+

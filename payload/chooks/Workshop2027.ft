@@ -4,6 +4,52 @@ RES_DLL "Workshop2027.Resources.dll", "chooks\Workshop2027"
 dnRES_NAME "Workshop2027.NETHook"
 CATEGORY "工艺助手 2027"
 
+FUNCTION NET "HsmPocket"
+ dnSPNG "OperationTools16"
+ dnLPNG "OperationTools32"
+ FNAME "高速摆线挖槽"
+END_FUNCTION
+FUNCTION NET "HsmReadback"
+ dnSPNG "CheckPlanes16"
+ dnLPNG "CheckPlanes32"
+ FNAME "挖槽参数回读"
+END_FUNCTION
+FUNCTION NET "HsmCalculate"
+ dnSPNG "TpSketcher16"
+ dnLPNG "TpSketcher32"
+ FNAME "计算本批挖槽"
+END_FUNCTION
+FUNCTION NET "HsmRollback"
+ dnSPNG "Usage16"
+ dnLPNG "Usage32"
+ FNAME "回滚本批挖槽"
+END_FUNCTION
+FUNCTION NET "MpSections"
+ dnSPNG "MPEdges3D16"
+ dnLPNG "MPEdges3D32"
+ FNAME "任意平面截面"
+END_FUNCTION
+FUNCTION NET "MpSliceStack"
+ dnSPNG "MPEdges2D16"
+ dnLPNG "MPEdges2D32"
+ FNAME "平行切片"
+END_FUNCTION
+FUNCTION NET "MpDraft"
+ dnSPNG "SurfaceNormals16"
+ dnLPNG "SurfaceNormals32"
+ FNAME "网格拔模角分析"
+END_FUNCTION
+FUNCTION NET "MpParting"
+ dnSPNG "SolidBoundary16"
+ dnLPNG "SolidBoundary32"
+ FNAME "网格分模准备"
+END_FUNCTION
+FUNCTION NET "MpNormals"
+ dnSPNG "SurfaceNormals16"
+ dnLPNG "SurfaceNormals32"
+ FNAME "网格法线箭头"
+END_FUNCTION
+
 FUNCTION NET "OpenHub"
  dnSPNG "OpenHub16"
  dnLPNG "OpenHub32"

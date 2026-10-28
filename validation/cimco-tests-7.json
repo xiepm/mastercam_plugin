@@ -1,0 +1,81 @@
+{
+  "suite": "CIMCO orchestration",
+  "powershell": "7.6.5",
+  "passed": true,
+  "checks": [
+    {
+      "passed": true,
+      "name": "Download is pinned to official HTTPS URL"
+    },
+    {
+      "passed": true,
+      "name": "Complete verified installation skipped"
+    },
+    {
+      "passed": true,
+      "name": "Missing shared runtime prevents a false installed result"
+    },
+    {
+      "passed": true,
+      "name": "Skip path does not require or execute installer"
+    },
+    {
+      "passed": true,
+      "name": "Skip path leaves all CIMCO files unchanged"
+    },
+    {
+      "passed": true,
+      "name": "Invalid installed signature is preserved for repair"
+    },
+    {
+      "passed": true,
+      "name": "Modified pinned DLL is preserved for repair"
+    },
+    {
+      "passed": true,
+      "name": "Valid newer install is not downgraded"
+    },
+    {
+      "passed": true,
+      "name": "Incomplete newer install is not downgraded"
+    },
+    {
+      "passed": true,
+      "name": "Older registration selects official upgrade"
+    },
+    {
+      "passed": true,
+      "name": "Unregistered existing DLLs are not overwritten"
+    },
+    {
+      "passed": true,
+      "name": "Missing installation selects official install"
+    },
+    {
+      "passed": true,
+      "name": "Installer selects 2027 component only"
+    },
+    {
+      "passed": true,
+      "name": "Installer cannot close Mastercam or reboot Windows"
+    },
+    {
+      "passed": true,
+      "name": "Installer arguments reject quote injection"
+    },
+    {
+      "passed": true,
+      "name": "Wrong installer hash is rejected before signature/execute"
+    },
+    {
+      "passed": true,
+      "name": "Matching official Mastercam registry root accepted"
+    },
+    {
+      "passed": true,
+      "name": "Different target root rejected before vendor installation"
+    }
+  ],
+  "vendorInstallerExecuted": false,
+  "note": "Isolated filesystem and registration/signature stubs; real signature/download verification is recorded separately."
+}

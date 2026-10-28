@@ -1,9 +1,9 @@
 {
   "date": "2026-10-28",
   "passed": true,
-  "checks": 1808,
-  "ftFiles": 25,
-  "payloadFiles": 247,
+  "checks": 2278,
+  "ftFiles": 42,
+  "payloadFiles": 295,
   "categories": [
     "SHA256",
     "FT DLL and resource dependencies",

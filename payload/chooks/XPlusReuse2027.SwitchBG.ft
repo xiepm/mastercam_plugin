@@ -1,0 +1,9 @@
+APPLICATION "SwitchBG"
+FUNC_DLL "chooks\X+\SwitchBG.dll"
+RES_DLL "chooks\X+\XPlusRes.dll"
+CATEGORY "X+"
+FUNCTION CPP "m_main"
+    SPNG 18025
+    LPNG 18024
+    TIP  4
+END_FUNCTION

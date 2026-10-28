@@ -1,0 +1,21 @@
+﻿APPLICATION "HSMRebuild2027"
+FUNC_DLL "CHOOKS\HSMRebuild2027\HSMRebuild2027.dll"
+RES_DLL "Workshop2027.Resources.dll", "chooks\Workshop2027"
+dnRES_NAME "Workshop2027.NETHook"
+CATEGORY "原生挖槽编排2027"
+
+FUNCTION NET "OpenHub"
+ FNAME "原生挖槽编排"
+END_FUNCTION
+FUNCTION NET "CreatePocket"
+ FNAME "新建高速摆线挖槽"
+END_FUNCTION
+FUNCTION NET "Readback"
+ FNAME "挖槽参数回读"
+END_FUNCTION
+FUNCTION NET "Recalculate"
+ FNAME "计算本批挖槽"
+END_FUNCTION
+FUNCTION NET "Rollback"
+ FNAME "回滚本批挖槽"
+END_FUNCTION

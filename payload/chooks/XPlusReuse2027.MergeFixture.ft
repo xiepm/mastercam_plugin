@@ -1,0 +1,9 @@
+APPLICATION "MergeFixture"
+FUNC_DLL "chooks\X+\MergeFixture.dll"
+RES_DLL "chooks\X+\MergeFixtureRes.dll"
+FUNCTION CPP "m_main"
+    SPNG 18001
+    LPNG 18002
+    TIP  1
+END_FUNCTION
+
