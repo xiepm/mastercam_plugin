@@ -1,0 +1,14 @@
+{
+  "contract": "mc_open_panel queues an allowlisted FT route. queued is not a window or business-success assertion. Continue only after observing the actual UI; cancel and inspect if the UI cannot be verified. No arbitrary application/function strings.",
+  "panels": {
+    "advanced_drilling": ["AdvancedDrill2027", "Show"],
+    "tapping": ["AdvancedDrillTap2027", "Show"],
+    "solid_boundary": ["SolidBoundary2027", "Show"],
+    "chain_picker": ["ChainTools2027", "Show"],
+    "bee_hub": ["LittleBee2027", "LittleBee"],
+    "geometry_native": ["GeometryTools2027.NativeCommands", "Show"],
+    "middle_confirm": ["MiddleConfirm2027", "Configure"],
+    "geometry_editor": ["GeometryTools2027", "Show"]
+  },
+  "limits": ["These are interactive workflows requiring UI tools or the user.", "Do not queue another command while a modal workflow is unresolved.", "Use typed interfaces whenever their scope matches the task.", "CIMCO is excluded."]
+}

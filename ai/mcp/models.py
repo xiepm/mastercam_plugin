@@ -263,4 +263,6 @@ class PorscheHolesRequest(Request):
     alignment:UnitVector
     parameters:PorscheHoles
 
-ChangeRequest=Annotated[Union[DepthRequest,FinishRequest,ChamferRequest,PocketRequest,SectionsRequest,DraftRequest,PorscheBoundaryRequest,PorscheContourRequest,PorscheHealingRequest,PorscheHolesRequest],Field(discriminator='action')]
+from geometry_models import GEOMETRY_REQUESTS
+
+ChangeRequest=Annotated[Union[(*GEOMETRY_REQUESTS,DepthRequest,FinishRequest,ChamferRequest,PocketRequest,SectionsRequest,DraftRequest,PorscheBoundaryRequest,PorscheContourRequest,PorscheHealingRequest,PorscheHolesRequest)],Field(discriminator='action')]

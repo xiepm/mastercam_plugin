@@ -1,0 +1,297 @@
+{
+  "date": "2026-10-29",
+  "passed": true,
+  "release": "2027.10.29.3",
+  "adapter": {
+    "version": "1.3.0.0",
+    "file": "MastercamPluginAI130.dll",
+    "sha256": "D3F8AC7BDB5A3A11B2180A49FA78087BB0AC31F6325B9E6A37983F68B5D0BF70"
+  },
+  "transport": "actual stdio MCP through existing Mastercam IPC/API29, plus UI Automation panel observations",
+  "typedActionsTotal": 28,
+  "newTypedActions": 18,
+  "mcpTools": 12,
+  "allowlistedUiPanels": 8,
+  "businessCases": [
+    {
+      "name": "Edges3D",
+      "passed": true
+    },
+    {
+      "name": "ProjectWorldXY",
+      "passed": true
+    },
+    {
+      "name": "radius",
+      "passed": true
+    },
+    {
+      "name": "svg",
+      "passed": true
+    },
+    {
+      "name": "sketch",
+      "passed": true
+    },
+    {
+      "name": "fixture",
+      "passed": true
+    },
+    {
+      "name": "hirth",
+      "passed": true
+    },
+    {
+      "name": "electrode",
+      "passed": true
+    },
+    {
+      "name": "setup",
+      "passed": true
+    },
+    {
+      "name": "gradient",
+      "passed": true
+    },
+    {
+      "name": "capture",
+      "passed": true
+    },
+    {
+      "name": "stl",
+      "passed": true
+    },
+    {
+      "name": "normals",
+      "passed": true
+    },
+    {
+      "name": "surfaces",
+      "passed": true
+    },
+    {
+      "name": "holder",
+      "passed": true
+    },
+    {
+      "name": "chains",
+      "passed": true
+    },
+    {
+      "name": "offset",
+      "passed": true
+    },
+    {
+      "name": "nci",
+      "passed": true
+    },
+    {
+      "name": "RotateX90",
+      "passed": true
+    },
+    {
+      "name": "RotateY90",
+      "passed": true
+    },
+    {
+      "name": "RotateZ90",
+      "passed": true
+    },
+    {
+      "name": "CenterXY",
+      "passed": true
+    },
+    {
+      "name": "CenterXYZ",
+      "passed": true
+    },
+    {
+      "name": "AlignCplane",
+      "passed": true
+    },
+    {
+      "name": "DimensionBounds",
+      "passed": true
+    },
+    {
+      "name": "AssignLevel",
+      "passed": true
+    },
+    {
+      "name": "MergeCurves",
+      "passed": true
+    },
+    {
+      "name": "PaintZPlanes",
+      "passed": true
+    },
+    {
+      "name": "PaintVerticalPlanes",
+      "passed": true
+    },
+    {
+      "name": "sketch_machining",
+      "passed": true
+    },
+    {
+      "name": "solid_fixture",
+      "passed": true
+    },
+    {
+      "name": "solid_RotateZ90",
+      "passed": true
+    },
+    {
+      "name": "solid_CenterXYZ",
+      "passed": true
+    },
+    {
+      "name": "porsche_smoke",
+      "passed": true
+    }
+  ],
+  "businessMcpCalls": 126,
+  "businessAssertions": 129,
+  "testBuilds": [
+    {
+      "version": "1.2.7.0",
+      "cases": 34,
+      "scope": "Full sequential suite; Porsche smoke harness accessed outer source_preserved at inner output level. Apply and rollback succeeded, then corrected smoke passed separately."
+    },
+    {
+      "version": "1.2.8.0",
+      "scope": "Timer + RunFT panel dispatch: geometry editor and advanced drilling observed through UI Automation; closed with user assistance."
+    },
+    {
+      "version": "1.2.9.0",
+      "scope": "Open-panel edit admission rejected; after closure radius and sketch toolpath roundtrips passed."
+    },
+    {
+      "version": "1.3.0.0",
+      "scope": "Added explicit tracking/rollback of newly created unused sketch planes. Sketch roundtrip with plane 55 absent: raw regenerate true, fresh Dirty false, local Z=-3, world Z=30; 12-view baseline restored."
+    }
+  ],
+  "cleanup": {
+    "passed": true,
+    "geometryCount": 57,
+    "operationCount": 13,
+    "toolSlots": 11,
+    "viewCount": 12,
+    "deletedOwnedGeometry": 6,
+    "selectedOperations": [
+      6
+    ],
+    "geometrySelection": [],
+    "transactionActive": false,
+    "originalAttributesRestored": true,
+    "historicalTimestampChanges": [
+      {
+        "id": 1225,
+        "before": "2026-10-28T18:03:50",
+        "after": "2026-10-29T13:25:11"
+      },
+      {
+        "id": 1226,
+        "before": "2026-10-28T18:03:50",
+        "after": "2026-10-29T13:25:11"
+      },
+      {
+        "id": 1227,
+        "before": "2026-10-28T18:03:50",
+        "after": "2026-10-29T13:25:11"
+      },
+      {
+        "id": 1228,
+        "before": "2026-10-28T18:03:50",
+        "after": "2026-10-29T13:25:11"
+      }
+    ],
+    "timestampExplanation": "The initial failed shipping STL selection path changed four pre-existing parametric-solid timestamps in the saved disposable test copy. No artificial timestamp restoration was attempted. Corrected full sequential run preserved every geometry record exactly from its own entry baseline. Original source/user parts were not opened or saved."
+  },
+  "offline": {
+    "pythonUnitTests": 34,
+    "previewGuardChecks": 5,
+    "corePackageChecks": 2278,
+    "skillValidatorPassed": true,
+    "businessPayloadFilesUnchanged": 295
+  },
+  "scope": [
+    "18 new typed actions, with 11 geometry copy/edit command variants; line/block/cylinder and two independent NURBS surfaces.",
+    "A preselected solid was retained through the final full suite. Nonzero rotated plane origin (11,22,33) used for sketch and toolpath endpoints.",
+    "Binary STL contents, real holder database reopen, report files and nonblank PNG checked; emitted artifacts survive rollback as documented.",
+    "Geometry/fixture copies retain source attributes/timestamps; native B-rep equality and all downstream reference graphs are not claimed.",
+    "One local API29 build. Independent solid copy uses existing build-pinned native ABI. No second-PC native, inch, arbitrary freeform solid, machine simulation, postprocessor or production NC certification.",
+    "Eight FT routes are allowlisted; only geometry_editor and advanced_drilling panel opening was observed in this turn. Other six use existing FT routes and remain UI-assisted, not headless semantic tests.",
+    "Existing Porsche/HSM/MP sections/draft and operation tools retain historical acceptance; Porsche boundary smoke was repeated. CIMCO untouched."
+  ],
+  "corrections": [
+    "Initial STL path committed selection: replaced by attribute-only selection and strict restoration.",
+    "Face-map queries clear selection: restore attributes around every such query; radius and edge adapters retain original strict checks.",
+    "CopyAndTranslate and bounding-box creation can rewrite parametric source timestamps: solid copies use existing independent kernel copy; only owned copies are measured.",
+    "Top-level contour subtype is a cache: explicitly set native CutParams.Basic, fresh Posting=false and Commit(false); regenerate only after creation transaction ends.",
+    "First-use sketch testing left unused native plane 55; original rollback failure is retained, plane provenance/unused status recorded, then explicitly removed. Final runtime tracks created plane fingerprints and refuses deleting changed/in-use planes.",
+    "The raw full-suite Porsche smoke failure was a harness KeyError, corrected in a separate native smoke; original result unmodified.",
+    "Initial PostFT call provided only a queued receipt without observed panel. Deferred RunFT dispatch plus visible-form guard added. Queued/returned never means business success."
+  ],
+  "evidenceSha256": {
+    "results-5342d8b6.json": "7DB734BCE657FE1728F5065ADD7ADA406516122D0BF46CF2FC5F8139F0FB33A0",
+    "results-434448f2.json": "2F1944CBC08320B5D48F1514AFDB22647FAEE162108962C3F38F0AD42BE08CC0",
+    "results-7593ce03.json": "360D508D2B794C7B1343DD3DEEED9F5FA716B7773495630B309C011D85E9DAF8",
+    "results-68ec0d6d.json": "219B355E0EF8E851350DEB4F2907D4AE171578A532A33C0A031F4BA3A07C17C2",
+    "fixture.json": "B07213E989E8667517FEB2C3C21D57DD02A4D0E42BEADC26766FE0F49B35571C",
+    "surface-fixture.json": "B775D2891B613AB1E1AACCE93C9F5FB6AD7AFE37CEE8D609C9CA63DAFC63FD26",
+    "chain-fixture.json": "36989051AC149F620F9AB6C000881ED2EA4C48D58668EE5902FAD4AC9F76D5F7",
+    "cleanup.json": "54F283B9BC4C8326FB724ADA2D025BDB4237FBE1CBEB8C62F36D2728D4FFF3E7",
+    "probe-plane-cleanup.json": "965614EC65C9939EF7C3EF5EA7A62405FC3A844BC21A18569D3EC6BBCAF623A6",
+    "panel-geometry-ui.json": "B5989668548F43E258B3BAF5BC0362465E38064237C972C1C53E6D6B04E8DF85",
+    "panel-drill-ui.json": "C57A3E5D73F9A30F9FB58742903C0572D992ABBF57A932174DFBB6111A31D6DA",
+    "panel-close-confirmation.json": "D4747697529CD8F5366BEE988EF6025F2808993ABA047F4CCE5C47F98A9143DF",
+    "panel-guard-receipt.json": "E2C7225340547BDDFAC13094A81D73801D1184B3E104935C9B809F2A11501B49",
+    "run_tests.py": "9080B04A055561277B15FF949DCB1BE7B258E5769BD81BDB8BF9F64656618E73"
+  },
+  "allAttemptReceiptSha256": {
+    "results-0f3210e9.json": "54ED11AFD59EC4FCE404E2EDBAF5A7A228AE3DFA41A3DBBDE3943A454011282E",
+    "results-28108aaa.json": "428FAC821E94B8E1D55C6DC9AE703DDF27598643E3C13811EF80A6357319D843",
+    "results-434448f2.json": "2F1944CBC08320B5D48F1514AFDB22647FAEE162108962C3F38F0AD42BE08CC0",
+    "results-5342d8b6.json": "7DB734BCE657FE1728F5065ADD7ADA406516122D0BF46CF2FC5F8139F0FB33A0",
+    "results-68ec0d6d.json": "219B355E0EF8E851350DEB4F2907D4AE171578A532A33C0A031F4BA3A07C17C2",
+    "results-73f8321c.json": "77D3E4833E10E1EA3876640D5E01DCFEAF82617C5DBFAE8FC55A16B92A899E82",
+    "results-7593ce03.json": "360D508D2B794C7B1343DD3DEEED9F5FA716B7773495630B309C011D85E9DAF8",
+    "results-7ecba9a2.json": "7E8170CDC8981B0E281ECA820344F203ED5F50B2989A024D9AC68495022665F4",
+    "results-aaa86131.json": "BC5A0B96DAF6C6A0E451AECBBEE83F410116A6897A1F2B2320186E78DF624BC3",
+    "results-adab2cd2.json": "8DD6FD19440E3A4B8FE0CBBC33EF5D7F069C7015EB37DCFC60741E8782692D57",
+    "results-b75fa11a.json": "CB6A2DA0985527B43FF421233BB1430D3519B2853A669E4AFED67A177EBAB3DC",
+    "results-c1a73c1c.json": "B585A7074CA24BC03ECF2D5CCAF80311BFC7DA99B9D06C6B7A628399E57B88E3",
+    "results-f20e58bb.json": "3A993CB94909C75E76DD7CA062B3B701AA4B28C23030939E1444D9F1D8D163F1"
+  },
+  "sourceSha256": {
+    "ai/bridge/AttributeOnlyLevelExport.cs": "75F8606AD033348494B48D35E2A6417C2F32A7235FF8049BFD9E827AA0C51A19",
+    "ai/bridge/EdgeAdapter/ContextContract.cs": "7A50BCC14FF647037DD058E05F041ED7421E95333A747D54BF5E136C0B3063AD",
+    "ai/bridge/EdgeAdapter/EdgeKernel.cs": "B2D11303674067A1F0B560D48128E094F497D52CC46DB5212DB5A45ED93AADF9",
+    "ai/bridge/EdgeAdapter/EdgeTools.cs": "27CCC9B6143F46F2EC5E04D6C5FDC89FC2982A719951B11F55D19C870738C416",
+    "ai/bridge/EdgeAdapter/LevelGroupContract.cs": "88E058A2FF2F483035FF310E5BFE018426052FACF7489BDDF9ECED7377EE05BB",
+    "ai/bridge/EdgeAdapter/NativeDocumentInventory.cs": "E03453B89BE425FF77DAFBD490B7320754B7F5FD5BE5CA3A17C7B1271893A967",
+    "ai/bridge/EdgeAdapter/NativeLevelGroups.cs": "5AF779050BB21DE94EC8A5EF246C61BD9F07053CA2B23ED63A4F700635DE5493",
+    "ai/bridge/EdgeAdapter/NativeOutputLevelLease.cs": "2E1913E35D953BA347F8B24D9E05EA81FFD51F50BFB0FD0725B0029989D1C6CA",
+    "ai/bridge/EdgeAdapter/NativeSolidEdges.cs": "E992C6663AC12664E8CC79A6844294728B1FD0E4ADBA2F4A6E600276688E1E10",
+    "ai/bridge/EdgeAdapter/NativeState.cs": "9B2666086D991544B8E45946537B78E9EA5B22609E8396CD83B20B09C91F480E",
+    "ai/bridge/EdgeAdapter/OutputLevelAdmission.cs": "07AEBADBCE8292130C8069DA537D61290809283301CC1394680502EB49C24A11",
+    "ai/bridge/EdgeAdapter/SolidEdgeContract.cs": "D226DBA2A2089ED4859B8771D6A024DF2BAF876CC8C0C8E0567D631F9C77EBD1",
+    "ai/bridge/EdgeAdapter/SourceReadback.cs": "E88B7DC6A15DE030267876AE627351B350ADEAA691E69D1E451142A111DA4B4D",
+    "ai/bridge/FixtureAdapter/Api29Host.cs": "5007D1EDA71380B44B245256805AC1D5317B2DAF8319A3E54B8FEF92FBB0C85D",
+    "ai/bridge/FixtureAdapter/NativeFixtureCopy.cs": "E71AD5B16D02296D4AFDC4CB8B9D3D87000B9CE93ABFEF3A2D075A4BA74F7E93",
+    "ai/bridge/FixtureAdapter/NativeGeometryHost.cs": "7FE969027DB18B486D8EB578C636BBAFC30B2EA7F34B9BD2BBD4B56FF37CA9AA",
+    "ai/bridge/GeometryAdapter/GeometryCore.cs": "ADBA40461FF18089200635C2A82A0877730C560A34753209D78BD1EB7D02EEAB",
+    "ai/bridge/GeometryAdapter/HostGeometry.cs": "6A1261782046699F6A2D8183E4317015D963ADBB14257C17A5F1E7A02547E203",
+    "ai/bridge/GeometryBindings.cs": "EBEBB68BE64461E68CD0C032A6A7E5C5F5004C4073A9F0A4C13A9CA73EFFD20F",
+    "ai/bridge/PanelLauncher.cs": "93668D5AF1251FA18CC9C96146255F3040DA821F3DE399B8E0D4DC767C9BAE61",
+    "ai/bridge/PluginBridge.cs": "949ED6A38A41D82DA9B37B44AA73FB8108E088C612337F9E2A83A7FF791C75A0",
+    "ai/bridge/PorscheBindings.cs": "B50F21A5AFB6CD423BAA03018808023DD0142DE29968A058629212DDC293CAB1",
+    "ai/bridge/PreviewGuard.cs": "877EB7537F3DD3589370E6C0FD2AF96EFEE7F02EFCED9398631B13BFDBE365FC",
+    "ai/bridge/RadiusHostAdapter.cs": "B252A38EE8468AABF58BABD50B0BFEB31259875B02E14A97C1B9D8E558D90B72",
+    "ai/bridge/SketchExecution.cs": "1F572461B84A81ECC2E5DEF121CA99981C4910D6EE9ADEC55FA34234D220D8CE",
+    "ai/bridge/SketchHostAdapter.cs": "3C2F691970F22AF7273DC725E8D158940A45F21D95FE0ED3BBB2645A183B5394",
+    "ai/bridge/SolidCopyAdapter.cs": "B7A7DFAA2F71498D6E06FB679FDCCE7584E2B1A88F1ED9D63EFAE119486D4253",
+    "ai/bridge/UtilityBindings.cs": "AF8B471485149E9F1E2E29283477E560073B06BB4933B9FF819816F46AE5C94E"
+  }
+}

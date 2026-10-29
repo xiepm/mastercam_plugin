@@ -11,3 +11,14 @@ ai/bridge/bin/MastercamPluginAI101.dll
 **/codex-before-plugin-ai.toml
 **/plugin-ai/
 ai/**/connection.json
+
+ai/bridge/bin/MastercamPluginAI120.dll
+ai/bridge/bin/MastercamPluginAI121.dll
+ai/bridge/bin/MastercamPluginAI122.dll
+ai/bridge/bin/MastercamPluginAI123.dll
+ai/bridge/bin/MastercamPluginAI124.dll
+ai/bridge/bin/MastercamPluginAI125.dll
+ai/bridge/bin/MastercamPluginAI126.dll
+ai/bridge/bin/MastercamPluginAI127.dll
+ai/bridge/bin/MastercamPluginAI128.dll
+ai/bridge/bin/MastercamPluginAI129.dll

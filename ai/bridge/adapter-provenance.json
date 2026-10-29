@@ -1,0 +1,130 @@
+{
+  "origin": "Existing independently rebuilt local modules; no vendor DLL decompilation copied here.",
+  "changes": [
+    "Namespace isolation from frozen installed modules.",
+    "Attribute-only selection restoration instead of Geometry.Commit.",
+    "Preserve selection around face-map reads.",
+    "Original topology, coordinate, rollback and native-build checks retained.",
+    "Measure only owned native copies: RectangularBoundingBox commits its inputs; delete temporary copies and corners explicitly.",
+    "Fixture host reuses protected measurement and attribute-only selection restoration.",
+    "Reuse independently reconstructed, build-pinned Parasolid copy boundary for solids; CopyAndTranslate rewrites parametric source timestamps.",
+    "Compute sketch toolpath after its creation transaction commits; capture final object fingerprints after regeneration.",
+    "Radius query restores preselected entities via attributes, retaining strict geometry/timestamp admission."
+  ],
+  "files": [
+    {
+      "source": "MPDesignTools2027-edge/src/ContextContract.cs",
+      "source_sha256": "50318e963135a3cbaaa2da6e00b8db82f48d930519c6d4779e6ff5d4362c97bc",
+      "adapted": "ai/bridge/EdgeAdapter/ContextContract.cs",
+      "adapted_sha256": "7a50bcc14ff647037dd058e05f041ed7421e95333a747d54bf5e136c0b3063ad"
+    },
+    {
+      "source": "MPDesignTools2027-edge/src/EdgeKernel.cs",
+      "source_sha256": "168d7bf73bcc3609b636922d16a6011891726eb79c04d40b160499d405a4a631",
+      "adapted": "ai/bridge/EdgeAdapter/EdgeKernel.cs",
+      "adapted_sha256": "b2d11303674067a1f0b560d48128e094f497d52cc46db5212db5a45ed93aadf9"
+    },
+    {
+      "source": "MPDesignTools2027-edge/src/EdgeTools.cs",
+      "source_sha256": "73d02122c974ad58a019b59f62bb04349391e0535cd63e7ba841ca953976b2f2",
+      "adapted": "ai/bridge/EdgeAdapter/EdgeTools.cs",
+      "adapted_sha256": "27ccc9b6143f46f2ec5e04d6c5fdc89fc2982a719951b11f55d19c870738c416"
+    },
+    {
+      "source": "MPDesignTools2027-edge/src/LevelGroupContract.cs",
+      "source_sha256": "4ae5f793fefcfc4ac5b957da318487ada8a87284cbb65c979d0f650645445377",
+      "adapted": "ai/bridge/EdgeAdapter/LevelGroupContract.cs",
+      "adapted_sha256": "88e058a2ff2f483035ff310e5bfe018426052facf7489bddf9eced7377ee05bb"
+    },
+    {
+      "source": "MPDesignTools2027-edge/src/NativeDocumentInventory.cs",
+      "source_sha256": "4f78d87826f65f9eb2b727f87cadfead20fa363c0cde1df6a39706f4440bddf7",
+      "adapted": "ai/bridge/EdgeAdapter/NativeDocumentInventory.cs",
+      "adapted_sha256": "e03453b89be425ff77dafbd490b7320754b7f5fd5be5ca3a17c7b1271893a967"
+    },
+    {
+      "source": "MPDesignTools2027-edge/src/NativeLevelGroups.cs",
+      "source_sha256": "8ac4ed61b02581a5c1e18a75874105637f3bc00c41ac8022927c32510e9d38c4",
+      "adapted": "ai/bridge/EdgeAdapter/NativeLevelGroups.cs",
+      "adapted_sha256": "5af779050bb21de94ec8a5ef246c61bd9f07053ca2b23ed63a4f700635de5493"
+    },
+    {
+      "source": "MPDesignTools2027-edge/src/NativeOutputLevelLease.cs",
+      "source_sha256": "577dd2471957eb4a84f526609708307e345d145c30bd1a074d50199d22573774",
+      "adapted": "ai/bridge/EdgeAdapter/NativeOutputLevelLease.cs",
+      "adapted_sha256": "2e1913e35d953ba347f8b24d9e05ea81ffd51f50bfb0fd0725b0029989d1c6ca"
+    },
+    {
+      "source": "MPDesignTools2027-edge/src/NativeSolidEdges.cs",
+      "source_sha256": "1aaa0dc3b2d4cac77bcd5c682a545f795e23920a63585ef04375e76b0578b511",
+      "adapted": "ai/bridge/EdgeAdapter/NativeSolidEdges.cs",
+      "adapted_sha256": "e992c6663ac12664e8cc79a6844294728b1fd0e4adba2f4a6e600276688e1e10"
+    },
+    {
+      "source": "MPDesignTools2027-edge/src/NativeState.cs",
+      "source_sha256": "e2bcdab7f6f5bcfd984aaa2a3a95620a818ed570e2a53f2df623308971767e3f",
+      "adapted": "ai/bridge/EdgeAdapter/NativeState.cs",
+      "adapted_sha256": "9b2666086d991544b8e45946537b78e9ea5b22609e8396cd83b20b09c91f480e"
+    },
+    {
+      "source": "MPDesignTools2027-edge/src/OutputLevelAdmission.cs",
+      "source_sha256": "47bee01f310e50c6e5f63274c96d98230c7ca92c3ae3b5b901b92b51d0a8885f",
+      "adapted": "ai/bridge/EdgeAdapter/OutputLevelAdmission.cs",
+      "adapted_sha256": "07aebadbce8292130c8069da537d61290809283301cc1394680502eb49c24a11"
+    },
+    {
+      "source": "MPDesignTools2027-edge/src/SolidEdgeContract.cs",
+      "source_sha256": "fef53ca09d3ab39612c61e082b1afc5f15a8df82cc311f88a0897d05716bf16f",
+      "adapted": "ai/bridge/EdgeAdapter/SolidEdgeContract.cs",
+      "adapted_sha256": "d226dba2a2089ed4859b8771d6a024df2baf876cc8c0c8e0567d631f9c77ebd1"
+    },
+    {
+      "source": "MPDesignTools2027-edge/src/SourceReadback.cs",
+      "source_sha256": "4dbf1c22805a76190ba30619194dcbbd62467dda1d6d1205ad59456ae83091db",
+      "adapted": "ai/bridge/EdgeAdapter/SourceReadback.cs",
+      "adapted_sha256": "e88b7dc6a15de030267876ae627351b350adeaa691e69d1e451142a111da4b4d"
+    },
+    {
+      "source": "GeometryTools2027/src/GeometryCore.cs",
+      "source_sha256": "2b1491381344959144fd929d9d279278f7bf8ec93418f1d4f771bfabc93a7864",
+      "adapted": "ai/bridge/GeometryAdapter/GeometryCore.cs",
+      "adapted_sha256": "adba40461ff18089200635c2a82a0877730c560a34753209d78bd1eb7d02eeab"
+    },
+    {
+      "source": "GeometryTools2027/src/HostGeometry.cs",
+      "source_sha256": "c3d07111aff943914dc189fa7fb3d34eda379cb6297e16f780d9f1a536e3d80e",
+      "adapted": "ai/bridge/GeometryAdapter/HostGeometry.cs",
+      "adapted_sha256": "6a1261782046699f6a2d8183e4317015d963adbb14257c17a5f1e7a02547e203"
+    },
+    {
+      "source": "FixtureTools2027/src/Host/Api29Host.cs",
+      "source_sha256": "1f0c4165d83ac2123613e40261bc2e980d8b11d0699ed78d089b9ea27cda49e2",
+      "adapted": "ai/bridge/FixtureAdapter/Api29Host.cs",
+      "adapted_sha256": "5007d1eda71380b44b245256805ac1d5317b2daf8319a3e54b8fef92fbb0c85d"
+    },
+    {
+      "source": "FixtureTools2027/src/Host/NativeGeometryHost.cs",
+      "source_sha256": "588e2712a1d5ab4e868f6e8002d64d456f9cffa6914d568897f7b1a40ec3dea9",
+      "adapted": "ai/bridge/FixtureAdapter/NativeGeometryHost.cs",
+      "adapted_sha256": "7fe969027db18b486d8eb578c636bbafc30b2ea7f34b9bd2bbd4b56ff37ca9aa"
+    },
+    {
+      "source": "FixtureTools2027/src/Host/NativeFixtureCopy.cs",
+      "source_sha256": "c54333248e171cbe03a9f6dd05ba3e43a282c3b759f14b8216e7d471e2b1cd8e",
+      "adapted": "ai/bridge/FixtureAdapter/NativeFixtureCopy.cs",
+      "adapted_sha256": "e71ad5b16d02296d4afdc4cb8b9d3d87000b9ce93abfef3a2d075a4ba74f7e93"
+    },
+    {
+      "source": "PorscheAdvanced2027/src/HoleHealing.cs (CopyIndependent and pinned ABI helpers only)",
+      "source_sha256": "3683f91e09512e474969a992dcf9cb99c01935cc7713759822f090af70ff286d",
+      "adapted": "ai/bridge/SolidCopyAdapter.cs",
+      "adapted_sha256": "b7a7dfaa2f71498d6e06fb679fdcce7584e2b1a88f1ed9d63efae119486d4253"
+    },
+    {
+      "source": "MPDesignTools2027/candidates/AnalyticRadiusSelect-1.0.0/src/Host/Api29Host.cs",
+      "source_sha256": "dbfe3ec62093cd693687ca3b38c30da8d1619e578a42b6ab1f5be9c100b97c2e",
+      "adapted": "ai/bridge/RadiusHostAdapter.cs",
+      "adapted_sha256": "b252a38ee8468aabf58babd50b0bfeb31259875b02e14a97c1b9d8e558d90b72"
+    }
+  ]
+}

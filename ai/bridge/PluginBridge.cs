@@ -19,7 +19,7 @@ using Ops = OperationTools2027;
 using Hsm = HSMRebuild2027;
 using Mp = MPRebuild2027;
 
-[assembly:System.Reflection.AssemblyVersion("1.1.0.0")]
+[assembly:System.Reflection.AssemblyVersion("1.3.0.0")]
 [assembly:System.Runtime.Versioning.TargetFramework(".NETCoreApp,Version=v10.0")]
 namespace MastercamPluginAI;
 
@@ -116,7 +116,7 @@ public static class Bridge
             p.Rollback=()=>{if(output==null)throw new InvalidOperationException("No created output.");output.Rollback();};
             p.Readback=()=>new{analysis_path=change.ReportPath,created_ids=output?.CreatedIds??Array.Empty<int>()};break;
         }
-        default:throw new ArgumentException("Unsupported typed action: "+p.Action);
+        default: { var binding=GeometryBindings.Prepare(q,directory); p.Preview=binding.Preview;p.Apply=binding.Apply;p.Rollback=binding.Rollback;p.Readback=binding.Readback;break; }
         }
     }
     public static void RunFile(string requestPath,string resultPath)
@@ -127,8 +127,21 @@ public static class Bridge
         try {
             var q=JsonDocument.Parse(File.ReadAllText(requestPath)).RootElement;
             string command=q.GetProperty("command").GetString();
+            if(PanelLauncher.Busy&&command!="inspect")throw new InvalidOperationException("Plugin panel is queued/open. Observe and close it before another native command.");
             object data;
             if(command=="inspect") data=Inspect();
+            else if(command=="open_panel") {
+                Document(q);
+                var panels=new Dictionary<string,(string App,string Function)> {
+                    ["advanced_drilling"]=("AdvancedDrill2027","Show"),["tapping"]=("AdvancedDrillTap2027","Show"),
+                    ["solid_boundary"]=("SolidBoundary2027","Show"),["chain_picker"]=("ChainTools2027","Show"),
+                    ["bee_hub"]=("LittleBee2027","LittleBee"),["geometry_native"]=("GeometryTools2027.NativeCommands","Show"),
+                    ["middle_confirm"]=("MiddleConfirm2027","Configure"),["geometry_editor"]=("GeometryTools2027","Show")
+                };
+                if(!panels.TryGetValue(q.GetProperty("panel_id").GetString(),out var panel))throw new ArgumentException("Unknown interactive panel.");
+                string panelReceipt=PanelLauncher.Queue(panel.App,panel.Function,q.GetProperty("artifact_directory").GetString());
+                data=new{status="queued",application=panel.App,function=panel.Function,panel_receipt=panelReceipt,business_completed=false,instruction="Observe the actual panel with UI tools. No geometry, machining, or configuration result is implied by this queue receipt."};
+            }
             else if(command=="information") {
                 Document(q);var reach=q.TryGetProperty("reach",out var r)&&r.ValueKind!=JsonValueKind.Null?Read<Ops.ReachConfig>(r):null;
                 data=Ops.Host.Information(Ids(q,"operation_ids"),reach);

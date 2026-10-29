@@ -30,18 +30,21 @@ public static class PorscheBindings
     static string Write(object x)=>JsonSerializer.Serialize(x,Json);
     static string Hash(object x)=>Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(Write(x))));
     static T Read<T>(JsonElement e)=>JsonSerializer.Deserialize<T>(e.GetRawText(),Json);
-    static object Shape(int id) {
+    internal static object Shape(int id) {
+        // API29 face-map queries can clear selection even though they only read topology.
+        using var selection=new GeometrySelection();
         var g=Geometry.RetrieveEntity(id)??throw new InvalidOperationException("Object disappeared: "+id);
-        return new{id,g.TimeStamp,g.Level,g.Color,g.Blanked,type=g.GetType().FullName,
+        return new{id,g.TimeStamp,g.Level,g.Color,g.Blanked,normal=g is SurfaceGeometry surf?(bool?)surf.IsNormalReversed:null,type=g.GetType().FullName,
             faces=g is SolidGeometry?SearchManager.GetFaceTagsAndPidMapFromBodyEntity(id).OrderBy(x=>x.Key).Select(x=>new{x.Key,x.Value}).ToArray():null,
             line=g is Mastercam.Curves.LineGeometry l?new{a=BoundaryHost.V(l.EndPoint1),b=BoundaryHost.V(l.EndPoint2)}:null};
     }
-    static string DatabaseStamp()=>Hash(new {
+    internal static object DatabaseFacts()=>new {
         geometry=GeometrySelection.All().OrderBy(g=>g.GetEntityID()).Select(g=>Shape(g.GetEntityID())),
-        ops=SearchManager.GetOperations().OrderBy(o=>o.GetOperationID()).Select(o=>new{id=o.GetOperationID(),o.TimeStamp,o.Name,o.Dirty,o.Posting,tool=o.OperationTool?.Slot}),
+        ops=SearchManager.GetOperations().OrderBy(o=>o.GetOperationID()).Select(o=>new{id=o.GetOperationID(),o.TimeStamp,o.Name,o.NCIName,o.Dirty,o.Posting,tool=o.OperationTool?.Slot}),
         tools=SearchManager.GetTools().OrderBy(t=>t.Slot).Select(HoleHost.ToolState),
         planes=SearchManager.GetViews().OrderBy(v=>v.ViewID).Select(HoleHost.PlaneState)
-    });
+    };
+    internal static string DatabaseStamp()=>Hash(DatabaseFacts());
     static object CurrentOperations(IEnumerable<int> ids)=>ids.Select(id=>new{id,exists=SearchManager.GetOperationData(id)?.IsValid==true,state=SearchManager.GetOperationData(id)?.IsValid==true?HoleHost.OperationState(id):null}).ToArray();
     static MCView Plane(int id)=>SearchManager.GetViews().SingleOrDefault(v=>v.ViewID==id)??throw new ArgumentException("Unknown ViewID; use mc_inspect.views.");
     static void SourceCheck(int[] ids) {
@@ -58,7 +61,7 @@ public static class PorscheBindings
         loops=p.Loops.Select((l,i)=>new{index=i,l.IsHole,l.SignedArea,point_count=l.Points.Length}),coordinate_sha256=Hash(p)};
     static QueryOptions HealingQuery()=>new(GetHolesMethod.ByDetection,new(0,0,1),0,1000000,false,false,true,true,10000,1000);
     static HoleFact[] Targets(HoleReadback facts,double min,double max)=>facts.Holes.Where(h=>h.Segments.Any(s=>s.ApiType=="Cylinder")&&h.Segments.Where(s=>s.ApiType=="Cylinder").Min(s=>s.StartRadius)>=min&&h.Segments.Where(s=>s.ApiType=="Cylinder").Min(s=>s.StartRadius)<=max).ToArray();
-    static void DeleteGeometry(IEnumerable<int> ids) {
+    internal static void DeleteGeometry(IEnumerable<int> ids) {
         foreach(int id in ids.Reverse()){var g=Geometry.RetrieveEntity(id);if(g==null||!g.Delete())throw new InvalidOperationException("Owned geometry deletion failed: "+id);}
     }
     public static PorscheBinding Prepare(JsonElement q,string directory)

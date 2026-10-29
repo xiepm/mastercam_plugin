@@ -1,8 +1,8 @@
 {
-  "version": "1.1.0",
+  "version": "1.2.0",
   "plugin_release": "2027.10.28.2",
   "module_count": 27,
-  "capability_count": 142,
+  "capability_count": 168,
   "ft_route_count": 170,
   "typed_actions": [
     "operation.depth",
@@ -14,7 +14,25 @@
     "porsche.project_boundary",
     "porsche.contour",
     "porsche.heal_holes",
-    "porsche.holes"
+    "porsche.holes",
+    "mp.edges",
+    "mp.reverse_normals",
+    "mp.select_surface_types",
+    "mp.select_radius",
+    "xplus.svg",
+    "xplus.sketch",
+    "xplus.fixture_copy",
+    "xplus.fit_plane",
+    "xplus.setup_sheet",
+    "xplus.levels_to_stl",
+    "xplus.capture",
+    "xplus.gradient",
+    "xplus.electrode_report",
+    "geometry.copy_edit",
+    "xplus.holder_library",
+    "xplus.select_operation_chains",
+    "xplus.work_offset",
+    "xplus.rename_nci"
   ],
   "capabilities": [
     {
@@ -15607,6 +15625,824 @@
       "adapter_validation": "ai/validation/porsche-native-acceptance.json",
       "business_contract": "PorscheAdvanced2027.porsche.holes",
       "workflow_contract": "ai/workflows/porsche.json"
+    },
+    {
+      "id": "typed.mp.edges",
+      "module": "MPEdgeTools2027",
+      "title": "MP 三维直边/二维投影",
+      "summary": "单个实体的闭合平面面与直线边；输出独立线段，支持回滚。",
+      "automation": "typed",
+      "action": "mp.edges",
+      "tool": "mc_prepare_change",
+      "preconditions": [
+        "先 mc_inspect，核对已保存文档与单位、真实 ID。",
+        "只使用用户或工艺依据提供的参数。",
+        "填写完整类型化请求；先检查具体预览，再按授权执行。"
+      ],
+      "steps": [
+        "mc_prepare_change",
+        "检查 preview 与源对象",
+        "mc_apply_plan",
+        "核对 ok、status、result",
+        "需要时 mc_rollback_plan"
+      ],
+      "limits": [
+        "不自动保存、后处理或机床仿真。",
+        "原生计划仅当前宿主会话，预览 15 分钟有效。",
+        "参数回滚不恢复原刀路计算状态。",
+        "报告、截图及STL的回滚保留导出文件；刀柄回滚删除新增刀柄但保留空库。",
+        "几何副本编辑保留源对象；不提供任意实体倒角或自动修改原件。",
+        "工序链选择基于已有工序，不替代交互式任意链拾取。"
+      ],
+      "schema": "mc_prepare_change inputSchema request discriminator action",
+      "evidence": [
+        "validation/bundle-host-integration.json",
+        "validation/README.md"
+      ],
+      "adapter_validation": "ai/validation/geometry-native-acceptance.json",
+      "business_contract": "MPEdgeTools2027.mp_extract_straight_edges",
+      "workflow_contract": "ai/skills/mastercam-plugin-suite/references/geometry-xplus.md"
+    },
+    {
+      "id": "typed.mp.reverse_normals",
+      "module": "MPDesignTools2027",
+      "title": "MP 反转独立曲面法向",
+      "summary": "明确曲面 ID，逐面反转并回读；不反转实体面。",
+      "automation": "typed",
+      "action": "mp.reverse_normals",
+      "tool": "mc_prepare_change",
+      "preconditions": [
+        "先 mc_inspect，核对已保存文档与单位、真实 ID。",
+        "只使用用户或工艺依据提供的参数。",
+        "填写完整类型化请求；先检查具体预览，再按授权执行。"
+      ],
+      "steps": [
+        "mc_prepare_change",
+        "检查 preview 与源对象",
+        "mc_apply_plan",
+        "核对 ok、status、result",
+        "需要时 mc_rollback_plan"
+      ],
+      "limits": [
+        "不自动保存、后处理或机床仿真。",
+        "原生计划仅当前宿主会话，预览 15 分钟有效。",
+        "参数回滚不恢复原刀路计算状态。",
+        "报告、截图及STL的回滚保留导出文件；刀柄回滚删除新增刀柄但保留空库。",
+        "几何副本编辑保留源对象；不提供任意实体倒角或自动修改原件。",
+        "工序链选择基于已有工序，不替代交互式任意链拾取。"
+      ],
+      "schema": "mc_prepare_change inputSchema request discriminator action",
+      "evidence": [
+        "validation/bundle-host-integration.json",
+        "validation/README.md"
+      ],
+      "adapter_validation": "ai/validation/geometry-native-acceptance.json",
+      "business_contract": "MPDesignTools2027.mp_reverse_surface_normals",
+      "workflow_contract": "ai/skills/mastercam-plugin-suite/references/geometry-xplus.md"
+    },
+    {
+      "id": "typed.mp.select_surface_types",
+      "module": "MPDesignSurfaceSelect2027",
+      "title": "MP 按曲面类型选择",
+      "summary": "按 mc_inspect 中完整类型名筛选可见独立曲面，追加选择，可恢复原选择。",
+      "automation": "typed",
+      "action": "mp.select_surface_types",
+      "tool": "mc_prepare_change",
+      "preconditions": [
+        "先 mc_inspect，核对已保存文档与单位、真实 ID。",
+        "只使用用户或工艺依据提供的参数。",
+        "填写完整类型化请求；先检查具体预览，再按授权执行。"
+      ],
+      "steps": [
+        "mc_prepare_change",
+        "检查 preview 与源对象",
+        "mc_apply_plan",
+        "核对 ok、status、result",
+        "需要时 mc_rollback_plan"
+      ],
+      "limits": [
+        "不自动保存、后处理或机床仿真。",
+        "原生计划仅当前宿主会话，预览 15 分钟有效。",
+        "参数回滚不恢复原刀路计算状态。",
+        "报告、截图及STL的回滚保留导出文件；刀柄回滚删除新增刀柄但保留空库。",
+        "几何副本编辑保留源对象；不提供任意实体倒角或自动修改原件。",
+        "工序链选择基于已有工序，不替代交互式任意链拾取。"
+      ],
+      "schema": "mc_prepare_change inputSchema request discriminator action",
+      "evidence": [
+        "validation/bundle-host-integration.json",
+        "validation/README.md"
+      ],
+      "adapter_validation": "ai/validation/geometry-native-acceptance.json",
+      "business_contract": "MPDesignSurfaceSelect2027.mp_select_surface_types",
+      "workflow_contract": "ai/skills/mastercam-plugin-suite/references/geometry-xplus.md"
+    },
+    {
+      "id": "typed.mp.select_radius",
+      "module": "MPDesignRadiusSelect2027",
+      "title": "MP 解析半径筛选",
+      "summary": "以当前文档单位和闭区间检查圆柱/球/圆环/锥参考半径；选择命中的完整实体并返回面 PID。",
+      "automation": "typed",
+      "action": "mp.select_radius",
+      "tool": "mc_prepare_change",
+      "preconditions": [
+        "先 mc_inspect，核对已保存文档与单位、真实 ID。",
+        "只使用用户或工艺依据提供的参数。",
+        "填写完整类型化请求；先检查具体预览，再按授权执行。"
+      ],
+      "steps": [
+        "mc_prepare_change",
+        "检查 preview 与源对象",
+        "mc_apply_plan",
+        "核对 ok、status、result",
+        "需要时 mc_rollback_plan"
+      ],
+      "limits": [
+        "不自动保存、后处理或机床仿真。",
+        "原生计划仅当前宿主会话，预览 15 分钟有效。",
+        "参数回滚不恢复原刀路计算状态。",
+        "报告、截图及STL的回滚保留导出文件；刀柄回滚删除新增刀柄但保留空库。",
+        "几何副本编辑保留源对象；不提供任意实体倒角或自动修改原件。",
+        "工序链选择基于已有工序，不替代交互式任意链拾取。"
+      ],
+      "schema": "mc_prepare_change inputSchema request discriminator action",
+      "evidence": [
+        "validation/bundle-host-integration.json",
+        "validation/README.md"
+      ],
+      "adapter_validation": "ai/validation/geometry-native-acceptance.json",
+      "business_contract": "MPDesignRadiusSelect2027.mp_select_analytic_radius",
+      "workflow_contract": "ai/skills/mastercam-plugin-suite/references/geometry-xplus.md"
+    },
+    {
+      "id": "typed.xplus.svg",
+      "module": "SVGGeometry2027",
+      "title": "X+ SVG 几何导入",
+      "summary": "受限 SVG XML 解析为原生线段，明确尺寸映射、翻转、公差与输出层。",
+      "automation": "typed",
+      "action": "xplus.svg",
+      "tool": "mc_prepare_change",
+      "preconditions": [
+        "先 mc_inspect，核对已保存文档与单位、真实 ID。",
+        "只使用用户或工艺依据提供的参数。",
+        "填写完整类型化请求；先检查具体预览，再按授权执行。"
+      ],
+      "steps": [
+        "mc_prepare_change",
+        "检查 preview 与源对象",
+        "mc_apply_plan",
+        "核对 ok、status、result",
+        "需要时 mc_rollback_plan"
+      ],
+      "limits": [
+        "不自动保存、后处理或机床仿真。",
+        "原生计划仅当前宿主会话，预览 15 分钟有效。",
+        "参数回滚不恢复原刀路计算状态。",
+        "报告、截图及STL的回滚保留导出文件；刀柄回滚删除新增刀柄但保留空库。",
+        "几何副本编辑保留源对象；不提供任意实体倒角或自动修改原件。",
+        "工序链选择基于已有工序，不替代交互式任意链拾取。"
+      ],
+      "schema": "mc_prepare_change inputSchema request discriminator action",
+      "evidence": [
+        "validation/bundle-host-integration.json",
+        "validation/README.md"
+      ],
+      "adapter_validation": "ai/validation/geometry-native-acceptance.json",
+      "business_contract": "SVGGeometry2027.svg_import",
+      "workflow_contract": "ai/skills/mastercam-plugin-suite/references/geometry-xplus.md"
+    },
+    {
+      "id": "typed.xplus.sketch",
+      "module": "TpSketcher2027",
+      "title": "X+ 平面草绘/轮廓工序",
+      "summary": "给定 ViewID 与局部二维点链，生成世界几何；可使用已有刀具创建轮廓工序。",
+      "automation": "typed",
+      "action": "xplus.sketch",
+      "tool": "mc_prepare_change",
+      "preconditions": [
+        "先 mc_inspect，核对已保存文档与单位、真实 ID。",
+        "只使用用户或工艺依据提供的参数。",
+        "填写完整类型化请求；先检查具体预览，再按授权执行。"
+      ],
+      "steps": [
+        "mc_prepare_change",
+        "检查 preview 与源对象",
+        "mc_apply_plan",
+        "核对 ok、status、result",
+        "需要时 mc_rollback_plan"
+      ],
+      "limits": [
+        "不自动保存、后处理或机床仿真。",
+        "原生计划仅当前宿主会话，预览 15 分钟有效。",
+        "参数回滚不恢复原刀路计算状态。",
+        "报告、截图及STL的回滚保留导出文件；刀柄回滚删除新增刀柄但保留空库。",
+        "几何副本编辑保留源对象；不提供任意实体倒角或自动修改原件。",
+        "工序链选择基于已有工序，不替代交互式任意链拾取。"
+      ],
+      "schema": "mc_prepare_change inputSchema request discriminator action",
+      "evidence": [
+        "validation/bundle-host-integration.json",
+        "validation/README.md"
+      ],
+      "adapter_validation": "ai/validation/geometry-native-acceptance.json",
+      "business_contract": "TpSketcher2027.sketch_contour_operation",
+      "workflow_contract": "ai/skills/mastercam-plugin-suite/references/geometry-xplus.md"
+    },
+    {
+      "id": "typed.xplus.fixture_copy",
+      "module": "FixtureTools2027",
+      "title": "X+ 原生夹具复制摆放",
+      "summary": "对明确点/曲线/实体 ID 建立独立副本，按世界 Z 的 90 度倍数旋转和平移，回读 AABB。",
+      "automation": "typed",
+      "action": "xplus.fixture_copy",
+      "tool": "mc_prepare_change",
+      "preconditions": [
+        "先 mc_inspect，核对已保存文档与单位、真实 ID。",
+        "只使用用户或工艺依据提供的参数。",
+        "填写完整类型化请求；先检查具体预览，再按授权执行。"
+      ],
+      "steps": [
+        "mc_prepare_change",
+        "检查 preview 与源对象",
+        "mc_apply_plan",
+        "核对 ok、status、result",
+        "需要时 mc_rollback_plan"
+      ],
+      "limits": [
+        "不自动保存、后处理或机床仿真。",
+        "原生计划仅当前宿主会话，预览 15 分钟有效。",
+        "参数回滚不恢复原刀路计算状态。",
+        "报告、截图及STL的回滚保留导出文件；刀柄回滚删除新增刀柄但保留空库。",
+        "几何副本编辑保留源对象；不提供任意实体倒角或自动修改原件。",
+        "工序链选择基于已有工序，不替代交互式任意链拾取。"
+      ],
+      "schema": "mc_prepare_change inputSchema request discriminator action",
+      "evidence": [
+        "validation/bundle-host-integration.json",
+        "validation/README.md"
+      ],
+      "adapter_validation": "ai/validation/geometry-native-acceptance.json",
+      "business_contract": "FixtureTools2027.fixture_native_copy",
+      "workflow_contract": "ai/skills/mastercam-plugin-suite/references/geometry-xplus.md"
+    },
+    {
+      "id": "typed.xplus.fit_plane",
+      "module": "HirthTools2027",
+      "title": "X+ 分度齿盘拟合平面",
+      "summary": "按两轴离散角度网格拟合指定 ViewID，保留原点及偏置，可新建/复用并可选激活。",
+      "automation": "typed",
+      "action": "xplus.fit_plane",
+      "tool": "mc_prepare_change",
+      "preconditions": [
+        "先 mc_inspect，核对已保存文档与单位、真实 ID。",
+        "只使用用户或工艺依据提供的参数。",
+        "填写完整类型化请求；先检查具体预览，再按授权执行。"
+      ],
+      "steps": [
+        "mc_prepare_change",
+        "检查 preview 与源对象",
+        "mc_apply_plan",
+        "核对 ok、status、result",
+        "需要时 mc_rollback_plan"
+      ],
+      "limits": [
+        "不自动保存、后处理或机床仿真。",
+        "原生计划仅当前宿主会话，预览 15 分钟有效。",
+        "参数回滚不恢复原刀路计算状态。",
+        "报告、截图及STL的回滚保留导出文件；刀柄回滚删除新增刀柄但保留空库。",
+        "几何副本编辑保留源对象；不提供任意实体倒角或自动修改原件。",
+        "工序链选择基于已有工序，不替代交互式任意链拾取。"
+      ],
+      "schema": "mc_prepare_change inputSchema request discriminator action",
+      "evidence": [
+        "validation/bundle-host-integration.json",
+        "validation/README.md"
+      ],
+      "adapter_validation": "ai/validation/geometry-native-acceptance.json",
+      "business_contract": "HirthTools2027.hirth_fit_plane",
+      "workflow_contract": "ai/skills/mastercam-plugin-suite/references/geometry-xplus.md"
+    },
+    {
+      "id": "typed.xplus.setup_sheet",
+      "module": "SetupSheets2027",
+      "title": "X+ 程序单/刀具表",
+      "summary": "导出实际工序、刀具和设置到 HTML/XLSX/CSV；明确全选或当前选中工序范围。",
+      "automation": "typed",
+      "action": "xplus.setup_sheet",
+      "tool": "mc_prepare_change",
+      "preconditions": [
+        "先 mc_inspect，核对已保存文档与单位、真实 ID。",
+        "只使用用户或工艺依据提供的参数。",
+        "填写完整类型化请求；先检查具体预览，再按授权执行。"
+      ],
+      "steps": [
+        "mc_prepare_change",
+        "检查 preview 与源对象",
+        "mc_apply_plan",
+        "核对 ok、status、result",
+        "需要时 mc_rollback_plan"
+      ],
+      "limits": [
+        "不自动保存、后处理或机床仿真。",
+        "原生计划仅当前宿主会话，预览 15 分钟有效。",
+        "参数回滚不恢复原刀路计算状态。",
+        "报告、截图及STL的回滚保留导出文件；刀柄回滚删除新增刀柄但保留空库。",
+        "几何副本编辑保留源对象；不提供任意实体倒角或自动修改原件。",
+        "工序链选择基于已有工序，不替代交互式任意链拾取。"
+      ],
+      "schema": "mc_prepare_change inputSchema request discriminator action",
+      "evidence": [
+        "validation/bundle-host-integration.json",
+        "validation/README.md"
+      ],
+      "adapter_validation": "ai/validation/geometry-native-acceptance.json",
+      "business_contract": "SetupSheets2027.setup_sheets_export",
+      "workflow_contract": "ai/skills/mastercam-plugin-suite/references/geometry-xplus.md"
+    },
+    {
+      "id": "typed.xplus.levels_to_stl",
+      "module": "LevelExport2027",
+      "title": "X+ 可见图层 STL 导出",
+      "summary": "逐层选择并导出世界坐标二进制 STL，校验有限三角面数据；AI 适配器使用属性选择，避免参数实体重新提交。",
+      "automation": "typed",
+      "action": "xplus.levels_to_stl",
+      "tool": "mc_prepare_change",
+      "preconditions": [
+        "先 mc_inspect，核对已保存文档与单位、真实 ID。",
+        "只使用用户或工艺依据提供的参数。",
+        "填写完整类型化请求；先检查具体预览，再按授权执行。"
+      ],
+      "steps": [
+        "mc_prepare_change",
+        "检查 preview 与源对象",
+        "mc_apply_plan",
+        "核对 ok、status、result",
+        "需要时 mc_rollback_plan"
+      ],
+      "limits": [
+        "不自动保存、后处理或机床仿真。",
+        "原生计划仅当前宿主会话，预览 15 分钟有效。",
+        "参数回滚不恢复原刀路计算状态。",
+        "报告、截图及STL的回滚保留导出文件；刀柄回滚删除新增刀柄但保留空库。",
+        "几何副本编辑保留源对象；不提供任意实体倒角或自动修改原件。",
+        "工序链选择基于已有工序，不替代交互式任意链拾取。"
+      ],
+      "schema": "mc_prepare_change inputSchema request discriminator action",
+      "evidence": [
+        "validation/bundle-host-integration.json",
+        "validation/README.md"
+      ],
+      "adapter_validation": "ai/validation/geometry-native-acceptance.json",
+      "business_contract": "LevelExport2027.levels_to_stl",
+      "workflow_contract": "ai/skills/mastercam-plugin-suite/references/geometry-xplus.md"
+    },
+    {
+      "id": "typed.xplus.capture",
+      "module": "ScreenTools2027",
+      "title": "X+ 白底截图",
+      "summary": "通过宿主截图 API 保存有像素验证的 PNG，并恢复背景、轴显示等上下文。",
+      "automation": "typed",
+      "action": "xplus.capture",
+      "tool": "mc_prepare_change",
+      "preconditions": [
+        "先 mc_inspect，核对已保存文档与单位、真实 ID。",
+        "只使用用户或工艺依据提供的参数。",
+        "填写完整类型化请求；先检查具体预览，再按授权执行。"
+      ],
+      "steps": [
+        "mc_prepare_change",
+        "检查 preview 与源对象",
+        "mc_apply_plan",
+        "核对 ok、status、result",
+        "需要时 mc_rollback_plan"
+      ],
+      "limits": [
+        "不自动保存、后处理或机床仿真。",
+        "原生计划仅当前宿主会话，预览 15 分钟有效。",
+        "参数回滚不恢复原刀路计算状态。",
+        "报告、截图及STL的回滚保留导出文件；刀柄回滚删除新增刀柄但保留空库。",
+        "几何副本编辑保留源对象；不提供任意实体倒角或自动修改原件。",
+        "工序链选择基于已有工序，不替代交互式任意链拾取。"
+      ],
+      "schema": "mc_prepare_change inputSchema request discriminator action",
+      "evidence": [
+        "validation/bundle-host-integration.json",
+        "validation/README.md"
+      ],
+      "adapter_validation": "ai/validation/geometry-native-acceptance.json",
+      "business_contract": "ScreenTools2027.screen_capture",
+      "workflow_contract": "ai/skills/mastercam-plugin-suite/references/geometry-xplus.md"
+    },
+    {
+      "id": "typed.xplus.gradient",
+      "module": "ScreenTools2027",
+      "title": "X+ 渐变背景",
+      "summary": "设置水平/垂直/对角渐变或关闭；保存恢复凭据并拒绝覆盖后续背景修改。",
+      "automation": "typed",
+      "action": "xplus.gradient",
+      "tool": "mc_prepare_change",
+      "preconditions": [
+        "先 mc_inspect，核对已保存文档与单位、真实 ID。",
+        "只使用用户或工艺依据提供的参数。",
+        "填写完整类型化请求；先检查具体预览，再按授权执行。"
+      ],
+      "steps": [
+        "mc_prepare_change",
+        "检查 preview 与源对象",
+        "mc_apply_plan",
+        "核对 ok、status、result",
+        "需要时 mc_rollback_plan"
+      ],
+      "limits": [
+        "不自动保存、后处理或机床仿真。",
+        "原生计划仅当前宿主会话，预览 15 分钟有效。",
+        "参数回滚不恢复原刀路计算状态。",
+        "报告、截图及STL的回滚保留导出文件；刀柄回滚删除新增刀柄但保留空库。",
+        "几何副本编辑保留源对象；不提供任意实体倒角或自动修改原件。",
+        "工序链选择基于已有工序，不替代交互式任意链拾取。"
+      ],
+      "schema": "mc_prepare_change inputSchema request discriminator action",
+      "evidence": [
+        "validation/bundle-host-integration.json",
+        "validation/README.md"
+      ],
+      "adapter_validation": "ai/validation/geometry-native-acceptance.json",
+      "business_contract": "ScreenTools2027.screen_gradient",
+      "workflow_contract": "ai/skills/mastercam-plugin-suite/references/geometry-xplus.md"
+    },
+    {
+      "id": "typed.xplus.electrode_report",
+      "module": "ElectrodeReport2027",
+      "title": "X+ 电极几何报告",
+      "summary": "按明确实体、ViewID 和参考点语义生成报告；未知信息保留未知，不推测电极工艺。",
+      "automation": "typed",
+      "action": "xplus.electrode_report",
+      "tool": "mc_prepare_change",
+      "preconditions": [
+        "先 mc_inspect，核对已保存文档与单位、真实 ID。",
+        "只使用用户或工艺依据提供的参数。",
+        "填写完整类型化请求；先检查具体预览，再按授权执行。"
+      ],
+      "steps": [
+        "mc_prepare_change",
+        "检查 preview 与源对象",
+        "mc_apply_plan",
+        "核对 ok、status、result",
+        "需要时 mc_rollback_plan"
+      ],
+      "limits": [
+        "不自动保存、后处理或机床仿真。",
+        "原生计划仅当前宿主会话，预览 15 分钟有效。",
+        "参数回滚不恢复原刀路计算状态。",
+        "报告、截图及STL的回滚保留导出文件；刀柄回滚删除新增刀柄但保留空库。",
+        "几何副本编辑保留源对象；不提供任意实体倒角或自动修改原件。",
+        "工序链选择基于已有工序，不替代交互式任意链拾取。"
+      ],
+      "schema": "mc_prepare_change inputSchema request discriminator action",
+      "evidence": [
+        "validation/bundle-host-integration.json",
+        "validation/README.md"
+      ],
+      "adapter_validation": "ai/validation/geometry-native-acceptance.json",
+      "business_contract": "ElectrodeReport2027.electrode_report",
+      "workflow_contract": "ai/skills/mastercam-plugin-suite/references/geometry-xplus.md"
+    },
+    {
+      "id": "typed.geometry.copy_edit",
+      "module": "GeometryTools2027",
+      "title": "几何副本编辑",
+      "summary": "对独立副本执行居中、90度旋转、构图平面对齐、平面着色、尺寸线、曲线合并或分层；原对象保留。",
+      "automation": "typed",
+      "action": "geometry.copy_edit",
+      "tool": "mc_prepare_change",
+      "preconditions": [
+        "先 mc_inspect，核对已保存文档与单位、真实 ID。",
+        "只使用用户或工艺依据提供的参数。",
+        "填写完整类型化请求；先检查具体预览，再按授权执行。"
+      ],
+      "steps": [
+        "mc_prepare_change",
+        "检查 preview 与源对象",
+        "mc_apply_plan",
+        "核对 ok、status、result",
+        "需要时 mc_rollback_plan"
+      ],
+      "limits": [
+        "不自动保存、后处理或机床仿真。",
+        "原生计划仅当前宿主会话，预览 15 分钟有效。",
+        "参数回滚不恢复原刀路计算状态。",
+        "报告、截图及STL的回滚保留导出文件；刀柄回滚删除新增刀柄但保留空库。",
+        "几何副本编辑保留源对象；不提供任意实体倒角或自动修改原件。",
+        "工序链选择基于已有工序，不替代交互式任意链拾取。"
+      ],
+      "schema": "mc_prepare_change inputSchema request discriminator action",
+      "evidence": [
+        "validation/bundle-host-integration.json",
+        "validation/README.md"
+      ],
+      "adapter_validation": "ai/validation/geometry-native-acceptance.json",
+      "business_contract": "GeometryTools2027.geometry_transform",
+      "workflow_contract": "ai/skills/mastercam-plugin-suite/references/geometry-xplus.md"
+    },
+    {
+      "id": "typed.xplus.holder_library",
+      "module": "HolderTools2027",
+      "title": "X+ 分段刀柄库",
+      "summary": "明确各段上/下直径与高度，在新的 tooldb 文件创建原生刀柄并重开回读；不改已有刀库。",
+      "automation": "typed",
+      "action": "xplus.holder_library",
+      "tool": "mc_prepare_change",
+      "preconditions": [
+        "先 mc_inspect，核对已保存文档与单位、真实 ID。",
+        "只使用用户或工艺依据提供的参数。",
+        "填写完整类型化请求；先检查具体预览，再按授权执行。"
+      ],
+      "steps": [
+        "mc_prepare_change",
+        "检查 preview 与源对象",
+        "mc_apply_plan",
+        "核对 ok、status、result",
+        "需要时 mc_rollback_plan"
+      ],
+      "limits": [
+        "不自动保存、后处理或机床仿真。",
+        "原生计划仅当前宿主会话，预览 15 分钟有效。",
+        "参数回滚不恢复原刀路计算状态。",
+        "报告、截图及STL的回滚保留导出文件；刀柄回滚删除新增刀柄但保留空库。",
+        "几何副本编辑保留源对象；不提供任意实体倒角或自动修改原件。",
+        "工序链选择基于已有工序，不替代交互式任意链拾取。"
+      ],
+      "schema": "mc_prepare_change inputSchema request discriminator action",
+      "evidence": [
+        "validation/bundle-host-integration.json",
+        "validation/README.md"
+      ],
+      "adapter_validation": "ai/validation/geometry-native-acceptance.json",
+      "business_contract": "HolderTools2027.holder_create",
+      "workflow_contract": "ai/skills/mastercam-plugin-suite/references/geometry-xplus.md"
+    },
+    {
+      "id": "typed.xplus.select_operation_chains",
+      "module": "ChainTools2027",
+      "title": "X+ 工序链几何选择",
+      "summary": "读取现有工序完整原生链并选中其全部几何；不向原生数据库提交过滤后的 Chain 数组。",
+      "automation": "typed",
+      "action": "xplus.select_operation_chains",
+      "tool": "mc_prepare_change",
+      "preconditions": [
+        "先 mc_inspect，核对已保存文档与单位、真实 ID。",
+        "只使用用户或工艺依据提供的参数。",
+        "填写完整类型化请求；先检查具体预览，再按授权执行。"
+      ],
+      "steps": [
+        "mc_prepare_change",
+        "检查 preview 与源对象",
+        "mc_apply_plan",
+        "核对 ok、status、result",
+        "需要时 mc_rollback_plan"
+      ],
+      "limits": [
+        "不自动保存、后处理或机床仿真。",
+        "原生计划仅当前宿主会话，预览 15 分钟有效。",
+        "参数回滚不恢复原刀路计算状态。",
+        "报告、截图及STL的回滚保留导出文件；刀柄回滚删除新增刀柄但保留空库。",
+        "几何副本编辑保留源对象；不提供任意实体倒角或自动修改原件。",
+        "工序链选择基于已有工序，不替代交互式任意链拾取。"
+      ],
+      "schema": "mc_prepare_change inputSchema request discriminator action",
+      "evidence": [
+        "validation/bundle-host-integration.json",
+        "validation/README.md"
+      ],
+      "adapter_validation": "ai/validation/geometry-native-acceptance.json",
+      "business_contract": "ChainTools2027.chain_select",
+      "workflow_contract": "ai/skills/mastercam-plugin-suite/references/geometry-xplus.md"
+    },
+    {
+      "id": "typed.xplus.work_offset",
+      "module": "XPlusOriginal2027",
+      "title": "X+ 工作偏置编号",
+      "summary": "独立 API29 适配器设置已有 ViewID 的 WorkOffsetNumber，预览受影响工序并支持恢复。",
+      "automation": "typed",
+      "action": "xplus.work_offset",
+      "tool": "mc_prepare_change",
+      "preconditions": [
+        "先 mc_inspect，核对已保存文档与单位、真实 ID。",
+        "只使用用户或工艺依据提供的参数。",
+        "填写完整类型化请求；先检查具体预览，再按授权执行。"
+      ],
+      "steps": [
+        "mc_prepare_change",
+        "检查 preview 与源对象",
+        "mc_apply_plan",
+        "核对 ok、status、result",
+        "需要时 mc_rollback_plan"
+      ],
+      "limits": [
+        "不自动保存、后处理或机床仿真。",
+        "原生计划仅当前宿主会话，预览 15 分钟有效。",
+        "参数回滚不恢复原刀路计算状态。",
+        "报告、截图及STL的回滚保留导出文件；刀柄回滚删除新增刀柄但保留空库。",
+        "几何副本编辑保留源对象；不提供任意实体倒角或自动修改原件。",
+        "工序链选择基于已有工序，不替代交互式任意链拾取。"
+      ],
+      "schema": "mc_prepare_change inputSchema request discriminator action",
+      "evidence": [
+        "validation/bundle-host-integration.json",
+        "validation/README.md"
+      ],
+      "adapter_validation": "ai/validation/geometry-native-acceptance.json",
+      "business_contract": "XPlusOriginal2027.original_setworkoffset",
+      "workflow_contract": "ai/skills/mastercam-plugin-suite/references/geometry-xplus.md"
+    },
+    {
+      "id": "typed.xplus.rename_nci",
+      "module": "LittleBee2027",
+      "title": "X+ NCI 程序名",
+      "summary": "独立 API29 适配器逐工序设置 NCI 名，保留目录并恢复选择；不后处理、不重命名磁盘 NC。",
+      "automation": "typed",
+      "action": "xplus.rename_nci",
+      "tool": "mc_prepare_change",
+      "preconditions": [
+        "先 mc_inspect，核对已保存文档与单位、真实 ID。",
+        "只使用用户或工艺依据提供的参数。",
+        "填写完整类型化请求；先检查具体预览，再按授权执行。"
+      ],
+      "steps": [
+        "mc_prepare_change",
+        "检查 preview 与源对象",
+        "mc_apply_plan",
+        "核对 ok、status、result",
+        "需要时 mc_rollback_plan"
+      ],
+      "limits": [
+        "不自动保存、后处理或机床仿真。",
+        "原生计划仅当前宿主会话，预览 15 分钟有效。",
+        "参数回滚不恢复原刀路计算状态。",
+        "报告、截图及STL的回滚保留导出文件；刀柄回滚删除新增刀柄但保留空库。",
+        "几何副本编辑保留源对象；不提供任意实体倒角或自动修改原件。",
+        "工序链选择基于已有工序，不替代交互式任意链拾取。"
+      ],
+      "schema": "mc_prepare_change inputSchema request discriminator action",
+      "evidence": [
+        "validation/bundle-host-integration.json",
+        "validation/README.md"
+      ],
+      "adapter_validation": "ai/validation/geometry-native-acceptance.json",
+      "business_contract": "LittleBee2027.bee.rename",
+      "workflow_contract": "ai/skills/mastercam-plugin-suite/references/geometry-xplus.md"
+    },
+    {
+      "id": "panel.advanced_drilling",
+      "module": "AdvancedDrill2027",
+      "title": "advanced_drilling",
+      "summary": "交互面板入口，须观察界面并通过UI完成操作；排队回执不代表业务成功。",
+      "automation": "interactive",
+      "tool": "mc_open_panel",
+      "panel_id": "advanced_drilling",
+      "route": {
+        "module": "AdvancedDrill2027",
+        "application": "AdvancedDrill2027",
+        "function": "Show",
+        "kind": "NET",
+        "title": "高级钻孔编排",
+        "ft": "chooks/AdvancedDrill2027.ft",
+        "completion": "Interactive/native route; registration is not evidence of completed business work."
+      },
+      "workflow_contract": "ai/workflows/interactive-panels.json"
+    },
+    {
+      "id": "panel.tapping",
+      "module": "AdvancedDrillTap2027",
+      "title": "tapping",
+      "summary": "交互面板入口，须观察界面并通过UI完成操作；排队回执不代表业务成功。",
+      "automation": "interactive",
+      "tool": "mc_open_panel",
+      "panel_id": "tapping",
+      "route": {
+        "module": "AdvancedDrillTap2027",
+        "application": "AdvancedDrillTap2027",
+        "function": "Show",
+        "kind": "NET",
+        "title": "高级钻孔 · G84 候选",
+        "ft": "chooks/AdvancedDrillTap2027.ft",
+        "completion": "Interactive/native route; registration is not evidence of completed business work."
+      },
+      "workflow_contract": "ai/workflows/interactive-panels.json"
+    },
+    {
+      "id": "panel.solid_boundary",
+      "module": "SolidBoundary2027",
+      "title": "solid_boundary",
+      "summary": "交互面板入口，须观察界面并通过UI完成操作；排队回执不代表业务成功。",
+      "automation": "interactive",
+      "tool": "mc_open_panel",
+      "panel_id": "solid_boundary",
+      "route": {
+        "module": "SolidBoundary2027",
+        "application": "SolidBoundary2027",
+        "function": "Show",
+        "kind": "NET",
+        "title": "凸多面体真实轮廓投影（仅已有可见层）",
+        "ft": "chooks/SolidBoundary2027.ft",
+        "completion": "Interactive/native route; registration is not evidence of completed business work."
+      },
+      "workflow_contract": "ai/workflows/interactive-panels.json"
+    },
+    {
+      "id": "panel.chain_picker",
+      "module": "ChainTools2027",
+      "title": "chain_picker",
+      "summary": "交互面板入口，须观察界面并通过UI完成操作；排队回执不代表业务成功。",
+      "automation": "interactive",
+      "tool": "mc_open_panel",
+      "panel_id": "chain_picker",
+      "route": {
+        "module": "ChainTools2027",
+        "application": "ChainTools2027",
+        "function": "Show",
+        "kind": "NET",
+        "title": "串链加入选择",
+        "ft": "chooks/ChainTools2027.ft",
+        "completion": "Interactive/native route; registration is not evidence of completed business work."
+      },
+      "workflow_contract": "ai/workflows/interactive-panels.json"
+    },
+    {
+      "id": "panel.bee_hub",
+      "module": "LittleBee2027",
+      "title": "bee_hub",
+      "summary": "交互面板入口，须观察界面并通过UI完成操作；排队回执不代表业务成功。",
+      "automation": "interactive",
+      "tool": "mc_open_panel",
+      "panel_id": "bee_hub",
+      "route": {
+        "module": "LittleBee2027",
+        "application": "LittleBee2027",
+        "function": "LittleBee",
+        "kind": "NET",
+        "title": "LB.功能集锦",
+        "ft": "chooks/LittleBee2027.ft",
+        "completion": "Interactive/native route; registration is not evidence of completed business work."
+      },
+      "workflow_contract": "ai/workflows/interactive-panels.json"
+    },
+    {
+      "id": "panel.geometry_native",
+      "module": "GeometryTools2027.NativeCommands",
+      "title": "geometry_native",
+      "summary": "交互面板入口，须观察界面并通过UI完成操作；排队回执不代表业务成功。",
+      "automation": "interactive",
+      "tool": "mc_open_panel",
+      "panel_id": "geometry_native",
+      "route": {
+        "module": "GeometryTools2027.NativeCommands",
+        "application": "GeometryTools2027.NativeCommands",
+        "function": "Show",
+        "kind": "NET",
+        "title": "几何原生交互工具",
+        "ft": "chooks/GeometryTools2027.NativeCommands.ft",
+        "completion": "Interactive/native route; registration is not evidence of completed business work."
+      },
+      "workflow_contract": "ai/workflows/interactive-panels.json"
+    },
+    {
+      "id": "panel.middle_confirm",
+      "module": "MiddleConfirm2027",
+      "title": "middle_confirm",
+      "summary": "交互面板入口，须观察界面并通过UI完成操作；排队回执不代表业务成功。",
+      "automation": "interactive",
+      "tool": "mc_open_panel",
+      "panel_id": "middle_confirm",
+      "route": {
+        "module": "MiddleConfirm2027",
+        "application": "MiddleConfirm2027",
+        "function": "Configure",
+        "kind": "NET",
+        "title": "中键确认设置",
+        "ft": "chooks/MiddleConfirm2027.ft",
+        "completion": "Interactive/native route; registration is not evidence of completed business work."
+      },
+      "workflow_contract": "ai/workflows/interactive-panels.json"
+    },
+    {
+      "id": "panel.geometry_editor",
+      "module": "GeometryTools2027",
+      "title": "geometry_editor",
+      "summary": "交互面板入口，须观察界面并通过UI完成操作；排队回执不代表业务成功。",
+      "automation": "interactive",
+      "tool": "mc_open_panel",
+      "panel_id": "geometry_editor",
+      "route": {
+        "module": "GeometryTools2027",
+        "application": "GeometryTools2027",
+        "function": "Show",
+        "kind": "NET",
+        "title": "几何工具",
+        "ft": "chooks/GeometryTools2027.ft",
+        "completion": "Interactive/native route; registration is not evidence of completed business work."
+      },
+      "workflow_contract": "ai/workflows/interactive-panels.json"
     },
     {
       "id": "module.CIMCO",

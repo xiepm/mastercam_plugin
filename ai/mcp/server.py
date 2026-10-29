@@ -35,6 +35,11 @@ async def mc_inspect()->dict:
     """Read active saved path, units, native operation/tool IDs, ViewID frames, visible occupied levels, selected solids and up to 250 geometry records. Does not open/save a document."""
     return await runtime.call('inspect')
 
+@mcp.tool(annotations=WRITE)
+async def mc_open_panel(panel_id:Literal['advanced_drilling','tapping','solid_boundary','chain_picker','bee_hub','geometry_native','middle_confirm','geometry_editor'],expected_document:str,request_id:str)->dict:
+    """Queue one allowlisted interactive plugin panel. This is UI-assisted execution, NOT a headless business API. Observe/control the actual panel with UI tools, then inspect actual output. A queued receipt does not prove a window opened or any operation completed. Does not touch CIMCO. Do not repeat after timeout; query mc_request_status."""
+    return await runtime.call('open_panel',dict(panel_id=panel_id,expected_document=expected_document),request_id)
+
 @mcp.tool(annotations=READ)
 async def mc_operation_information(expected_document:str,operation_ids:Ids,obstacle_top:float|None=None,clearance_margin:float|None=None)->dict:
     """Read fresh cycle/extents information and optional axial reach lower bound. obstacle_top is local tool-plane Z; this is not collision checking. Restores operation selection."""
@@ -48,12 +53,12 @@ async def mc_operation_information(expected_document:str,operation_ids:Ids,obsta
 
 @mcp.tool(annotations=ToolAnnotations(readOnlyHint=False,destructiveHint=False,openWorldHint=False))
 async def mc_prepare_change(request:ChangeRequest)->dict:
-    """Prepare ten typed workflows, including Porsche projection, contour machining, healed copies and complex holes, without applying database edits. Returns preview, plan_id and preview_sha256. Geometry analysis may write STL/JSON artifacts and restores source selection. Values must come from user/engineering context. Plans expire after 15 minutes and reject changed document/objects/selection/context."""
+    """Prepare typed Porsche, MP, X+ and operation workflows without applying database edits. Returns preview, plan_id and preview_sha256. Analysis may write artifacts and restores selection. Native source APIs and interactive-only panels have distinct contracts. Values must come from user/engineering context. Plans expire after 15 minutes and reject changed document/objects/selection/context."""
     return await runtime.call('prepare',request.model_dump())
 
 @mcp.tool(annotations=WRITE)
 async def mc_apply_plan(plan_id:str,preview_sha256:str,expected_document:str,request_id:str)->dict:
-    """Apply an authorized preview once; repeat request_id returns its immutable receipt. Porsche contour/holes regenerate only when their explicit Regenerate parameter is true. Other actions do not regenerate. No posting, saving or collision certification. Read ok/status and actual native results."""
+    """Apply an authorized preview once; repeat request_id returns its immutable receipt. Porsche contour/holes and X+ sketch machining regenerate only when their explicit Regenerate parameter is true. Other actions do not regenerate. No posting, saving or collision certification. Read ok/status and actual native results."""
     return await runtime.call('apply',dict(plan_id=plan_id,preview_sha256=preview_sha256,expected_document=expected_document),request_id)
 
 @mcp.tool(annotations=WRITE)

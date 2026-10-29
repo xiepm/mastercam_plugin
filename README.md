@@ -4,11 +4,11 @@
 
 **[下载最新版安装包](https://github.com/xiepm/mastercam_plugin/releases/latest)** · [全部插件目录](docs/PLUGINS.md) · [安装说明](docs/INSTALL.md) · [兼容性与已知范围](docs/COMPATIBILITY.md)
 
-**AI 使用与调用**：[Skill + MCP 接入说明](ai/README.md)。功能目录覆盖 27 组模块及 CIMCO，包含 170 个实际 FT 入口；11 个 MCP 工具支持 10 类参数化动作，已加入保时捷自动轮廓、独立副本删孔补面和复杂孔自动建工序。需要现有 Mastercam MCP bridge；交互功能与未封装 API 明确标记。
+**AI 使用与调用**：[Skill + MCP 接入说明](ai/README.md)。功能目录覆盖 27 组模块及 CIMCO，包含 170 个实际 FT 入口；12 个 MCP 工具支持 28 类参数化动作，覆盖保时捷、MP、X+、工序与几何工具，并提供 8 个固定交互面板入口。需要现有 Mastercam MCP bridge；交互功能与未封装 API 明确标记。
 
 ## 下载与安装
 
-1. 在 Releases 下载 **`Mastercam2027-PluginSuite-AI-2027.10.29.2.zip`**，完整解压到一个文件夹。该包包含原有插件载荷与新增 AI 接入文件。
+1. 在 Releases 下载 **`Mastercam2027-PluginSuite-AI-2027.10.29.3.zip`**，完整解压到一个文件夹。该包包含原有插件载荷与新增 AI 接入文件。
 2. 确认 Mastercam 2027 已启动过一次，然后正常关闭 Mastercam。
 3. 双击 **`Install.cmd`**。自动查找安装目录；若未找到，输入包含 `Mastercam.exe` 的目录。按 Windows 提示允许写入安装目录。
 4. 重启 Mastercam，查看 **小蜜蜂、工艺助手、X+ 工具、X+ 原版、HSM 加工、MP 设计工具** 页签。CIMCO 首次安装需要联网下载约 43 MB；已有完整匹配安装时无需下载或重装。

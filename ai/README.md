@@ -6,8 +6,8 @@
 
 - **功能目录**：`catalog/capabilities.json`，覆盖发布包的 27 组模块及 CIMCO；含真实 FT 入口索引、前置条件、参数含义、副作用、回滚与验收边界。
 - **Skill**：`skills/mastercam-plugin-suite`，指导 AI 选择功能、核对坐标/刀具/单位、读取预览及处理失败。
-- **MCP**：`mcp/server.py`，11 个工具，10 类结构化写入动作；复用已经工作的 Mastercam MCP 进入宿主主线程。
-- **原生适配层**：`bridge/bin`，仅引用安装的 API29 和已发布业务 DLL，不分发 Mastercam SDK，不修改现有业务 DLL。
+- **MCP**：`mcp/server.py`，12 个工具，28 类结构化动作及 8 个受限交互面板入口；复用已经工作的 Mastercam MCP 进入宿主主线程。
+- **原生适配层**：`bridge/bin`，仅引用安装的 API29 和已发布业务 DLL，不分发 Mastercam SDK，不修改现有业务 DLL。边线、几何、夹具、半径选择和草绘适配源码保留于 bridge，来源哈希及调用副作用修正见 adapter-provenance.json。独立实体复制绑定已验证的几何内核构建，不匹配时拒绝执行。
 
 目录中 `typed` 表示已有参数化 MCP，`interactive` 表示需通过界面完成，`reference` 表示功能知识/源 API 合同。`typed_candidate` 仅表示底层有可封装的接口。不要把这几种状态混为一谈。
 
@@ -26,7 +26,7 @@
 | porsche.heal_holes | 保时捷自动删孔补面 | 完整孔主圆柱段的半径区间；输出独立副本，保留原实体 |
 | porsche.holes | 保时捷复杂孔自动建工序 | 真实孔段、世界孔轴方向、直径范围、刀具尺寸、切削参数、显式重算 |
 
-保时捷三项优先功能已通过直接 MCP 调用；[详细合同](skills/mastercam-plugin-suite/references/porsche.md) 和 [工作流定义](workflows/porsche.json) 记录步骤及边界。其他库/报表/原版 X+ 等仍按目录区分已封装和交互功能。
+保时捷接口合同见 [保时捷工作流](skills/mastercam-plugin-suite/references/porsche.md)。本次新增 MP/X+ 的 18 类直接动作，见 [完整功能对应表](skills/mastercam-plugin-suite/references/geometry-xplus.md)；包括边线、法向、选择、SVG、草绘及工序、夹具、分度平面、刀柄库、报告、STL、截图、工作偏置与 NCI 名称。
 
 本实现采用 Skill、结构化知识、MCP、状态化 Workflow、运行时预览/回滚守卫及 Evaluation 测试。现有目录检索足够支撑这些功能，未额外引入向量数据库、定时触发或后台代理。
 
@@ -69,7 +69,7 @@ python -m venv .ai-venv
 
 默认先预览具体变更，再按用户授权执行；如果用户已授权参数齐全时自动执行，Skill 不重复询问。MCP 的预览哈希只证明调用指向同一个计划，不代替人的授权。
 
-预览不写入工序或结果几何，MP/Porsche 投影会产生独立分析文件并恢复临时选择。Porsche 工序动作仅在显式 `Regenerate:true` 时于 apply 中计算刀路；其余 apply 不隐含重算。HSM 重算另有专用工具。均不自动保存或后处理；输出回读通过不等于碰撞检查或生产 NC 验收。
+预览不写入工序或结果几何，MP/Porsche 投影会产生独立分析文件并恢复临时选择。Porsche 工序及 X+ 草绘加工仅在显式 `Regenerate:true` 时于 apply 中计算刀路；其余 apply 不隐含重算。HSM 重算另有专用工具。均不自动保存或后处理；输出回读通过不等于碰撞检查或生产 NC 验收。
 
 所有 native 请求按 workspace 串行，调用前不得另开并行宿主修改。请求日志在 `workspace/plugin-ai/<request_id>/`。超时意味着结果未知，先用 `mc_request_status` 查询，不重发。详细恢复条件见 Skill 的 `references/execution.md`。
 
@@ -83,6 +83,6 @@ pwsh -NoProfile -File ai\tests\PreviewGuard.Tests.ps1
 
 `ai/validation` 记录适配层测试；业务 DLL 既有验证位于仓库根目录 `validation`。两者分别记录。业务源码并未因此全部开源；本次新增的 MCP、适配层和 Skill 源码在 `ai/`。
 
-当前通过 26 项 Python 检查、5 项生产预览守卫回归检查。Porsche 1.1.0 适配层通过 30 次 MCP 调用、54 项原生结果检查，含刀路端点和不重算分支，测试后源对象、工序、刀具、平面及选择核对恢复。之前六类动作的 35 次 MCP 调用及 6 次发现/生命周期调用属于 1.0.2 历史验收，保留原记录。见 [验证范围](validation/README.md) 与 [原评审处理](validation/review-resolution.md)。
+本次 MP/X+ 的测试、实际回读和清理证据见 [新增接口验收](validation/geometry-native-acceptance.json)。Porsche 1.1.0 历史适配层通过 30 次 MCP 调用、54 项原生结果检查，含刀路端点和不重算分支，测试后源对象、工序、刀具、平面及选择核对恢复。之前六类动作的 35 次 MCP 调用及 6 次发现/生命周期调用属于 1.0.2 历史验收，保留原记录。见 [验证范围](validation/README.md) 与 [原评审处理](validation/review-resolution.md)。
 
 需要重编译适配层时，使用带 Roslyn 的 PowerShell 7.6/.NET 10 运行 `ai/bridge/Build.ps1 -MastercamRoot <目录>`，然后重新生成 identity/catalog。不要替换正在宿主中加载的 DLL；正常退出宿主后再更新。新增动作必须补实际原生回读与清理证据，不能仅凭 JSON schema 声称已支持。

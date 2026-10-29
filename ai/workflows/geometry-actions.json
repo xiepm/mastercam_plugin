@@ -1,0 +1,20 @@
+[
+  ["mp.edges","MPEdgeTools2027","MP 三维直边/二维投影","单个实体的闭合平面面与直线边；输出独立线段，支持回滚。","mp_extract_straight_edges"],
+  ["mp.reverse_normals","MPDesignTools2027","MP 反转独立曲面法向","明确曲面 ID，逐面反转并回读；不反转实体面。","mp_reverse_surface_normals"],
+  ["mp.select_surface_types","MPDesignSurfaceSelect2027","MP 按曲面类型选择","按 mc_inspect 中完整类型名筛选可见独立曲面，追加选择，可恢复原选择。","mp_select_surface_types"],
+  ["mp.select_radius","MPDesignRadiusSelect2027","MP 解析半径筛选","以当前文档单位和闭区间检查圆柱/球/圆环/锥参考半径；选择命中的完整实体并返回面 PID。","mp_select_analytic_radius"],
+  ["xplus.svg","SVGGeometry2027","X+ SVG 几何导入","受限 SVG XML 解析为原生线段，明确尺寸映射、翻转、公差与输出层。","svg_import"],
+  ["xplus.sketch","TpSketcher2027","X+ 平面草绘/轮廓工序","给定 ViewID 与局部二维点链，生成世界几何；可使用已有刀具创建轮廓工序。","sketch_contour_operation"],
+  ["xplus.fixture_copy","FixtureTools2027","X+ 原生夹具复制摆放","对明确点/曲线/实体 ID 建立独立副本，按世界 Z 的 90 度倍数旋转和平移，回读 AABB。","fixture_native_copy"],
+  ["xplus.fit_plane","HirthTools2027","X+ 分度齿盘拟合平面","按两轴离散角度网格拟合指定 ViewID，保留原点及偏置，可新建/复用并可选激活。","hirth_fit_plane"],
+  ["xplus.setup_sheet","SetupSheets2027","X+ 程序单/刀具表","导出实际工序、刀具和设置到 HTML/XLSX/CSV；明确全选或当前选中工序范围。","setup_sheets_export"],
+  ["xplus.levels_to_stl","LevelExport2027","X+ 可见图层 STL 导出","逐层选择并导出世界坐标二进制 STL，校验有限三角面数据；AI 适配器使用属性选择，避免参数实体重新提交。","levels_to_stl"],
+  ["xplus.capture","ScreenTools2027","X+ 白底截图","通过宿主截图 API 保存有像素验证的 PNG，并恢复背景、轴显示等上下文。","screen_capture"],
+  ["xplus.gradient","ScreenTools2027","X+ 渐变背景","设置水平/垂直/对角渐变或关闭；保存恢复凭据并拒绝覆盖后续背景修改。","screen_gradient"],
+  ["xplus.electrode_report","ElectrodeReport2027","X+ 电极几何报告","按明确实体、ViewID 和参考点语义生成报告；未知信息保留未知，不推测电极工艺。","electrode_report"],
+  ["geometry.copy_edit","GeometryTools2027","几何副本编辑","对独立副本执行居中、90度旋转、构图平面对齐、平面着色、尺寸线、曲线合并或分层；原对象保留。","geometry_transform"],
+  ["xplus.holder_library","HolderTools2027","X+ 分段刀柄库","明确各段上/下直径与高度，在新的 tooldb 文件创建原生刀柄并重开回读；不改已有刀库。","holder_create"],
+  ["xplus.select_operation_chains","ChainTools2027","X+ 工序链几何选择","读取现有工序完整原生链并选中其全部几何；不向原生数据库提交过滤后的 Chain 数组。","chain_select"],
+  ["xplus.work_offset","XPlusOriginal2027","X+ 工作偏置编号","独立 API29 适配器设置已有 ViewID 的 WorkOffsetNumber，预览受影响工序并支持恢复。","original_setworkoffset"],
+  ["xplus.rename_nci","LittleBee2027","X+ NCI 程序名","独立 API29 适配器逐工序设置 NCI 名，保留目录并恢复选择；不后处理、不重命名磁盘 NC。","bee.rename"]
+]
