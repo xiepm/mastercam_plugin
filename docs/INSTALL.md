@@ -2,7 +2,7 @@
 
 ## 常规安装
 
-下载 Releases 中的 `Mastercam2027-PluginSuite-2027.10.28.2.zip` 后完整解压。先正常启动一次 Mastercam 2027，让它生成当前用户的配置，再关闭软件，双击 `Install.cmd`。
+下载 Releases 中的完整插件 ZIP 后完整解压。先正常启动一次 Mastercam 2027，让它生成当前用户的配置，再关闭软件，双击 `Install.cmd`。AI 集成发行版同时包含 Skill/MCP 文件，配置方法见 [AI 接入](../ai/README.md)；插件安装仍由当前入口处理。
 
 `Install.cmd` 默认同时处理 CIMCO Verify：完整的 26.9.11.46240 或更新安装通过签名检查后跳过；缺失时从官方服务器下载约 43 MB，并核对固定 SHA-256 和 CIMCO A/S 签名。安装只选择通用资源和 Mastercam 2027 组件，禁止安装器强行关闭程序或自动重启。下载失败不会开始写入插件文件，修复网络后可重试。
 

@@ -1,0 +1,10 @@
+{
+  "mastercam_root": "E:/CAM/Mastercam 2027",
+  "workspace": "E:/MCPWorkspace",
+  "execution_policy": "preview_first",
+  "upstream": {
+    "command": "E:/MastercamBridge/.venv/Scripts/python.exe",
+    "args": ["E:/MastercamBridge/server.py"],
+    "env": {"PYTHONUTF8": "1"}
+  }
+}

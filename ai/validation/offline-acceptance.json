@@ -1,0 +1,20 @@
+{
+  "date": "2026-10-29",
+  "passed": true,
+  "unitTestCases": 22,
+  "productionPreviewGuardChecks": 5,
+  "command": "python -m unittest discover -s ai/tests -v",
+  "scope": [
+    "strict action/ID/finite-value/extra-field contracts",
+    "actual chamfer angle required",
+    "request identity and changed-argument rejection",
+    "durable replay across MCP restart",
+    "unknown-result lock and late receipt recovery",
+    "workspace serialization",
+    "dependency failures before native submission",
+    "catalog/FT/schema/bridge identity consistency",
+    "registration preserves other settings and repeated installation",
+    "modified skill installation is refused"
+  ],
+  "skillValidatorPassed": true
+}

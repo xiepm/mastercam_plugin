@@ -1,0 +1,4 @@
+interface:
+  display_name: "Mastercam 插件能力"
+  short_description: "检索 Mastercam 2027 插件功能，按真实接口预览、执行并验证工序和几何操作"
+  default_prompt: "使用 $mastercam-plugin-suite 查看当前 Mastercam 插件能力，并为我的操作选择可验证的调用方式。"

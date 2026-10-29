@@ -1,0 +1,2381 @@
+[
+  {
+    "module": "MPRebuild2027",
+    "summary": "发布2027.10.28.2中的1.0.1.0原创高级网格几何：任意截面、平行切片、拔模区域、分区交界边和法线箭头；实际安装件原生验收PASS。",
+    "concepts": [
+      "截面平面由世界origin与非零normal定义，normal内部归一化；第i层origin+i*spacing*unit(normal)。",
+      "拔模角=asin(绕序单位法向·单位拉拔方向)，阈值分正/负/近零；负角不是倒扣遮挡判定。",
+      "AnalysisPlan是活宿主会话对象；OutputRun持有精确新增ID及回滚保护；不能用JSON重新构造有效计划或回滚凭据。",
+      "模式0 Sections、1 SliceStack、2 DraftAnalysis、3 PartingPreparation、4 FacetNormals；模式2与4均调用Draft(false,true)，是相同计算路径的不同入口。",
+      "数值必须来自用户或工程上下文；界面初始值仅为演示/输入示例，不是加工默认值或推荐值。",
+      "当前ai/mcp/server.py、models.py及ai/bridge/PluginBridge.cs已提供mp.sections/mp.draft的prepare/apply/rollback映射；typed_candidate字段描述业务接口属性，不代表其他候选都已注册MCP。宿主插件原生验收不能替代新桥接的独立验收。",
+      "公开发布件 payload/chooks/MPRebuild2027/MPRebuild2027.dll；assemblyVersion=1.0.1.0；SHA256=6935E289BC9D8DC39EEB564A9723B5CAF574870C333D1492490B0F2635224564（已与catalog/package.json逐件比对）。"
+    ],
+    "workflows": [
+      {
+        "id": "mp_section",
+        "title": "任意世界平面截面",
+        "when": "检查实体某高度或斜截面的轮廓与面积。",
+        "inputs": [
+          "int[] ids",
+          "Vec3 origin, Vec3 normal",
+          "count=1；spacing有限，单层时不用于偏移",
+          "double meshTolerance=.01, weldTolerance=.0001（毫米UI初始值示例，不是推荐公差/加工默认值）",
+          "string directory"
+        ],
+        "preconditions": [
+          "在已打开文档的Mastercam 2027/API29、.NET10 x64宿主线程内调用；不是独立进程计算SDK。",
+          "使用catalog/package.json对应MPRebuild2027.dll 1.0.1.0 SHA256=6935E289BC9D8DC39EEB564A9723B5CAF574870C333D1492490B0F2635224564及配套Core/Porsche；先调用MPRebuild2027.Dependencies.Ensure()或在依赖已显式载入后CheckHostContract()。",
+          "SDK SHA256 A5F87967FB5E8CFB7EA2A66CF984C9F0E468FE67B0CB0AF5A7B334CF50D404FF、MCCORE 0F9C445215D93A7A3C5C25337134BB1E2CB5884642EA0B736EC5BEBF403ED14E、Porsche DA8E4F21100013EB766CB5C62DF47768A039E59A8CB5E986FB2D7A2FA2F231CE必须匹配。",
+          "ids为1～100个不重复正ID，必须是未Blanked且所在层可见的Mastercam.Database.SolidGeometry；尺寸/公差使用当前文档单位，坐标与方向使用世界坐标。",
+          "directory为调用方明确选定的可写报告根目录。自定义调用方应约束路径；当前MCP桥接使用自己的受控报告目录；模块会在其下新建唯一run目录。"
+        ],
+        "steps": [
+          "捕获文档、单位与明确实体ID，确认世界平面。",
+          "调用Sections(ids,origin,normal,1,0,meshTolerance,weldTolerance,directory)。",
+          "读取Sections[].Section.Paths/Segments/Warnings；闭环检查通过后使用SignedArea。",
+          "需要可编辑线段时单独调用mp_create_rollback流程。"
+        ],
+        "outputs": [
+          "AnalysisPlan.Sections含SourceId、Index、Origin与SectionResult。",
+          "SectionResult.Paths、Segments、CoplanarTriangles、BranchVertices、Warnings；SectionPath.Points、Closed、SignedArea、IsHole。",
+          "analysis.json、每实体solid-ID.stl、selection-readbacks.json。"
+        ],
+        "effects": [
+          "按实体只读导出STL，写analysis.json、selection-readbacks.json及所需CSV；本调用不创建宿主几何。",
+          "保留输入实体与宿主选择；分析计划封存当前文档/几何/选择/上下文。"
+        ],
+        "rollback": "分析本身无宿主新增对象；生成的报告/STL文件不会因几何回滚自动删除。若已Create，保留返回的OutputRun并调用其Rollback()。",
+        "automation": "typed_candidate",
+        "api": [
+          "MPRebuild2027.AnalysisPlan MPRebuild2027.Workflows.Sections(int[] ids, MPRebuild2027.Core.Vec3 origin, MPRebuild2027.Core.Vec3 normal, int count, double spacing, double meshTolerance, double weldTolerance, string directory)",
+          "void MPRebuild2027.AnalysisPlan.Verify()"
+        ],
+        "limits": [
+          "这是STL网格流程；请求弦差不保证法向角误差，float32远原点量化误差不能靠减小弦差消除。",
+          "0 < weldTolerance <= meshTolerance；每实体最多500000片，一次合计1000000片；新线总数最多50000。",
+          "源选择、属性/时间戳/实体面映射、工序和坐标上下文均保护；公开face-map读调用有选择副作用，1.0.1已加finally恢复与严格ID读回。",
+          "typed_candidate是业务接口分类；当前桥接已支持mp.sections/mp.draft和Create/Rollback，准确工具契约以ai/mcp/server.py与models.py为准，不能外推其他接口已经注册。",
+          "开放、自交、相交或超工作量的轮廓面积为NaN；JSON将其表示字符串NaN，不能改成0。",
+          "按实体分别处理，不做多实体截面布尔并。"
+        ],
+        "evidence": [
+          "catalog/package.json",
+          "docs/HSM-MP.md",
+          "docs/COMPATIBILITY.md",
+          "validation/mp-native-acceptance.json",
+          "ai/mcp/server.py",
+          "ai/mcp/models.py",
+          "ai/bridge/PluginBridge.cs",
+          "local-source: MC2027-PluginSuite/MPRebuild2027/src/Host/Workflows.cs",
+          "local-source: MC2027-PluginSuite/MPRebuild2027/src/Host/NativeState.cs",
+          "local-source: MC2027-PluginSuite/MPRebuild2027/src/Host/GeometryWindow.cs",
+          "local-source: MC2027-PluginSuite/MPRebuild2027/src/Host/Main.cs"
+        ]
+      },
+      {
+        "id": "mp_slice_stack",
+        "title": "平行毛坯切片",
+        "when": "比较多个等距截面或生成分层线框。",
+        "inputs": [
+          "同单截面输入；count=1..200，UI SliceCount初始值示例5",
+          "spacing>焊接公差（count>1），毫米UI初始间距示例1；英制UI除以25.4"
+        ],
+        "preconditions": [
+          "在已打开文档的Mastercam 2027/API29、.NET10 x64宿主线程内调用；不是独立进程计算SDK。",
+          "使用catalog/package.json对应MPRebuild2027.dll 1.0.1.0 SHA256=6935E289BC9D8DC39EEB564A9723B5CAF574870C333D1492490B0F2635224564及配套Core/Porsche；先调用MPRebuild2027.Dependencies.Ensure()或在依赖已显式载入后CheckHostContract()。",
+          "SDK SHA256 A5F87967FB5E8CFB7EA2A66CF984C9F0E468FE67B0CB0AF5A7B334CF50D404FF、MCCORE 0F9C445215D93A7A3C5C25337134BB1E2CB5884642EA0B736EC5BEBF403ED14E、Porsche DA8E4F21100013EB766CB5C62DF47768A039E59A8CB5E986FB2D7A2FA2F231CE必须匹配。",
+          "ids为1～100个不重复正ID，必须是未Blanked且所在层可见的Mastercam.Database.SolidGeometry；尺寸/公差使用当前文档单位，坐标与方向使用世界坐标。",
+          "directory为调用方明确选定的可写报告根目录。自定义调用方应约束路径；当前MCP桥接使用自己的受控报告目录；模块会在其下新建唯一run目录。"
+        ],
+        "steps": [
+          "设置首平面、世界方向、count和spacing。",
+          "调用Sections并按SourceId与Index保留归属。",
+          "查看每层闭环/面积/开放链警告后再创建几何。"
+        ],
+        "outputs": [
+          "逐体逐层SectionRow及带SliceIndex的OutputLine计划。"
+        ],
+        "effects": [
+          "按实体只读导出STL，写analysis.json、selection-readbacks.json及所需CSV；本调用不创建宿主几何。",
+          "保留输入实体与宿主选择；分析计划封存当前文档/几何/选择/上下文。"
+        ],
+        "rollback": "分析本身无宿主新增对象；生成的报告/STL文件不会因几何回滚自动删除。若已Create，保留返回的OutputRun并调用其Rollback()。",
+        "automation": "typed_candidate",
+        "api": [
+          "MPRebuild2027.AnalysisPlan MPRebuild2027.Workflows.Sections(int[] ids, MPRebuild2027.Core.Vec3 origin, MPRebuild2027.Core.Vec3 normal, int count, double spacing, double meshTolerance, double weldTolerance, string directory)",
+          "void MPRebuild2027.AnalysisPlan.Verify()"
+        ],
+        "limits": [
+          "这是STL网格流程；请求弦差不保证法向角误差，float32远原点量化误差不能靠减小弦差消除。",
+          "0 < weldTolerance <= meshTolerance；每实体最多500000片，一次合计1000000片；新线总数最多50000。",
+          "源选择、属性/时间戳/实体面映射、工序和坐标上下文均保护；公开face-map读调用有选择副作用，1.0.1已加finally恢复与严格ID读回。",
+          "typed_candidate是业务接口分类；当前桥接已支持mp.sections/mp.draft和Create/Rollback，准确工具契约以ai/mcp/server.py与models.py为准，不能外推其他接口已经注册。",
+          "网格总片数×count<=20000000；输出线<=50000。"
+        ],
+        "evidence": [
+          "catalog/package.json",
+          "docs/HSM-MP.md",
+          "docs/COMPATIBILITY.md",
+          "validation/mp-native-acceptance.json",
+          "ai/mcp/server.py",
+          "ai/mcp/models.py",
+          "ai/bridge/PluginBridge.cs",
+          "local-source: MC2027-PluginSuite/MPRebuild2027/src/Host/Workflows.cs",
+          "local-source: MC2027-PluginSuite/MPRebuild2027/src/Host/NativeState.cs",
+          "local-source: MC2027-PluginSuite/MPRebuild2027/src/Host/GeometryWindow.cs",
+          "local-source: MC2027-PluginSuite/MPRebuild2027/src/Host/Main.cs"
+        ]
+      },
+      {
+        "id": "mp_draft",
+        "title": "网格拔模角分析及法线",
+        "when": "检查拉拔方向对应的网格角度分区与面积。",
+        "inputs": [
+          "int[] ids；Vec3 pull非零有限",
+          "thresholdDegrees由工程需求指定；UI初始值示例3°，必须0<值<90",
+          "meshTolerance、weldTolerance、directory",
+          "transitionEdges=false；normalGlyphs=true（对应UI模式2）",
+          "glyphLength=1，maximumGlyphs=1000（毫米UI初始值示例，不是推荐公差/加工默认值）"
+        ],
+        "preconditions": [
+          "在已打开文档的Mastercam 2027/API29、.NET10 x64宿主线程内调用；不是独立进程计算SDK。",
+          "使用catalog/package.json对应MPRebuild2027.dll 1.0.1.0 SHA256=6935E289BC9D8DC39EEB564A9723B5CAF574870C333D1492490B0F2635224564及配套Core/Porsche；先调用MPRebuild2027.Dependencies.Ensure()或在依赖已显式载入后CheckHostContract()。",
+          "SDK SHA256 A5F87967FB5E8CFB7EA2A66CF984C9F0E468FE67B0CB0AF5A7B334CF50D404FF、MCCORE 0F9C445215D93A7A3C5C25337134BB1E2CB5884642EA0B736EC5BEBF403ED14E、Porsche DA8E4F21100013EB766CB5C62DF47768A039E59A8CB5E986FB2D7A2FA2F231CE必须匹配。",
+          "ids为1～100个不重复正ID，必须是未Blanked且所在层可见的Mastercam.Database.SolidGeometry；尺寸/公差使用当前文档单位，坐标与方向使用世界坐标。",
+          "directory为调用方明确选定的可写报告根目录。自定义调用方应约束路径；当前MCP桥接使用自己的受控报告目录；模块会在其下新建唯一run目录。"
+        ],
+        "steps": [
+          "确认pull方向；需要反向比较时显式取-pull。",
+          "调用Draft(...,false,true,glyphLength,maximumGlyphs,directory)。",
+          "查看Drafts[].Draft正/负/近零面积、法向与拓扑警告、draft-facets.csv。"
+        ],
+        "outputs": [
+          "DraftResult各片Index/Center/Normal/Area/AngleDegrees/Classification及区域面积、拓扑警告。",
+          "draft-facets.csv和可选箭头线计划；尚未创建宿主线。"
+        ],
+        "effects": [
+          "按实体只读导出STL，写analysis.json、selection-readbacks.json及所需CSV；本调用不创建宿主几何。",
+          "保留输入实体与宿主选择；分析计划封存当前文档/几何/选择/上下文。"
+        ],
+        "rollback": "分析本身无宿主新增对象；生成的报告/STL文件不会因几何回滚自动删除。若已Create，保留返回的OutputRun并调用其Rollback()。",
+        "automation": "typed_candidate",
+        "api": [
+          "MPRebuild2027.AnalysisPlan MPRebuild2027.Workflows.Draft(int[] ids, MPRebuild2027.Core.Vec3 pull, double thresholdDegrees, double meshTolerance, double weldTolerance, bool transitionEdges, bool normalGlyphs, double glyphLength, int maximumGlyphs, string directory)",
+          "void MPRebuild2027.AnalysisPlan.Verify()"
+        ],
+        "limits": [
+          "这是STL网格流程；请求弦差不保证法向角误差，float32远原点量化误差不能靠减小弦差消除。",
+          "0 < weldTolerance <= meshTolerance；每实体最多500000片，一次合计1000000片；新线总数最多50000。",
+          "源选择、属性/时间戳/实体面映射、工序和坐标上下文均保护；公开face-map读调用有选择副作用，1.0.1已加finally恢复与严格ID读回。",
+          "typed_candidate是业务接口分类；当前桥接已支持mp.sections/mp.draft和Create/Rollback，准确工具契约以ai/mcp/server.py与models.py为准，不能外推其他接口已经注册。",
+          "normalGlyphs=true时glyphLength>0、maximumGlyphs=1..10000；这是单次跨实体采样上限。",
+          "不会执行射线遮挡、真实倒扣、加工可达性或自动外法向修复。"
+        ],
+        "evidence": [
+          "catalog/package.json",
+          "docs/HSM-MP.md",
+          "docs/COMPATIBILITY.md",
+          "validation/mp-native-acceptance.json",
+          "ai/mcp/server.py",
+          "ai/mcp/models.py",
+          "ai/bridge/PluginBridge.cs",
+          "local-source: MC2027-PluginSuite/MPRebuild2027/src/Host/Workflows.cs",
+          "local-source: MC2027-PluginSuite/MPRebuild2027/src/Host/NativeState.cs",
+          "local-source: MC2027-PluginSuite/MPRebuild2027/src/Host/GeometryWindow.cs",
+          "local-source: MC2027-PluginSuite/MPRebuild2027/src/Host/Main.cs"
+        ]
+      },
+      {
+        "id": "mp_parting_prepare",
+        "title": "网格分模准备交界边",
+        "when": "获取相邻三角片拔模类别改变处的网格边供后续人工分模参考。",
+        "inputs": [
+          "同Draft；transitionEdges=true，normalGlyphs=false（UI模式3）"
+        ],
+        "preconditions": [
+          "在已打开文档的Mastercam 2027/API29、.NET10 x64宿主线程内调用；不是独立进程计算SDK。",
+          "使用catalog/package.json对应MPRebuild2027.dll 1.0.1.0 SHA256=6935E289BC9D8DC39EEB564A9723B5CAF574870C333D1492490B0F2635224564及配套Core/Porsche；先调用MPRebuild2027.Dependencies.Ensure()或在依赖已显式载入后CheckHostContract()。",
+          "SDK SHA256 A5F87967FB5E8CFB7EA2A66CF984C9F0E468FE67B0CB0AF5A7B334CF50D404FF、MCCORE 0F9C445215D93A7A3C5C25337134BB1E2CB5884642EA0B736EC5BEBF403ED14E、Porsche DA8E4F21100013EB766CB5C62DF47768A039E59A8CB5E986FB2D7A2FA2F231CE必须匹配。",
+          "ids为1～100个不重复正ID，必须是未Blanked且所在层可见的Mastercam.Database.SolidGeometry；尺寸/公差使用当前文档单位，坐标与方向使用世界坐标。",
+          "directory为调用方明确选定的可写报告根目录。自定义调用方应约束路径；当前MCP桥接使用自己的受控报告目录；模块会在其下新建唯一run目录。"
+        ],
+        "steps": [
+          "调用Draft(...,true,false,glyphLength,maximumGlyphs,directory)。",
+          "审核TransitionEdges及非流形/绕序诊断。",
+          "确认后Create生成交界线，继续由设计人员处理模具分模。"
+        ],
+        "outputs": [
+          "TransitionEdges及draft-class-transition线计划，area/CSV报告。"
+        ],
+        "effects": [
+          "按实体只读导出STL，写analysis.json、selection-readbacks.json及所需CSV；本调用不创建宿主几何。",
+          "保留输入实体与宿主选择；分析计划封存当前文档/几何/选择/上下文。"
+        ],
+        "rollback": "分析本身无宿主新增对象；生成的报告/STL文件不会因几何回滚自动删除。若已Create，保留返回的OutputRun并调用其Rollback()。",
+        "automation": "typed_candidate",
+        "api": [
+          "MPRebuild2027.AnalysisPlan MPRebuild2027.Workflows.Draft(int[] ids, MPRebuild2027.Core.Vec3 pull, double thresholdDegrees, double meshTolerance, double weldTolerance, bool transitionEdges, bool normalGlyphs, double glyphLength, int maximumGlyphs, string directory)",
+          "void MPRebuild2027.AnalysisPlan.Verify()"
+        ],
+        "limits": [
+          "这是STL网格流程；请求弦差不保证法向角误差，float32远原点量化误差不能靠减小弦差消除。",
+          "0 < weldTolerance <= meshTolerance；每实体最多500000片，一次合计1000000片；新线总数最多50000。",
+          "源选择、属性/时间戳/实体面映射、工序和坐标上下文均保护；公开face-map读调用有选择副作用，1.0.1已加finally恢复与严格ID读回。",
+          "typed_candidate是业务接口分类；当前桥接已支持mp.sections/mp.draft和Create/Rollback，准确工具契约以ai/mcp/server.py与models.py为准，不能外推其他接口已经注册。",
+          "NonManifoldEdges!=0或InconsistentEdges!=0时拒绝生成分区边。",
+          "不是精确分模线、芯腔实体分离或B-rep布尔分模。"
+        ],
+        "evidence": [
+          "catalog/package.json",
+          "docs/HSM-MP.md",
+          "docs/COMPATIBILITY.md",
+          "validation/mp-native-acceptance.json",
+          "ai/mcp/server.py",
+          "ai/mcp/models.py",
+          "ai/bridge/PluginBridge.cs",
+          "local-source: MC2027-PluginSuite/MPRebuild2027/src/Host/Workflows.cs",
+          "local-source: MC2027-PluginSuite/MPRebuild2027/src/Host/NativeState.cs",
+          "local-source: MC2027-PluginSuite/MPRebuild2027/src/Host/GeometryWindow.cs",
+          "local-source: MC2027-PluginSuite/MPRebuild2027/src/Host/Main.cs"
+        ]
+      },
+      {
+        "id": "mp_facet_normals",
+        "title": "网格法线箭头",
+        "when": "显示采样三角片的绕序法向与拔模类别颜色。",
+        "inputs": [
+          "同Draft；transitionEdges=false，normalGlyphs=true（UI模式4）"
+        ],
+        "preconditions": [
+          "在已打开文档的Mastercam 2027/API29、.NET10 x64宿主线程内调用；不是独立进程计算SDK。",
+          "使用catalog/package.json对应MPRebuild2027.dll 1.0.1.0 SHA256=6935E289BC9D8DC39EEB564A9723B5CAF574870C333D1492490B0F2635224564及配套Core/Porsche；先调用MPRebuild2027.Dependencies.Ensure()或在依赖已显式载入后CheckHostContract()。",
+          "SDK SHA256 A5F87967FB5E8CFB7EA2A66CF984C9F0E468FE67B0CB0AF5A7B334CF50D404FF、MCCORE 0F9C445215D93A7A3C5C25337134BB1E2CB5884642EA0B736EC5BEBF403ED14E、Porsche DA8E4F21100013EB766CB5C62DF47768A039E59A8CB5E986FB2D7A2FA2F231CE必须匹配。",
+          "ids为1～100个不重复正ID，必须是未Blanked且所在层可见的Mastercam.Database.SolidGeometry；尺寸/公差使用当前文档单位，坐标与方向使用世界坐标。",
+          "directory为调用方明确选定的可写报告根目录。自定义调用方应约束路径；当前MCP桥接使用自己的受控报告目录；模块会在其下新建唯一run目录。"
+        ],
+        "steps": [
+          "指定pull、角度阈值、glyphLength、maximumGlyphs。",
+          "调用Draft(...,false,true,...)；查看法向警告后Create。"
+        ],
+        "outputs": [
+          "facet-normal轴线、normal-arrow翼线计划；正区色10、负区色12、近零色14。"
+        ],
+        "effects": [
+          "按实体只读导出STL，写analysis.json、selection-readbacks.json及所需CSV；本调用不创建宿主几何。",
+          "保留输入实体与宿主选择；分析计划封存当前文档/几何/选择/上下文。"
+        ],
+        "rollback": "分析本身无宿主新增对象；生成的报告/STL文件不会因几何回滚自动删除。若已Create，保留返回的OutputRun并调用其Rollback()。",
+        "automation": "typed_candidate",
+        "api": [
+          "MPRebuild2027.AnalysisPlan MPRebuild2027.Workflows.Draft(int[] ids, MPRebuild2027.Core.Vec3 pull, double thresholdDegrees, double meshTolerance, double weldTolerance, bool transitionEdges, bool normalGlyphs, double glyphLength, int maximumGlyphs, string directory)",
+          "void MPRebuild2027.AnalysisPlan.Verify()"
+        ],
+        "limits": [
+          "这是STL网格流程；请求弦差不保证法向角误差，float32远原点量化误差不能靠减小弦差消除。",
+          "0 < weldTolerance <= meshTolerance；每实体最多500000片，一次合计1000000片；新线总数最多50000。",
+          "源选择、属性/时间戳/实体面映射、工序和坐标上下文均保护；公开face-map读调用有选择副作用，1.0.1已加finally恢复与严格ID读回。",
+          "typed_candidate是业务接口分类；当前桥接已支持mp.sections/mp.draft和Create/Rollback，准确工具契约以ai/mcp/server.py与models.py为准，不能外推其他接口已经注册。",
+          "箭头位于三角片中心；不是曲面UV求值或UV方向修改。",
+          "模式4与模式2现有源码调用完全相同，不宣称独立曲面法线算法。"
+        ],
+        "evidence": [
+          "catalog/package.json",
+          "docs/HSM-MP.md",
+          "docs/COMPATIBILITY.md",
+          "validation/mp-native-acceptance.json",
+          "ai/mcp/server.py",
+          "ai/mcp/models.py",
+          "ai/bridge/PluginBridge.cs",
+          "local-source: MC2027-PluginSuite/MPRebuild2027/src/Host/Workflows.cs",
+          "local-source: MC2027-PluginSuite/MPRebuild2027/src/Host/NativeState.cs",
+          "local-source: MC2027-PluginSuite/MPRebuild2027/src/Host/GeometryWindow.cs",
+          "local-source: MC2027-PluginSuite/MPRebuild2027/src/Host/Main.cs"
+        ]
+      },
+      {
+        "id": "mp_create_rollback",
+        "title": "把分析结果创建为原生线并精确回滚",
+        "when": "已取得同一活文档中的AnalysisPlan，需要持久化线框。",
+        "inputs": [
+          "AnalysisPlan p（会话对象，非反序列化DTO）",
+          "int level：正数、已有可见层或当前主层",
+          "afterCommit=null；Action<int>回调只用于可信内部测试，不暴露任意脚本执行"
+        ],
+        "preconditions": [
+          "在已打开文档的Mastercam 2027/API29、.NET10 x64宿主线程内调用；不是独立进程计算SDK。",
+          "使用catalog/package.json对应MPRebuild2027.dll 1.0.1.0 SHA256=6935E289BC9D8DC39EEB564A9723B5CAF574870C333D1492490B0F2635224564及配套Core/Porsche；先调用MPRebuild2027.Dependencies.Ensure()或在依赖已显式载入后CheckHostContract()。",
+          "SDK SHA256 A5F87967FB5E8CFB7EA2A66CF984C9F0E468FE67B0CB0AF5A7B334CF50D404FF、MCCORE 0F9C445215D93A7A3C5C25337134BB1E2CB5884642EA0B736EC5BEBF403ED14E、Porsche DA8E4F21100013EB766CB5C62DF47768A039E59A8CB5E986FB2D7A2FA2F231CE必须匹配。",
+          "ids为1～100个不重复正ID，必须是未Blanked且所在层可见的Mastercam.Database.SolidGeometry；尺寸/公差使用当前文档单位，坐标与方向使用世界坐标。",
+          "directory为调用方明确选定的可写报告根目录。自定义调用方应约束路径；当前MCP桥接使用自己的受控报告目录；模块会在其下新建唯一run目录。",
+          "无其他活动Undo事务；p.Verify()通过，Lines数量1..50000，端点有限且非零长；分析后没有改变文档、选择、源/其他几何、工序和坐标上下文。"
+        ],
+        "steps": [
+          "保留AnalysisPlan于同一宿主会话的受控对象表；MCP层若实现，应返回不可伪造的会话句柄而非任意对象构造参数。",
+          "调用Workflows.Create(p,level)，保存返回OutputRun及CreatedIds、ReportPath。",
+          "读取created-geometry.json并向用户报告输出数量/ID。",
+          "需撤回时对同一OutputRun调用Rollback()；仅在保护检查仍通过时删除登记的新线。"
+        ],
+        "outputs": [
+          "OutputRun.CreatedIds、ReportPath、RolledBack；created-geometry.json。"
+        ],
+        "effects": [
+          "Commit新LineGeometry；不Commit源实体；按精确ID与端点/颜色/图层读回。",
+          "失败先取消事务，再只清理登记且签名匹配的新对象；不以全库差集删。"
+        ],
+        "rollback": "OutputRun.Rollback()；要求当前文档、原几何、工序、上下文及新增清单仍匹配，外部编辑会拒绝回滚；成功后幂等。不要用delete-all或重新构造ID列表代替。",
+        "automation": "typed_candidate",
+        "api": [
+          "MPRebuild2027.OutputRun MPRebuild2027.Workflows.Create(MPRebuild2027.AnalysisPlan p, int level, System.Action<int> afterCommit = null)",
+          "void MPRebuild2027.OutputRun.Rollback()",
+          "int[] MPRebuild2027.OutputRun.CreatedIds",
+          "string MPRebuild2027.OutputRun.ReportPath",
+          "bool MPRebuild2027.OutputRun.RolledBack"
+        ],
+        "limits": [
+          "这是STL网格流程；请求弦差不保证法向角误差，float32远原点量化误差不能靠减小弦差消除。",
+          "0 < weldTolerance <= meshTolerance；每实体最多500000片，一次合计1000000片；新线总数最多50000。",
+          "源选择、属性/时间戳/实体面映射、工序和坐标上下文均保护；公开face-map读调用有选择副作用，1.0.1已加finally恢复与严格ID读回。",
+          "typed_candidate是业务接口分类；当前桥接已支持mp.sections/mp.draft和Create/Rollback，准确工具契约以ai/mcp/server.py与models.py为准，不能外推其他接口已经注册。"
+        ],
+        "evidence": [
+          "catalog/package.json",
+          "docs/HSM-MP.md",
+          "docs/COMPATIBILITY.md",
+          "validation/mp-native-acceptance.json",
+          "ai/mcp/server.py",
+          "ai/mcp/models.py",
+          "ai/bridge/PluginBridge.cs",
+          "local-source: MC2027-PluginSuite/MPRebuild2027/src/Host/Workflows.cs",
+          "local-source: MC2027-PluginSuite/MPRebuild2027/src/Host/NativeState.cs",
+          "local-source: MC2027-PluginSuite/MPRebuild2027/src/Host/GeometryWindow.cs",
+          "local-source: MC2027-PluginSuite/MPRebuild2027/src/Host/Main.cs"
+        ]
+      }
+    ]
+  },
+  {
+    "module": "MPDesignTools2027",
+    "summary": "发布1.0.0.0：翻转所选可见独立曲面的法向标志。",
+    "concepts": [
+      "SurfaceGeometry实际命名空间为Mastercam.Database。",
+      "反转法向不等于重建曲面、翻转UV参数或统一实体面朝向。",
+      "数值必须来自用户或工程上下文；界面初始值仅为演示/输入示例，不是加工默认值或推荐值。",
+      "公开发布件 payload/chooks/MPDesignTools2027/MPDesignTools2027.dll；assemblyVersion=1.0.0.0；SHA256=D848AE847346C3982AFA20F46DBFF02B3E9EA4F075B0786EBB9D585E3C96BBFC（已与catalog/package.json逐件比对）。"
+    ],
+    "workflows": [
+      {
+        "id": "mp_reverse_surface_normals",
+        "title": "反转独立曲面法向",
+        "when": "修正已知独立曲面的朝向。",
+        "inputs": [
+          "当前选择的曲面ID；同步确认回调"
+        ],
+        "preconditions": [
+          "宿主业务方法须在Mastercam 2027/API29、.NET10 x64的当前文档宿主线程调用；记录当前文档与单位，使用明确ID，不跨异步等待保留活动事务。",
+          "最多5000个所选对象；只处理可见、未Blanked的SurfaceGeometry。"
+        ],
+        "steps": [
+          "在界面查看可处理曲面和跳过对象。",
+          "确认后对新读回的曲面切换IsNormalReversed并Commit，逐项读回。"
+        ],
+        "outputs": [
+          "NormalResult；处理/跳过计数与错误。"
+        ],
+        "effects": [
+          "修改原曲面法向标志；不新建曲面。"
+        ],
+        "rollback": "取消不写入；事务异常按已尝试对象逆序恢复原标志，恢复错误会报告。成功后没有独立持久回滚凭据。",
+        "automation": "interactive",
+        "api": [
+          "MPDesignTools2027.NormalTools.RunSelected(Func<NormalPlan, bool> confirm)",
+          "MPDesignTools2027.Main.ReverseSelectedNormals(int)"
+        ],
+        "limits": [
+          "跳过实体、线框及不可见曲面；不推断哪一侧应为外侧。",
+          "回调必须同步，不得改变几何/文档；不得序列化或远程执行任意callback。"
+        ],
+        "evidence": [
+          "catalog/package.json",
+          "docs/PLUGINS.md",
+          "local-source: MC2027-PluginSuite/MPDesignTools2027/src/Host/NormalTools.cs",
+          "local-source: MC2027-PluginSuite/MPDesignTools2027/src/Core/NormalWorkflow.cs"
+        ]
+      }
+    ]
+  },
+  {
+    "module": "MPDesignSurfaceSelect2027",
+    "summary": "发布1.0.0.0：按当前文档可见曲面的实际类型选取。",
+    "concepts": [
+      "类型是当前API返回的运行时曲面类型，不能凭空列出不存在的类型。",
+      "预览改变选择集合，不改变几何类型。",
+      "数值必须来自用户或工程上下文；界面初始值仅为演示/输入示例，不是加工默认值或推荐值。",
+      "公开发布件 payload/chooks/MPDesignSurfaceSelect2027/MPDesignSurfaceSelect2027.dll；assemblyVersion=1.0.0.0；SHA256=DFBAFC7B4AFBC3305D96F0A2E3E08148DC6572D1394BED389F83CCF0177F37E3（已与catalog/package.json逐件比对）。"
+    ],
+    "workflows": [
+      {
+        "id": "mp_select_surface_types",
+        "title": "按曲面类型选择",
+        "when": "需要从可见独立曲面中筛选某些类型。",
+        "inputs": [
+          "从SelectionSession.Available读取的类型字符串集合"
+        ],
+        "preconditions": [
+          "宿主业务方法须在Mastercam 2027/API29、.NET10 x64的当前文档宿主线程调用；记录当前文档与单位，使用明确ID，不跨异步等待保留活动事务。",
+          "保留调用开始时的选择快照。"
+        ],
+        "steps": [
+          "通过SurfaceTypeTools.Run取得同步SelectionSession。",
+          "读取Available及候选数量，Preview(types)预览。",
+          "Accept(types)保留选择；不确认则释放会话。"
+        ],
+        "outputs": [
+          "原选择与匹配曲面ID的并集。"
+        ],
+        "effects": [
+          "只改变选择。"
+        ],
+        "rollback": "ClearPreview或未Accept即结束会话恢复原选择。",
+        "automation": "interactive",
+        "api": [
+          "MPDesignSurfaceSelect2027.SurfaceTypeTools.Run(Action<SelectionSession> action)",
+          "MPDesignSurfaceSelect2027.Core.SelectionSession.Preview(IEnumerable<string> types)",
+          "MPDesignSurfaceSelect2027.Core.SelectionSession.Accept(IEnumerable<string> types)",
+          "MPDesignSurfaceSelect2027.Core.SelectionSession.ClearPreview()"
+        ],
+        "limits": [
+          "不选择实体内部曲面面片；不转换曲面类型。",
+          "公开验证没有单独证明所有类型组合的UI取消。"
+        ],
+        "evidence": [
+          "catalog/package.json",
+          "docs/PLUGINS.md",
+          "local-source: MC2027-PluginSuite/MPDesignTools2027/candidates/SurfaceSelect-1.0.0/src/Host/Api29Host.cs",
+          "local-source: MC2027-PluginSuite/MPDesignTools2027/candidates/SurfaceSelect-1.0.0/src/Core/SelectionWorkflow.cs"
+        ]
+      }
+    ]
+  },
+  {
+    "module": "MPDesignRadiusSelect2027",
+    "summary": "发布1.0.0.0：按解析面半径筛选所属整实体。",
+    "concepts": [
+      "半径匹配记录面PersistentId，但最后选择的是BodyId整实体。",
+      "Cylinder、Sphere、TorusMinor、TorusMajor、ConeReference具有不同半径含义。",
+      "数值必须来自用户或工程上下文；界面初始值仅为演示/输入示例，不是加工默认值或推荐值。",
+      "公开发布件 payload/chooks/MPDesignRadiusSelect2027/MPDesignRadiusSelect2027.dll；assemblyVersion=1.0.0.0；SHA256=D4CBDC7306C6975D5A0CE368EB3189B5331BDC9F5CF3AFB9D47E8B87C3BB0E51（已与catalog/package.json逐件比对）。"
+    ],
+    "workflows": [
+      {
+        "id": "mp_select_analytic_radius",
+        "title": "按解析面半径选择整实体",
+        "when": "查找具有指定解析半径区间的可见实体。",
+        "inputs": [
+          "明确实体ID集合（最多128）",
+          "解析类型集合",
+          "当前文档单位的闭区间最小/最大半径"
+        ],
+        "preconditions": [
+          "宿主业务方法须在Mastercam 2027/API29、.NET10 x64的当前文档宿主线程调用；记录当前文档与单位，使用明确ID，不跨异步等待保留活动事务。",
+          "使用delivery-r1对应的公开程序集。"
+        ],
+        "steps": [
+          "RadiusTools.Run打开同步RadiusSession。",
+          "给定RadiusRequest并预览匹配记录；核对BodyId、PersistentId、类型与半径。",
+          "接受预览；更改条件后重新预览。"
+        ],
+        "outputs": [
+          "命中面记录；原选择与命中所属整实体的并集。"
+        ],
+        "effects": [
+          "临时/确认选择变化；不修改实体。"
+        ],
+        "rollback": "清预览、取消或异常时恢复原选择；接受后选择集合保留。",
+        "automation": "interactive",
+        "api": [
+          "MPDesignRadiusSelect2027.RadiusTools.Run(Action<MPDesignRadiusSelect2027.Core.RadiusSession> action)",
+          "MPDesignRadiusSelect2027.Main.SelectByAnalyticRadius(int)"
+        ],
+        "limits": [
+          "不是面选择接口；不分析NURBS局部曲率或可变圆角。",
+          "ConeReference是解析圆锥参考半径，不是任意点局部半径。"
+        ],
+        "evidence": [
+          "catalog/package.json",
+          "docs/PLUGINS.md",
+          "local-source: MC2027-PluginSuite/MPDesignTools2027/candidates/AnalyticRadiusSelect-1.0.0/delivery-r1/src/Host/Main.cs",
+          "local-source: MC2027-PluginSuite/MPDesignTools2027/candidates/AnalyticRadiusSelect-1.0.0/delivery-r1/src/Core/RadiusWorkflow.cs"
+        ]
+      }
+    ]
+  },
+  {
+    "module": "MPEdgeTools2027",
+    "summary": "公开包来自MPDesignTools2027-edge，版本0.1.0.0：有限直边三维提取或世界XY投影。",
+    "concepts": [
+      "仅单个全平面、直边实体；0.1.1圆弧候选不在此发布能力内。",
+      "ProjectWorldXY将边端点投影到指定世界Z，不是轮廓剪影。",
+      "数值必须来自用户或工程上下文；界面初始值仅为演示/输入示例，不是加工默认值或推荐值。",
+      "公开发布件 payload/chooks/MPEdgeTools2027/MPEdgeTools2027.dll；assemblyVersion=0.1.0.0；SHA256=E05CF119F65166500FD8C0FF38A3E7E2D82C3B60B25E8805D13BBC87C11C1D46（已与catalog/package.json逐件比对）。"
+    ],
+    "workflows": [
+      {
+        "id": "mp_extract_straight_edges",
+        "title": "提取三维直边/直边投影",
+        "when": "获得规则多面实体的可编辑边线或XY线框。",
+        "inputs": [
+          "EdgeRequest(SourceId,Mode,OutputLevel,OutputZ,Tolerance,Color)",
+          "Mode=Edges3D或ProjectWorldXY",
+          "容差示例.0001，不是推荐值"
+        ],
+        "preconditions": [
+          "宿主业务方法须在Mastercam 2027/API29、.NET10 x64的当前文档宿主线程调用；记录当前文档与单位，使用明确ID，不跨异步等待保留活动事务。",
+          "单个当前选中可见实体；输出层必须已存在且可见。",
+          "世界XY构造方向；面/边链均需通过受限拓扑检查。"
+        ],
+        "steps": [
+          "EdgeTools.Preview(request)检查SourceSeal、Signature、退化与去重结果。",
+          "使用原request与返回Signature调用Create；Create重新读取源并重新规划。"
+        ],
+        "outputs": [
+          "EdgePreview；EdgeReceipt.GeometryIds及提交状态。"
+        ],
+        "effects": [
+          "创建新LineGeometry；保留源实体。"
+        ],
+        "rollback": "失败取消自有事务并精确清理自有新增ID。成功后没有公开独立Rollback方法；如需撤销，使用宿主正常撤销并核对对象。",
+        "automation": "typed_candidate",
+        "api": [
+          "MPEdgeTools2027.EdgeTools.Preview(EdgeRequest request)",
+          "MPEdgeTools2027.EdgeTools.Create(EdgeRequest request, string expectedPreviewSignature)",
+          "MPEdgeTools2027.EdgeTools.GetExistingVisibleOutputLevels()",
+          "MPEdgeTools2027.Main.ShowEdges3D(int)",
+          "MPEdgeTools2027.Main.ShowEdges2D(int)"
+        ],
+        "limits": [
+          "最多1024面/4096边；容差1e-9～.01；坐标绝对值<=1e8。",
+          "拒绝曲面/曲边、多实体、非二端点直边和非双面邻接。",
+          "投影可能坍缩竖边、合并同端点边；不做遮挡、外轮廓并集或局部重叠消除。"
+        ],
+        "evidence": [
+          "catalog/package.json",
+          "docs/PLUGINS.md",
+          "local-source: MC2027-PluginSuite/MPDesignTools2027-edge/README.md",
+          "local-source: MC2027-PluginSuite/MPDesignTools2027-edge/src/EdgeTools.cs"
+        ]
+      }
+    ]
+  },
+  {
+    "module": "GeometryTools2027",
+    "summary": "发布0.1.1.0：几何移动/旋转、颜色层、尺寸线、曲线合并与受限实体倒角；附0.1.0.0原生面板入口。",
+    "concepts": [
+      "几何变换修改对象坐标，不是改变WCS。",
+      "Prepare/Execute是一用计划并检查陈旧状态；MeasureSelected可能创建临时包围框角点后取消事务，不能当成无状态getter。",
+      "数值必须来自用户或工程上下文；界面初始值仅为演示/输入示例，不是加工默认值或推荐值。",
+      "公开发布件 payload/chooks/GeometryTools2027/GeometryTools2027.dll；assemblyVersion=0.1.1.0；SHA256=F757257EB2E5F85647347D5E6E840D0658F84AE03314AC6A9360BA51410E5778（已与catalog/package.json逐件比对）。"
+    ],
+    "workflows": [
+      {
+        "id": "geometry_transform",
+        "title": "居中、90°旋转或构造平面对齐",
+        "when": "整理模型坐标。",
+        "inputs": [
+          "GeometryRequest.Command=CenterXY/CenterXYZ/RotateX90/RotateY90/RotateZ90/AlignCplane",
+          "Destination；QuarterTurns非零整数；明确实体ID"
+        ],
+        "preconditions": [
+          "宿主业务方法须在Mastercam 2027/API29、.NET10 x64的当前文档宿主线程调用；记录当前文档与单位，使用明确ID，不跨异步等待保留活动事务。",
+          "明确ID须等于当前选择；1～5000个有效可见对象；无其他活动撤销事务；计划仅用一次。"
+        ],
+        "steps": [
+          "Prepare并检查整体包围盒与变换预览。",
+          "确认后Execute；读回最终几何。"
+        ],
+        "outputs": [
+          "GeometryPlan；执行返回的对象ID。"
+        ],
+        "effects": [
+          "移动/旋转原几何；CenterXY仅移动XY，XYZ移动三轴；旋转绕整体AABB中心的世界轴。"
+        ],
+        "rollback": "执行失败尝试取消自有事务并验证恢复，恢复失败显式报错。成功后无独立持久回滚API；需使用宿主正常撤销并核对。",
+        "automation": "typed_candidate",
+        "api": [
+          "GeometryTools2027.HostGeometry.Prepare(int[] entityIds, GeometryRequest request)",
+          "GeometryTools2027.HostGeometry.Execute(GeometryPlan plan)",
+          "GeometryTools2027.HostGeometry.MeasureSelected(int[] entityIds)",
+          "GeometryTools2027.HostGeometry.CurrentSelection()"
+        ],
+        "limits": [
+          "AlignCplane包含原点和平面姿态变换到世界XY；不会设WCS。",
+          "包围盒中心不是质量中心。"
+        ],
+        "evidence": [
+          "catalog/package.json",
+          "docs/PLUGINS.md",
+          "local-source: MC2027-PluginSuite/GeometryTools2027/src/HostGeometry.cs",
+          "local-source: MC2027-PluginSuite/GeometryTools2027/src/RelatedLevels.cs",
+          "local-source: MC2027-PluginSuite/GeometryTools2027/README.md"
+        ]
+      },
+      {
+        "id": "geometry_attributes",
+        "title": "给Z平面/竖直平面着色或分配层",
+        "when": "分类明确的平面对象或把选中对象放入已有层。",
+        "inputs": [
+          "Command=PaintZPlanes/PaintVerticalPlanes/AssignLevel",
+          "Color、AngleTolerance（度）或Level"
+        ],
+        "preconditions": [
+          "宿主业务方法须在Mastercam 2027/API29、.NET10 x64的当前文档宿主线程调用；记录当前文档与单位，使用明确ID，不跨异步等待保留活动事务。",
+          "明确ID须等于当前选择；1～5000个有效可见对象；无其他活动撤销事务；计划仅用一次。"
+        ],
+        "steps": [
+          "核对平面法向与世界Z平行/垂直关系及候选。",
+          "Prepare后Execute。"
+        ],
+        "outputs": [
+          "处理对象ID。"
+        ],
+        "effects": [
+          "修改原对象颜色或层号。"
+        ],
+        "rollback": "执行失败尝试取消自有事务并验证恢复，恢复失败显式报错。成功后无独立持久回滚API；需使用宿主正常撤销并核对。",
+        "automation": "typed_candidate",
+        "api": [
+          "GeometryTools2027.HostGeometry.Prepare(int[] entityIds, GeometryRequest request)",
+          "GeometryTools2027.HostGeometry.Execute(GeometryPlan plan)"
+        ],
+        "limits": [
+          "只按Plane法向分类，不是任意曲面/实体面的颜色识别。",
+          "目标层须已存在且可见。"
+        ],
+        "evidence": [
+          "catalog/package.json",
+          "docs/PLUGINS.md",
+          "local-source: MC2027-PluginSuite/GeometryTools2027/src/HostGeometry.cs",
+          "local-source: MC2027-PluginSuite/GeometryTools2027/src/RelatedLevels.cs",
+          "local-source: MC2027-PluginSuite/GeometryTools2027/README.md"
+        ]
+      },
+      {
+        "id": "geometry_bounds_annotation",
+        "title": "绘制包围尺寸线",
+        "when": "为选中几何产生可视尺寸说明。",
+        "inputs": [
+          "Command=DimensionBounds",
+          "TextHeight、DimensionOffset、Decimals；明确单位"
+        ],
+        "preconditions": [
+          "宿主业务方法须在Mastercam 2027/API29、.NET10 x64的当前文档宿主线程调用；记录当前文档与单位，使用明确ID，不跨异步等待保留活动事务。",
+          "明确ID须等于当前选择；1～5000个有效可见对象；无其他活动撤销事务；计划仅用一次。"
+        ],
+        "steps": [
+          "Prepare检查尺寸及偏移。",
+          "Execute创建标注线段。"
+        ],
+        "outputs": [
+          "线段组成的尺寸与数字。"
+        ],
+        "effects": [
+          "新增线几何；源保留。"
+        ],
+        "rollback": "执行失败尝试取消自有事务并验证恢复，恢复失败显式报错。成功后无独立持久回滚API；需使用宿主正常撤销并核对。",
+        "automation": "typed_candidate",
+        "api": [
+          "GeometryTools2027.HostGeometry.Prepare(int[] entityIds, GeometryRequest request)",
+          "GeometryTools2027.HostGeometry.Execute(GeometryPlan plan)"
+        ],
+        "limits": [
+          "非关联标注；不等于Mastercam原生智能尺寸，源变动不会更新。"
+        ],
+        "evidence": [
+          "catalog/package.json",
+          "docs/PLUGINS.md",
+          "local-source: MC2027-PluginSuite/GeometryTools2027/src/HostGeometry.cs",
+          "local-source: MC2027-PluginSuite/GeometryTools2027/src/RelatedLevels.cs",
+          "local-source: MC2027-PluginSuite/GeometryTools2027/README.md"
+        ]
+      },
+      {
+        "id": "geometry_merge_curves",
+        "title": "合并连通曲线为NURBS",
+        "when": "需要一条连续曲线供后续选择。",
+        "inputs": [
+          "Command=MergeCurves；CurveTolerance"
+        ],
+        "preconditions": [
+          "宿主业务方法须在Mastercam 2027/API29、.NET10 x64的当前文档宿主线程调用；记录当前文档与单位，使用明确ID，不跨异步等待保留活动事务。",
+          "明确ID须等于当前选择；1～5000个有效可见对象；无其他活动撤销事务；计划仅用一次。"
+        ],
+        "steps": [
+          "确认只有一个连通、无分支曲线组。",
+          "Prepare后Execute并检查新NURBS。"
+        ],
+        "outputs": [
+          "新增NURBS曲线ID。"
+        ],
+        "effects": [
+          "新建曲线；保留原曲线。"
+        ],
+        "rollback": "执行失败尝试取消自有事务并验证恢复，恢复失败显式报错。成功后无独立持久回滚API；需使用宿主正常撤销并核对。",
+        "automation": "typed_candidate",
+        "api": [
+          "GeometryTools2027.HostGeometry.Prepare(int[] entityIds, GeometryRequest request)",
+          "GeometryTools2027.HostGeometry.Execute(GeometryPlan plan)"
+        ],
+        "limits": [
+          "不是轮廓闭合修补；拒绝分支/不连通集合。"
+        ],
+        "evidence": [
+          "catalog/package.json",
+          "docs/PLUGINS.md",
+          "local-source: MC2027-PluginSuite/GeometryTools2027/src/HostGeometry.cs",
+          "local-source: MC2027-PluginSuite/GeometryTools2027/src/RelatedLevels.cs",
+          "local-source: MC2027-PluginSuite/GeometryTools2027/README.md"
+        ]
+      },
+      {
+        "id": "geometry_chamfer_edges",
+        "title": "对明确实体边作等距倒角",
+        "when": "对单实体指定拓扑边加工模型倒角。",
+        "inputs": [
+          "Command=ChamferEdges；ChamferDistance；非空EdgeTags"
+        ],
+        "preconditions": [
+          "宿主业务方法须在Mastercam 2027/API29、.NET10 x64的当前文档宿主线程调用；记录当前文档与单位，使用明确ID，不跨异步等待保留活动事务。",
+          "明确ID须等于当前选择；1～5000个有效可见对象；无其他活动撤销事务；计划仅用一次。",
+          "只选一个实体；必须从当前对象解析明确边身份。"
+        ],
+        "steps": [
+          "Prepare保存面PersistentId/边身份及计划。",
+          "Execute前重读身份并进行等距倒角。"
+        ],
+        "outputs": [
+          "修改后实体的读回ID。"
+        ],
+        "effects": [
+          "修改实体几何。"
+        ],
+        "rollback": "执行失败尝试取消自有事务并验证恢复，恢复失败显式报错。成功后无独立持久回滚API；需使用宿主正常撤销并核对。",
+        "automation": "typed_candidate",
+        "api": [
+          "GeometryTools2027.HostGeometry.Prepare(int[] entityIds, GeometryRequest request)",
+          "GeometryTools2027.HostGeometry.Execute(GeometryPlan plan)"
+        ],
+        "limits": [
+          "不沿相切边传播；不可把失效原生edge tag直接复用到新状态。",
+          "不同于operation.chamfer刀路参数工具；当前MCP不能因此宣称已支持几何倒角。"
+        ],
+        "evidence": [
+          "catalog/package.json",
+          "docs/PLUGINS.md",
+          "local-source: MC2027-PluginSuite/GeometryTools2027/src/HostGeometry.cs",
+          "local-source: MC2027-PluginSuite/GeometryTools2027/src/RelatedLevels.cs",
+          "local-source: MC2027-PluginSuite/GeometryTools2027/README.md"
+        ]
+      },
+      {
+        "id": "geometry_related_levels",
+        "title": "查工序串连引用的图层",
+        "when": "寻找选中工序关联的线框或实体边所属层。",
+        "inputs": [
+          "当前选中的工序"
+        ],
+        "preconditions": [
+          "宿主业务方法须在Mastercam 2027/API29、.NET10 x64的当前文档宿主线程调用；记录当前文档与单位，使用明确ID，不跨异步等待保留活动事务。"
+        ],
+        "steps": [
+          "InspectSelected或InspectSelectedJson读取覆盖信息。",
+          "需要临时显示时使用Show，关窗恢复。"
+        ],
+        "outputs": [
+          "Operations(Id,Name,ChainIds,EntityIds,Levels)及Coverage。"
+        ],
+        "effects": [
+          "Inspect为查询；Show临时显示关联层并保留其他层。"
+        ],
+        "rollback": "查询无需回滚；Show关闭时恢复原图层可见性。",
+        "automation": "typed_candidate",
+        "api": [
+          "GeometryTools2027.RelatedLevels.InspectSelected()",
+          "GeometryTools2027.RelatedLevels.InspectSelectedJson()",
+          "GeometryTools2027.RelatedLevels.Show()"
+        ],
+        "limits": [
+          "覆盖工序链线框及串连实体边所属体；不包含加工面、检查面、毛坯或外部文件等全部依赖。",
+          "Show仍为交互UI。"
+        ],
+        "evidence": [
+          "catalog/package.json",
+          "docs/PLUGINS.md",
+          "local-source: MC2027-PluginSuite/GeometryTools2027/src/HostGeometry.cs",
+          "local-source: MC2027-PluginSuite/GeometryTools2027/src/RelatedLevels.cs",
+          "local-source: MC2027-PluginSuite/GeometryTools2027/README.md"
+        ]
+      }
+    ]
+  },
+  {
+    "module": "GeometryTools2027.NativeCommands",
+    "summary": "发布0.1.0.0：打开Mastercam原生删除面/剪影边界面板。",
+    "concepts": [
+      "本组单列以匹配catalog模块ID；入口本身不是完成几何业务。",
+      "数值必须来自用户或工程上下文；界面初始值仅为演示/输入示例，不是加工默认值或推荐值。",
+      "公开发布件 payload/chooks/GeometryTools2027.NativeCommands/GeometryTools2027.NativeCommands.dll；assemblyVersion=0.1.0.0；SHA256=9FA36458BCED25E3FC96453D056A7A3F01CFE838DC7FEBBBFCA90F604CFDC4C9（已与catalog/package.json逐件比对）。"
+    ],
+    "workflows": [
+      {
+        "id": "geometry_native_panels",
+        "title": "打开原生删除面/剪影边界面板",
+        "when": "需要由用户操作Mastercam原生曲面/实体命令。",
+        "inputs": [
+          "目标命令RemoveFaces或SilhouetteBoundary"
+        ],
+        "preconditions": [
+          "宿主业务方法须在Mastercam 2027/API29、.NET10 x64的当前文档宿主线程调用；记录当前文档与单位，使用明确ID，不跨异步等待保留活动事务。",
+          "无其他活动撤销事务。"
+        ],
+        "steps": [
+          "调用对应FT入口。",
+          "用户在原生面板选择几何、预览并决定确认或取消。"
+        ],
+        "outputs": [
+          "原生面板；具体几何结果以用户完成操作后的读回为准。"
+        ],
+        "effects": [
+          "入口仅打开面板；确认可能修改/创建几何。"
+        ],
+        "rollback": "未确认时使用原生取消；已完成操作按宿主撤销规则。",
+        "automation": "interactive",
+        "api": [
+          "Mastercam.Support.ExternalAppsManager.PostFTCommand(\"Mastercam\", \"sld_do_face_removal\")",
+          "Mastercam.Support.ExternalAppsManager.PostFTCommand(\"Mastercam\", \"create_SilhouetteBoundary\")",
+          "GeometryTools2027.NativeCommands.Main.RemoveFaces(int)",
+          "GeometryTools2027.NativeCommands.Main.SilhouetteBoundary(int)"
+        ],
+        "limits": [
+          "打开成功不等于删除孔或生成剪影成功；没有专用无交互完成接口。"
+        ],
+        "evidence": [
+          "catalog/package.json",
+          "docs/PLUGINS.md",
+          "local-source: MC2027-PluginSuite/GeometryTools2027/interactive/NativeCommands.cs"
+        ]
+      }
+    ]
+  },
+  {
+    "module": "ChainTools2027",
+    "summary": "发布1.0.2.0：使用原生串连对话框，预览并追加线框选择。",
+    "concepts": [
+      "选择对象不是创建刀路或重写曲线。",
+      "原选择与串连结果取并集；同步确认回调不可跨远程请求。",
+      "数值必须来自用户或工程上下文；界面初始值仅为演示/输入示例，不是加工默认值或推荐值。",
+      "公开发布件 payload/chooks/ChainTools2027/ChainTools2027.dll；assemblyVersion=1.0.2.0；SHA256=5509CC9A92547B32C769244D310445E60AFC3929AFFE71DAE8CFB05BEB018453（已与catalog/package.json逐件比对）。"
+    ],
+    "workflows": [
+      {
+        "id": "chain_select",
+        "title": "串连选择线框",
+        "when": "用连续链快速选择一组曲线。",
+        "inputs": [
+          "原生串连对话框中的开/闭链选择",
+          "同步预览确认"
+        ],
+        "preconditions": [
+          "宿主业务方法须在Mastercam 2027/API29、.NET10 x64的当前文档宿主线程调用；记录当前文档与单位，使用明确ID，不跨异步等待保留活动事务。",
+          "线框模式；当前文档快照不超过100000实体。"
+        ],
+        "steps": [
+          "运行RunInteractive，在原生串连对话框选链。",
+          "关闭原生链包装后预览新增选择数量。",
+          "确认保留并集，取消恢复。"
+        ],
+        "outputs": [
+          "SelectionResult；最终选中ID并集。"
+        ],
+        "effects": [
+          "改变选择；不创建几何/工序。"
+        ],
+        "rollback": "取消、Esc或异常恢复原Selected集合；不承诺恢复所有临时高亮和视口。",
+        "automation": "interactive",
+        "api": [
+          "ChainTools2027.ChainSelection.RunInteractive(Func<PreviewSession, bool> confirm)",
+          "ChainTools2027.Main.Show(int)"
+        ],
+        "limits": [
+          "最多4096条返回链；排除点、曲面和实体。",
+          "1.0.2不使用不受支持的ChainDialogMaximumCount写入；不能把这项设置当作可用API。"
+        ],
+        "evidence": [
+          "catalog/package.json",
+          "docs/PLUGINS.md",
+          "local-source: MC2027-PluginSuite/ChainTools2027/src/Host/Api29Adapter.cs",
+          "local-source: MC2027-PluginSuite/ChainTools2027/src/Core/Workflow.cs",
+          "local-source: MC2027-PluginSuite/ChainTools2027/README.md"
+        ]
+      }
+    ]
+  },
+  {
+    "module": "FixtureTools2027",
+    "summary": "公开Host1.1.1.0/Core1.1.0.0：点线夹具定义与受限原生几何复制摆放。",
+    "concepts": [
+      "摆放公式q=R*(p-reference)+target+translation。",
+      "几何夹具不自动成为CAM检查体/机床夹具角色；不修改WCS。",
+      "数值必须来自用户或工程上下文；界面初始值仅为演示/输入示例，不是加工默认值或推荐值。",
+      "公开发布件 payload/chooks/FixtureTools2027/FixtureTools2027.dll；assemblyVersion=1.1.1.0；SHA256=1FE6C23DC9229F87D347B079E5938A7C6987650C7B7D6BA12C90B78D345EEFCD（已与catalog/package.json逐件比对）。"
+    ],
+    "workflows": [
+      {
+        "id": "fixture_portable",
+        "title": "从点线制作可移植夹具定义并摆放",
+        "when": "需要简单线框夹具库。",
+        "inputs": [
+          "所选普通点/线；名称；reference",
+          "PlacementTransform(Target,Translation,Axis,Degrees)",
+          "可选目标层；明示mm/in单位的库"
+        ],
+        "preconditions": [
+          "宿主业务方法须在Mastercam 2027/API29、.NET10 x64的当前文档宿主线程调用；记录当前文档与单位，使用明确ID，不跨异步等待保留活动事务。",
+          "库单位必须与宿主一致；库文件SaveNew不能覆盖已有文件。"
+        ],
+        "steps": [
+          "FixtureApi.OpenSession并CaptureSelected。",
+          "Preview(component,transform,targetLevel)核对几何。",
+          "Apply(plan)放置；如需库文件，用LibraryJson.SaveNew。"
+        ],
+        "outputs": [
+          "ComponentDefinition；PlacementPlan；PlacementReport；可选JSON库。"
+        ],
+        "effects": [
+          "创建新点线；可选新JSON文件；保留源。"
+        ],
+        "rollback": "未保留的暂存事务取消；Apply成功后使用宿主正常撤销。保存的库文件单独管理。",
+        "automation": "typed_candidate",
+        "api": [
+          "FixtureTools2027.FixtureApi.OpenSession()",
+          "FixtureTools2027.Core.FixtureSession.CaptureSelected(string name, Vec3 reference)",
+          "FixtureTools2027.Core.FixtureSession.Preview(ComponentDefinition component, PlacementTransform transform, int? targetLevel = null)",
+          "FixtureTools2027.Core.FixtureSession.Apply(PlacementPlan plan)",
+          "FixtureTools2027.Core.LibraryJson.SaveNew(string path, FixtureLibrary library)"
+        ],
+        "limits": [
+          "便携定义只支持普通点与线，不是任意实体库。",
+          "SMK仅有检查能力，不能宣称完整SMK导入或原X+库等价。"
+        ],
+        "evidence": [
+          "catalog/package.json",
+          "docs/PLUGINS.md",
+          "local-source: MC2027-PluginSuite/FixtureTools2027/src/Core/Placement.cs",
+          "local-source: MC2027-PluginSuite/FixtureTools2027/src/Core/Model.cs",
+          "local-source: MC2027-PluginSuite/FixtureTools2027/src/Host/Api29Host.cs",
+          "local-source: MC2027-PluginSuite/FixtureTools2027/README.md"
+        ]
+      },
+      {
+        "id": "fixture_native_copy",
+        "title": "复制原生夹具几何并摆放",
+        "when": "需要保留原几何属性的实体/曲线/点副本。",
+        "inputs": [
+          "所选源几何；reference、target、translation",
+          "worldZDegrees为90°整数倍"
+        ],
+        "preconditions": [
+          "宿主业务方法须在Mastercam 2027/API29、.NET10 x64的当前文档宿主线程调用；记录当前文档与单位，使用明确ID，不跨异步等待保留活动事务。",
+          "源层可见；不指定新目标层；先核对变换及单位。"
+        ],
+        "steps": [
+          "使用NativeFixtureCopy.PlaceSelected执行完整同步复制。",
+          "需临时检查时OpenNativeSession→StageSelected→同一宿主回调内Keep或Cancel。",
+          "核对源属性及新副本包围盒读回。"
+        ],
+        "outputs": [
+          "NativePlacementReport；副本ID与读回。"
+        ],
+        "effects": [
+          "创建不选中、不Blanked的副本；保留源属性和源层。"
+        ],
+        "rollback": "StageSelected可在同一同步调用中Cancel；Keep/PlaceSelected成功后依宿主撤销。严禁跨MCP请求悬挂暂存事务。",
+        "automation": "typed_candidate",
+        "api": [
+          "FixtureTools2027.NativeFixtureCopy.PlaceSelected(Vec3 reference, Vec3 target, Vec3 translation, double worldZDegrees)",
+          "FixtureTools2027.NativeFixtureCopy.ProbeSelected(Vec3 reference, Vec3 target, Vec3 translation, double worldZDegrees)",
+          "FixtureTools2027.FixtureApi.OpenNativeSession()",
+          "FixtureTools2027.Core.NativeFixtureSession.StageSelected(Vec3 reference, Vec3 target, Vec3 translation, double worldZDegrees)"
+        ],
+        "limits": [
+          "原生复制只支持世界Z轴90°倍数；不是任意轴便携变换。",
+          "包围盒八角验证不等于完整B-rep等价或碰撞安全验证。"
+        ],
+        "evidence": [
+          "catalog/package.json",
+          "docs/PLUGINS.md",
+          "local-source: MC2027-PluginSuite/FixtureTools2027/src/Host/NativeFixtureCopy.cs",
+          "local-source: MC2027-PluginSuite/FixtureTools2027/src/Core/NativePlacement.cs"
+        ]
+      }
+    ]
+  },
+  {
+    "module": "HolderTools2027",
+    "summary": "发布0.1.0.0：手工圆柱/圆台分段刀柄定义，写入.tooldb新刀柄并读回。",
+    "concepts": [
+      "Section包含TopDiameter、BottomDiameter、Height。",
+      "Split从段顶面量距离；Flip逆序所有段并交换上下直径。",
+      "数值必须来自用户或工程上下文；界面初始值仅为演示/输入示例，不是加工默认值或推荐值。",
+      "公开发布件 payload/chooks/HolderTools2027/HolderTools2027.dll；assemblyVersion=0.1.0.0；SHA256=13680CC47DD50D6641BC440CB5409CA1615AE1FB73460A6F7E040B4C17AC93FB（已与catalog/package.json逐件比对）。"
+    ],
+    "workflows": [
+      {
+        "id": "holder_create",
+        "title": "分段定义并保存刀柄",
+        "when": "已有可信刀柄尺寸，需要在刀库创建条目。",
+        "inputs": [
+          "HolderPlan(Name,Metric,Sections)",
+          "各段上下直径/高度；明确单位",
+          "目标.tooldb路径；审计目录"
+        ],
+        "preconditions": [
+          "宿主业务方法须在Mastercam 2027/API29、.NET10 x64的当前文档宿主线程调用；记录当前文档与单位，使用明确ID，不跨异步等待保留活动事务。",
+          "单位手工明确，不自动换算；没有正在编辑该库的冲突操作。"
+        ],
+        "steps": [
+          "Data.Validate，按需Split或Flip并预览截面。",
+          "Library.Create创建新的GUID条目。",
+          "重新打开库核对名称、单位、分段、轮廓和GUID。"
+        ],
+        "outputs": [
+          "WriteReceipt；HolderSnapshot；审计文件。"
+        ],
+        "effects": [
+          "修改指定刀库，增加新刀柄；不替换原条目或操作中的刀柄。"
+        ],
+        "rollback": "Library.Rollback(receipt)只删该新GUID且拒绝被修改的库/条目；恢复为逻辑内容，不保证数据库字节或时间戳不变。",
+        "automation": "typed_candidate",
+        "api": [
+          "HolderTools2027.Data.Validate",
+          "HolderTools2027.Data.Split(HolderPlan source, int index, double distanceFromTop)",
+          "HolderTools2027.Data.Flip(HolderPlan source)",
+          "HolderTools2027.Library.Create(HolderPlan input, string libraryPath, string auditDirectory, bool injectFailureAfterAdd = false)",
+          "HolderTools2027.Library.Rollback(WriteReceipt receipt)",
+          "HolderTools2027.Library.ReadHolders(string path)"
+        ],
+        "limits": [
+          "只支持直线分段圆柱/圆台截面；不从任意选中实体识别刀柄，不支持任意圆弧截面。",
+          "不证明夹持合理性/碰撞安全；不向远程调用暴露injectFailureAfterAdd测试开关。",
+          "关闭界面不自动删除已写入刀柄。"
+        ],
+        "evidence": [
+          "catalog/package.json",
+          "docs/PLUGINS.md",
+          "local-source: MC2027-PluginSuite/HolderTools2027/src/Core.cs",
+          "local-source: MC2027-PluginSuite/HolderTools2027/src/Library.cs",
+          "local-source: MC2027-PluginSuite/HolderTools2027/src/Main.cs"
+        ]
+      }
+    ]
+  },
+  {
+    "module": "HirthTools2027",
+    "summary": "公开HirthTools2027.dll程序集版本0.0.0.0：按离散两轴角度网格拟合目标法向并创建/复用平面。",
+    "concepts": [
+      "从WCS+Z开始，依次绕固定WCS的Tilt和Rotary轴作右手旋转。",
+      "拟合法向，不解决任意roll或实际机床运动学。",
+      "数值必须来自用户或工程上下文；界面初始值仅为演示/输入示例，不是加工默认值或推荐值。",
+      "公开发布件 payload/chooks/HirthTools2027/HirthTools2027.dll；assemblyVersion=0.0.0.0；SHA256=5F764EABDA0887569A09CB7A685042490BBE574A35D99386843345023F2A4D8A（已与catalog/package.json逐件比对）。"
+    ],
+    "workflows": [
+      {
+        "id": "hirth_fit_plane",
+        "title": "离散分度拟合平面",
+        "when": "已知分度轴方向及允许角度，求接近目标平面法向的组合。",
+        "inputs": [
+          "AxisGrid(Label,Direction,MinimumDegrees,MaximumDegrees,StepDegrees)两组",
+          "FitSettings(Tilt,Rotary,MatchToleranceDegrees,MaximumCandidates)",
+          "当前/指定平面；CommitOptions(NamePrefix,ReuseMatchingPlane,Activation)"
+        ],
+        "preconditions": [
+          "宿主业务方法须在Mastercam 2027/API29、.NET10 x64的当前文档宿主线程调用；记录当前文档与单位，使用明确ID，不跨异步等待保留活动事务。",
+          "轴非零、步长正且角度网格有效；候选上限须明确。",
+          "保存文档/会话身份，不把历史receipt跨文档使用。"
+        ],
+        "steps": [
+          "HostPlanes.PreviewCurrent或PreviewPlane计算候选及角差。",
+          "检查双轴角度与目标法向误差。",
+          "Commit创建/复用完整框架与原点/workoffset匹配的平面；按需激活T/C。"
+        ],
+        "outputs": [
+          "PlanePreview；PlaneCommitResult.Change回滚凭据。"
+        ],
+        "effects": [
+          "可能新建平面；Activation=ToolAndConstruction时改变T/C。"
+        ],
+        "rollback": "HostPlanes.Rollback(PlaneChangeReceipt)恢复自有变更且拒绝外部冲突；桥接仍须独立约束文档身份。",
+        "automation": "typed_candidate",
+        "api": [
+          "HirthTools2027.HostPlanes.PreviewCurrent(FitSettings settings)",
+          "HirthTools2027.HostPlanes.PreviewPlane(int planeId, FitSettings settings)",
+          "HirthTools2027.HostPlanes.CaptureInput(int? selectedPlaneId = null)",
+          "HirthTools2027.HostPlanes.ComputePreview",
+          "HirthTools2027.HostPlanes.Commit(PlanePreview preview, CommitOptions options)",
+          "HirthTools2027.HostPlanes.Rollback(PlaneChangeReceipt receipt)",
+          "HirthTools2027.HostPlanes.ListPlanes()"
+        ],
+        "limits": [
+          "匹配法向不证明机床可达/无碰撞；不创建Hirth齿盘或刀路。",
+          "最多允许1000万候选；UI示例A:Y、B:Z不是用户机床配置。",
+          "原模块没有完整文档唯一身份约束，不能仅靠receipt假定跨文件安全。"
+        ],
+        "evidence": [
+          "catalog/package.json",
+          "docs/PLUGINS.md",
+          "local-source: MC2027-PluginSuite/HirthTools2027/README.md",
+          "local-source: MC2027-PluginSuite/HirthTools2027/src/HostPlanes.cs"
+        ]
+      }
+    ]
+  },
+  {
+    "module": "TpSketcher2027",
+    "summary": "公开candidate003；程序集0.0.0.0：在选定平面草绘线链，可选创建刀具中心线轮廓工序。",
+    "concepts": [
+      "平面UV与depth决定世界线点；D是显示宽度/刀具直径，不生成刀具扫掠实体。",
+      "003把新几何选择与原选择隔离，避免ChainAllSelected串入旧对象。",
+      "数值必须来自用户或工程上下文；界面初始值仅为演示/输入示例，不是加工默认值或推荐值。",
+      "公开发布件 payload/chooks/TpSketcher2027/TpSketcher2027.dll；assemblyVersion=0.0.0.0；SHA256=AE215920D15B24C0C67A87D76B99DF2B78F3D1321C178B7CB12A3111E62F6069（已与catalog/package.json逐件比对）。"
+    ],
+    "workflows": [
+      {
+        "id": "sketch_geometry",
+        "title": "在指定平面草绘线链",
+        "when": "创建规则折线或给后续轮廓工序提供明确中心路径。",
+        "inputs": [
+          "SketchPlane；depth；diameter",
+          "IEnumerable<IEnumerable<V2>> chains",
+          "CreateSettings(Level,Color,Machining:null)"
+        ],
+        "preconditions": [
+          "宿主业务方法须在Mastercam 2027/API29、.NET10 x64的当前文档宿主线程调用；记录当前文档与单位，使用明确ID，不跨异步等待保留活动事务。",
+          "每链>=2点；最短段.001；总段数<=10000；坐标绝对值<=1e8，当前文档单位。"
+        ],
+        "steps": [
+          "在UI点击/输入UV或宿主取点投影；也可从明确UV构造SketchPlan。",
+          "检查所用平面、深度、链开闭及颜色/层。",
+          "SketchWorkflow.Create(new MastercamHost(),plan,settings)创建。"
+        ],
+        "outputs": [
+          "CreationReceipt；新增原生线几何。"
+        ],
+        "effects": [
+          "新增线；保留源几何和原选择。"
+        ],
+        "rollback": "使用同一宿主与CreationReceipt调用Rollback；拒绝后来被修改/引用的对象；关窗保留已完成结果。",
+        "automation": "typed_candidate",
+        "api": [
+          "TpSketcher2027.SketchPlan(SketchPlane plane, double depth, double diameter, IEnumerable<IEnumerable<V2>> chains)",
+          "TpSketcher2027.SketchWorkflow.Create(ISketchHost host, SketchPlan plan, CreateSettings settings)",
+          "TpSketcher2027.SketchWorkflow.Rollback(ISketchHost host, CreationReceipt receipt)",
+          "TpSketcher2027.MastercamHost",
+          "TpSketcher2027.Main.Show(int)"
+        ],
+        "limits": [
+          "鼠标绘制仍是interactive；typed仅针对明确输入坐标。",
+          "D支持.01～500；不是偏置补偿、曲面投影或刀路反向提取。"
+        ],
+        "evidence": [
+          "catalog/package.json",
+          "docs/PLUGINS.md",
+          "local-source: MC2027-PluginSuite/TpSketcher2027/candidates/003/README.md",
+          "local-source: MC2027-PluginSuite/TpSketcher2027/candidates/003/src/SketchCore.cs"
+        ]
+      },
+      {
+        "id": "sketch_contour_operation",
+        "title": "草绘并创建轮廓工序",
+        "when": "用户提供真实刀具、进给和高度后，从中心线链生成轮廓。",
+        "inputs": [
+          "上述SketchPlan",
+          "MachiningSettings(Name,Feed,Plunge,Rpm,Top,FeedPlane,Retract,Clearance,Regenerate)",
+          "NewTool或ExistingToolSlot；新工具ToolDefinition(Diameter,Length,FluteLength,ShoulderLength,Number,Name,Metric)"
+        ],
+        "preconditions": [
+          "宿主业务方法须在Mastercam 2027/API29、.NET10 x64的当前文档宿主线程调用；记录当前文档与单位，使用明确ID，不跨异步等待保留活动事务。",
+          "已有铣削/雕刻工序组；选择有效铣刀且直径匹配，或明确新平刀全部尺寸。",
+          "绝对高度Clearance>=Retract>=FeedPlane>=Top>=depth；进给/RPM须来自工程上下文。"
+        ],
+        "steps": [
+          "核对平面、刀具与绝对高度；UI增量值先转换绝对值。",
+          "Create创建新线、可选新刀具和轮廓工序。",
+          "仅在明确Regenerate=true时调用原生计算并核对Dirty状态。"
+        ],
+        "outputs": [
+          "CreationReceipt；原生轮廓工序/几何/可选新刀具ID。"
+        ],
+        "effects": [
+          "新建工序与几何，可能新建刀具及计算刀路。"
+        ],
+        "rollback": "SketchWorkflow.Rollback精确移除凭据拥有的对象，已修改或新增引用时拒绝；非全局撤销。",
+        "automation": "typed_candidate",
+        "api": [
+          "TpSketcher2027.SketchWorkflow.Create(ISketchHost host, SketchPlan plan, CreateSettings settings)",
+          "TpSketcher2027.SketchWorkflow.Rollback(ISketchHost host, CreationReceipt receipt)"
+        ],
+        "limits": [
+          "刀具中心线；补偿、引入引出、多余量多深度、穿透、圆弧过滤、平滑、tabs关闭，余量0。",
+          "WCS/T/C设为选中平面；不等于适用于任意零件的加工策略，不含仿真或NC验收。",
+          "RPM需正整数<=1e8；新刀具总长>=肩长>=刃长>0。"
+        ],
+        "evidence": [
+          "catalog/package.json",
+          "docs/PLUGINS.md",
+          "local-source: MC2027-PluginSuite/TpSketcher2027/candidates/003/README.md",
+          "local-source: MC2027-PluginSuite/TpSketcher2027/candidates/003/src/MastercamHost.cs"
+        ]
+      }
+    ]
+  },
+  {
+    "module": "SVGGeometry2027",
+    "summary": "发布0.1.0.0：将受限SVG矢量图按弦差折线化导入世界XY指定Z。",
+    "concepts": [
+      "SVG/CSS像素按96dpi；根width的物理单位转换到当前文档mm/in。",
+      "导入结果为线段；不等于填充区域、偏置轮廓或NURBS。",
+      "数值必须来自用户或工程上下文；界面初始值仅为演示/输入示例，不是加工默认值或推荐值。",
+      "公开发布件 payload/chooks/SVGGeometry2027/SVGGeometry2027.dll；assemblyVersion=0.1.0.0；SHA256=F76B550ABFD4648E0162F0E3A7EFDA221476E5D5DD46BBA74002CE7FA9FC3659（已与catalog/package.json逐件比对）。"
+    ],
+    "workflows": [
+      {
+        "id": "svg_import",
+        "title": "SVG导入几何",
+        "when": "把明确的二维标记/轮廓转为可编辑线框。",
+        "inputs": [
+          "SVG文件或XML文本",
+          "SvgImportOptions: Scale,OffsetX,OffsetY,Z,FlipY,ChordTolerance,Level,Color,MaxSegments"
+        ],
+        "preconditions": [
+          "宿主业务方法须在Mastercam 2027/API29、.NET10 x64的当前文档宿主线程调用；记录当前文档与单位，使用明确ID，不跨异步等待保留活动事务。",
+          "输出层已存在且可见；无活动事务；确认比例、单位与Y翻转。"
+        ],
+        "steps": [
+          "PrepareFile或PrepareXml解析并捕获宿主上下文。",
+          "检查变换、包围尺寸、段数及弦差。",
+          "Execute一次性计划；检查Success、StateRestored相关读回与RequiresHostReview。"
+        ],
+        "outputs": [
+          "SvgImportResult；新增线ID和前后状态JSON。"
+        ],
+        "effects": [
+          "新建线几何；不执行SVG脚本或拉取外部资源。"
+        ],
+        "rollback": "失败取消自有事务并核对基线；提交后遇意外错误可能RequiresHostReview，不盲目全局Undo。成功后无专用RollbackAPI。",
+        "automation": "typed_candidate",
+        "api": [
+          "SVGGeometry2027.SvgParser.Parse(string xml, SvgImportOptions options, bool metric)",
+          "SVGGeometry2027.SvgGeometry.PrepareFile(string path, SvgImportOptions options)",
+          "SVGGeometry2027.SvgGeometry.PrepareXml(string xml, SvgImportOptions options)",
+          "SVGGeometry2027.SvgGeometry.Execute(SvgHostPlan plan)"
+        ],
+        "limits": [
+          "支持line/polyline/polygon/rect/圆角/circle/ellipse、MLHVCSQTAZ路径及受限分组变换/viewBox。",
+          "拒绝DTD、实体、脚本、外部资源、use/image及不支持节点；子形状物理单位/%不支持。",
+          "XML最多4Mi字符、文件8MiB、深度64、节点20000、最大段数50000；ChordTolerance>=1e-7、Scale>0。"
+        ],
+        "evidence": [
+          "catalog/package.json",
+          "docs/PLUGINS.md",
+          "local-source: MC2027-PluginSuite/SVGGeometry2027/README.md",
+          "local-source: MC2027-PluginSuite/SVGGeometry2027/src/SvgHost.cs",
+          "local-source: MC2027-PluginSuite/SVGGeometry2027/src/SvgCore.cs"
+        ]
+      }
+    ]
+  },
+  {
+    "module": "ElectrodeReport2027",
+    "summary": "公开candidate004：UI报表排序；reader/Core沿用003，程序集版本均0.0.0.0，须靠catalog哈希区分。",
+    "concepts": [
+      "Reference XYZ来自用户明确输入或所选线起点，不冒充实体重心。",
+      "C角缺失为null，不默认为0；显式C按0～360°归一。",
+      "004具备UI及受限实体测量；不能沿用根README的旧版“无UI/无实体”结论。",
+      "数值必须来自用户或工程上下文；界面初始值仅为演示/输入示例，不是加工默认值或推荐值。",
+      "公开发布件 payload/chooks/ElectrodeReport2027/ElectrodeReport2027.dll；assemblyVersion=0.0.0.0；SHA256=520E320BCFDD8C1FD5077F70C252C85D9CD1BEC47B02AEB2CA28FADF5891AFEE（已与catalog/package.json逐件比对）。",
+      "公开发布件 payload/chooks/ElectrodeReport2027/ElectrodeReport2027.UI.dll；assemblyVersion=0.0.0.0；SHA256=87D93888B15C21FE1BF74BE39F7D01ADB1BD320E98A87E567D2DFA0C1B1683F4（已与catalog/package.json逐件比对）。"
+    ],
+    "workflows": [
+      {
+        "id": "electrode_report",
+        "title": "电极几何测量和报表",
+        "when": "为已知电极对象整理尺寸、体积、重心及显式参考点。",
+        "inputs": [
+          "现有参考平面ID；最多20个选中实体",
+          "每对象ReferenceInput：ID、标签、参考点来源/世界坐标、可选C",
+          "标题、精度、ReportSortOptions；新建绝对输出目录"
+        ],
+        "preconditions": [
+          "宿主业务方法须在Mastercam 2027/API29、.NET10 x64的当前文档宿主线程调用；记录当前文档与单位，使用明确ID，不跨异步等待保留活动事务。",
+          "受限测量只接受封闭、连通、凸、全平面、直边且拓扑明确的实体。",
+          "当前图形轴为世界XY；报表参考平面可以是现有正交平面且原点可非零。"
+        ],
+        "steps": [
+          "ListReferencePlanes并InspectSelected，或UI ReportWorkflow.ReadSelection。",
+          "明确每个对象参考点和C来源；CheckPreview选择排序。",
+          "Save前新读源状态，拒绝陈旧预览；写入全新输出目录。"
+        ],
+        "outputs": [
+          "HTML、CSV、JSON；尺寸、可测体积/重心、不可测原因；按ID绑定的参考数据。"
+        ],
+        "effects": [
+          "读取期间可能临时选择/创建事务内辅助几何并取消恢复；持久效果仅新报告文件。"
+        ],
+        "rollback": "无持久源几何修改；失败清理自有输出，输出不覆盖已有目录。已导出的报告不是模型回滚凭据。",
+        "automation": "typed_candidate",
+        "api": [
+          "ElectrodeReport2027.MastercamReportReader.ListReferencePlanes()",
+          "ElectrodeReport2027.MastercamReportReader.InspectSelected(int referencePlaneId)",
+          "ElectrodeReport2027.MastercamReportReader.CreateReport(Capture inspected, IReadOnlyList<ReferenceInput> references, string title, int precision = 4)",
+          "ElectrodeReport2027.ReportOutput.WriteNewDirectory(ReportModel report, string directory)",
+          "ElectrodeReport2027.UI.ReportWorkflow.ReadSelection(int planeId)",
+          "ElectrodeReport2027.UI.ReportWorkflow.CheckPreview(IReadOnlyList<ReferenceInput> references, string reportTitle, int digits, ReportSortOptions sortOptions)",
+          "ElectrodeReport2027.UI.ReportWorkflow.Save(string absoluteNewDirectory)"
+        ],
+        "limits": [
+          "不支持孔洞、非凸、曲面实体的精确体积；不可测字段保留null/原因，不用包围盒体积替代。",
+          "排序LevelAndId/SizeX/SizeY/SizeZ/Volume，升/降序，原始未舍入值比较，缺失在后，同值按层/ID。",
+          "没有自动拆电极、EDM火花间隙或原X+私有RefPt/C语义解析。"
+        ],
+        "evidence": [
+          "catalog/package.json",
+          "docs/PLUGINS.md",
+          "local-source: MC2027-PluginSuite/ElectrodeReport2027/candidates/004/README.md",
+          "local-source: MC2027-PluginSuite/ElectrodeReport2027/candidates/004/src/ReportWorkflow.cs",
+          "local-source: MC2027-PluginSuite/ElectrodeReport2027/candidates/003/src/MastercamReportReader.cs",
+          "local-source: MC2027-PluginSuite/ElectrodeReport2027/candidates/003/src/SolidReportMath.cs"
+        ]
+      }
+    ]
+  },
+  {
+    "module": "SetupSheets2027",
+    "summary": "发布1.1.0.0：选中/全部工序加工报告、刀具表及夹具备注，输出HTML/CSV/XLSX/SVG。",
+    "concepts": [
+      "报告只读工序定义/可用结果，不代替刀路重算。",
+      "缺失、未计算或读取失败字段应保留不可用原因，不填0。",
+      "数值必须来自用户或工程上下文；界面初始值仅为演示/输入示例，不是加工默认值或推荐值。",
+      "公开发布件 payload/chooks/SetupSheets2027/SetupSheets2027.dll；assemblyVersion=1.1.0.0；SHA256=01235E4681F0A85F6054E04CD81B74B806672AA1DD66441F5DBC3C1A7BD00BD2（已与catalog/package.json逐件比对）。"
+    ],
+    "workflows": [
+      {
+        "id": "setup_sheets_export",
+        "title": "导出加工设置表与刀具表",
+        "when": "把现有工序、刀具、装夹说明交给审阅/车间。",
+        "inputs": [
+          "ExportScope.Selected或All",
+          "明确输出父目录；可选includeScreenshot"
+        ],
+        "preconditions": [
+          "宿主业务方法须在Mastercam 2027/API29、.NET10 x64的当前文档宿主线程调用；记录当前文档与单位，使用明确ID，不跨异步等待保留活动事务。",
+          "Capture在宿主线程；选中范围应明确。"
+        ],
+        "steps": [
+          "ReportService.Capture(scope)核对范围及不可用字段。",
+          "按需填写人工夹具备注/捕获截图。",
+          "ExportToDirectory导出新报告组并检查收据文件。"
+        ],
+        "outputs": [
+          "HTML、OperationsCsv、SetupCsv、FixturesCsv、WorkbookXlsx、OverviewSvg；可选截图及SDK刀具轮廓。"
+        ],
+        "effects": [
+          "新建报告文件；SDK读取可能临时影响选择，finally恢复并验证。"
+        ],
+        "rollback": "不修改工序/夹具实体；文件为新建输出，需按明确路径单独管理。",
+        "automation": "typed_candidate",
+        "api": [
+          "SetupSheets2027.ReportService.Capture(ExportScope scope)",
+          "SetupSheets2027.ReportService.ExportToDirectory(string directory, bool allOperations = false, bool includeScreenshot = false)",
+          "SetupSheets2027.ReportService.CaptureScreenshot(ReportSnapshot snapshot, string workDirectory)",
+          "SetupSheets2027.ReportWriter.WriteReportingBundle(string parentDirectory, ReportSnapshot snapshot, string title)"
+        ],
+        "limits": [
+          "Dirty结果不当作有效已计算数据；不自动计算/保存工序。",
+          "夹具备注不等于FixtureTools摆放或机器碰撞定义。",
+          "刀具轮廓来自SDK线/弧；刀柄单位未知时保留原始值，不虚构完整装配体。",
+          "不等同原版ToolList的全部Excel模板/快捷录入能力。"
+        ],
+        "evidence": [
+          "catalog/package.json",
+          "docs/PLUGINS.md",
+          "local-source: MC2027-PluginSuite/SetupSheets2027/src/EntryPoints.cs",
+          "local-source: MC2027-PluginSuite/SetupSheets2027/src/MastercamReader.cs",
+          "local-source: MC2027-PluginSuite/SetupSheets2027/src/ReportWriter.cs",
+          "local-source: MC2027-PluginSuite/SetupSheets2027/src/ToolProfileReader.cs"
+        ]
+      }
+    ]
+  },
+  {
+    "module": "LevelExport2027",
+    "summary": "发布1.0.2.0：按可见图层导出二进制世界坐标STL并检查读回。",
+    "concepts": [
+      "STL没有单位字段；配套元数据中的文档单位必须保留。",
+      "候选源ID不证明每个混合类型对象都贡献了三角片。",
+      "数值必须来自用户或工程上下文；界面初始值仅为演示/输入示例，不是加工默认值或推荐值。",
+      "公开发布件 payload/chooks/LevelExport2027/LevelExport2027.dll；assemblyVersion=1.0.2.0；SHA256=B4038A3C8B9E47BAB19BF4AFE75A22E2A8303FE817E8CBAEC2DF5E575E2195A2（已与catalog/package.json逐件比对）。"
+    ],
+    "workflows": [
+      {
+        "id": "levels_to_stl",
+        "title": "可见图层分别导出STL",
+        "when": "需要按层交付网格文件。",
+        "inputs": [
+          "已存在的绝对输出父目录",
+          "tolerance；API初始值.001仅为接口示例"
+        ],
+        "preconditions": [
+          "宿主业务方法须在Mastercam 2027/API29、.NET10 x64的当前文档宿主线程调用；记录当前文档与单位，使用明确ID，不跨异步等待保留活动事务。",
+          "最多100000实体、256可见层；不导出Blanked对象。"
+        ],
+        "steps": [
+          "ExportVisible逐层选取可见未Blanked对象并以世界坐标静默导出。",
+          "检查三角片非零、文件长度84+50N、有限坐标/非退化、哈希与包围范围。",
+          "确认状态恢复后发布到新LevelExport-*目录。"
+        ],
+        "outputs": [
+          "每层STL；元数据/哈希/边界；ExportResult状态。"
+        ],
+        "effects": [
+          "写新文件；临时选择/层状态改变后恢复，不删除源几何。"
+        ],
+        "rollback": "失败清理本次自有输出并恢复状态；StateRestored=false需人工审阅，不报告成功。",
+        "automation": "typed_candidate",
+        "api": [
+          "LevelExport2027.ExportService.ExportVisible(string existingOutputParent, double tolerance = .001)",
+          "LevelExport2027.ExportService.CaptureState()",
+          "LevelExport2027.Main.Show(int)"
+        ],
+        "limits": [
+          "检查PASS/PARTIAL/FAIL/NO_EXPORTABLE_LEVELS/FAIL_STATE_NOT_RESTORED和StateRestored，不只看原生导出布尔。",
+          "每文件最多1000万三角片；毫米规则箱体证据不能外推全部英制/复杂模型。",
+          "不是按图层导出原生B-rep或隐层对象。"
+        ],
+        "evidence": [
+          "catalog/package.json",
+          "docs/PLUGINS.md",
+          "local-source: MC2027-PluginSuite/LevelExport2027/src/Host/ExportService.cs",
+          "local-source: MC2027-PluginSuite/LevelExport2027/README.md"
+        ]
+      }
+    ]
+  },
+  {
+    "module": "ScreenTools2027",
+    "summary": "公开candidate0.1.3.0：白底图形截图、像素裁剪、PNG/剪贴板、受控渐变背景切换。",
+    "concepts": [
+      "截图临时背景与持续背景切换是两种不同效果。",
+      "0.1.3不支持独立设置视图轴/WCS轴输出；导航立方体/箭头可能仍在图中。",
+      "数值必须来自用户或工程上下文；界面初始值仅为演示/输入示例，不是加工默认值或推荐值。",
+      "公开发布件 payload/chooks/ScreenTools2027/ScreenTools2027.dll；assemblyVersion=0.1.3.0；SHA256=88113B6686235E2647B98692955882E762AFC327C830503203DD897B7E80987E（已与catalog/package.json逐件比对）。"
+    ],
+    "workflows": [
+      {
+        "id": "screen_capture",
+        "title": "白底截图并保存PNG",
+        "when": "需要当前图形的交付图片。",
+        "inputs": [
+          "CaptureOptions(false,false,可选PixelCrop)",
+          "新PNG绝对路径；是否明确复制到剪贴板"
+        ],
+        "preconditions": [
+          "宿主业务方法须在Mastercam 2027/API29、.NET10 x64的当前文档宿主线程调用；记录当前文档与单位，使用明确ID，不跨异步等待保留活动事务。",
+          "STA宿主线程，不重入且无冲突事务；裁剪用原图像素坐标。"
+        ],
+        "steps": [
+          "CaptureWhite临时设白底/关闭渐变并捕获，finally恢复/核对状态。",
+          "仅State.Success且Image非null时SaveNewPng。",
+          "仅显式需要复制时CopyToClipboard并核对像素。"
+        ],
+        "outputs": [
+          "CaptureResult.State、VerifiedImage、SavedImage；可选ClipboardReceipt。"
+        ],
+        "effects": [
+          "新PNG文件；可选替换Windows剪贴板内容。"
+        ],
+        "rollback": "临时背景自动恢复；失败Image为null。剪贴板替换无自动恢复接口；已保存PNG不自动删除。",
+        "automation": "typed_candidate",
+        "api": [
+          "ScreenTools2027.ScreenTools.CaptureWhite(CaptureOptions options = null)",
+          "ScreenTools2027.VerifiedImage.SaveNewPng(string path)",
+          "ScreenTools2027.ScreenTools.CopyToClipboard(VerifiedImage image)"
+        ],
+        "limits": [
+          "ShowViewAxes或ShowWcsAxes=true抛NotSupportedException，不保证去掉所有导航装饰。",
+          "尺寸16～16384且最多3200万像素；不截图整个桌面、不录视频、不支持JPEG/BMP输出。",
+          "RequiresHostReview需要实际核对；保留历史清理失败证据，不宣称所有宿主状态都已验证。"
+        ],
+        "evidence": [
+          "catalog/package.json",
+          "docs/PLUGINS.md",
+          "local-source: MC2027-PluginSuite/ScreenTools2027/candidates/0.1.3/src/ScreenTools.cs",
+          "local-source: MC2027-PluginSuite/ScreenTools2027/candidates/0.1.3/src/Images.cs"
+        ]
+      },
+      {
+        "id": "screen_gradient",
+        "title": "切换并恢复渐变背景",
+        "when": "用户需要更改显示背景。",
+        "inputs": [
+          "GradientOption；GradientLease"
+        ],
+        "preconditions": [
+          "宿主业务方法须在Mastercam 2027/API29、.NET10 x64的当前文档宿主线程调用；记录当前文档与单位，使用明确ID，不跨异步等待保留活动事务。"
+        ],
+        "steps": [
+          "SetGradient或ToggleGradient并保存返回Lease。",
+          "需要恢复时RestoreGradient(lease)，检查StateReport。"
+        ],
+        "outputs": [
+          "GradientResult；StateReport。"
+        ],
+        "effects": [
+          "修改宿主背景设置。"
+        ],
+        "rollback": "RestoreGradient仅恢复本Lease拥有且未被外部更改的状态；UI关闭会尝试恢复，FT切换持续至显式恢复/再次切换。",
+        "automation": "typed_candidate",
+        "api": [
+          "ScreenTools2027.ScreenTools.SetGradient(Mastercam.IO.Types.GradientOption option)",
+          "ScreenTools2027.ScreenTools.ToggleGradient(Mastercam.IO.Types.GradientOption whenEnabled = Mastercam.IO.Types.GradientOption.Vertical)",
+          "ScreenTools2027.ScreenTools.RestoreGradient(GradientLease lease)"
+        ],
+        "limits": [
+          "不是视图/相机配置保存；外部背景变化会拒绝恢复。"
+        ],
+        "evidence": [
+          "catalog/package.json",
+          "docs/PLUGINS.md",
+          "local-source: MC2027-PluginSuite/ScreenTools2027/candidates/0.1.3/src/ScreenTools.cs",
+          "local-source: MC2027-PluginSuite/ScreenTools2027/candidates/0.1.3/src/Main.cs"
+        ]
+      }
+    ]
+  },
+  {
+    "module": "MiddleConfirm2027",
+    "summary": "发布1.1.0.0：在明确支持的模态窗口内把短中键点击交给现有OK按钮。",
+    "concepts": [
+      "这是交互输入辅助，不是几何/加工自动化或通用远程确认端点。",
+      "Stop只停止监听，Disable持久关闭Enabled；二者不同。",
+      "数值必须来自用户或工程上下文；界面初始值仅为演示/输入示例，不是加工默认值或推荐值。",
+      "公开发布件 payload/chooks/MiddleConfirm2027/MiddleConfirm2027.dll；assemblyVersion=1.1.0.0；SHA256=4225A492BD8F586CE2A9C7792323355053FE0F8593869CC42B4A792F599DF22F（已与catalog/package.json逐件比对）。"
+    ],
+    "workflows": [
+      {
+        "id": "middle_confirm",
+        "title": "启停受限中键确认",
+        "when": "用户希望在支持的对话框更快执行现有确认。",
+        "inputs": [
+          "Enabled；MaximumClickMilliseconds（UI初始350ms仅输入示例）"
+        ],
+        "preconditions": [
+          "当前Mastercam进程；支持的对话框和可用OK按钮。",
+          "设置路径%LOCALAPPDATA%/MC2027-PluginSuite/MiddleConfirm2027/settings.json；SchemaVersion=1。"
+        ],
+        "steps": [
+          "通过Configure设置Enabled和100～600ms阈值。",
+          "短按中键必须落在支持对话框根空白区或精确OK区域；延迟回调再次验证窗口/按钮。",
+          "需要停用时Disable，临时停止监听时Stop。"
+        ],
+        "outputs": [
+          "IsRunning、Enabled、LastError；原对话框正常OK结果。"
+        ],
+        "effects": [
+          "修改本用户偏好/监听状态；OK可能执行用户当前对话框所定义的写入。"
+        ],
+        "rollback": "Disable停止并保存关闭；Stop不修改持久Enabled。已经完成的OK操作只能按其业务自己的撤销规则处理。",
+        "automation": "interactive",
+        "api": [
+          "MiddleConfirm2027.Main.Configure(int)",
+          "MiddleConfirm2027.Main.Start(int)",
+          "MiddleConfirm2027.Main.Stop(int)",
+          "MiddleConfirm2027.Main.Enable(int)",
+          "MiddleConfirm2027.Main.Disable(int)",
+          "MiddleConfirm2027.PluginRuntime.Start()",
+          "MiddleConfirm2027.PluginRuntime.Stop()",
+          "MiddleConfirm2027.PluginRuntime.SetEnabled(bool)"
+        ],
+        "limits": [
+          "排除编辑框/列表/嵌套页面/标签/视口/工具栏及Generate/Cancel/Apply/Help。",
+          "原生轮廓特例匹配标题“2D 刀路 - 外形铣削”，不宣称所有原生页面都支持。",
+          "修饰键、拖动/长按不触发；设置损坏失败关闭，非实时文件监听。"
+        ],
+        "evidence": [
+          "catalog/package.json",
+          "docs/PLUGINS.md",
+          "local-source: MC2027-PluginSuite/MiddleConfirm2027/src/Plugin.cs",
+          "local-source: MC2027-PluginSuite/MiddleConfirm2027/src/Settings.cs",
+          "local-source: MC2027-PluginSuite/MiddleConfirm2027/src/DialogScope.cs",
+          "local-source: MC2027-PluginSuite/MiddleConfirm2027/src/Native2DProfile.cs"
+        ]
+      }
+    ]
+  },
+  {
+    "module": "XPlusRemaining2027",
+    "summary": "研究目录名，不是公开包中的独立DLL/FT模块。",
+    "concepts": [
+      "研究原版ToolList/SetWorkoffset/ElectrodesReport/XSnapShot/SwitchBG边界；独立重建能力分布在其他模块。",
+      "数值必须来自用户或工程上下文；界面初始值仅为演示/输入示例，不是加工默认值或推荐值。"
+    ],
+    "workflows": [
+      {
+        "id": "xplus_remaining_reference",
+        "title": "对照原版剩余能力与重建范围",
+        "when": "查找名称相似但语义不同的功能。",
+        "inputs": [
+          "所需原版动作及实际输入/预期结果"
+        ],
+        "preconditions": [
+          "先检查catalog/modules.json中的真实发布模块。"
+        ],
+        "steps": [
+          "报表查SetupSheets；显式电极参考数据查ElectrodeReport004；截图/背景查ScreenTools013。",
+          "需要原版特有模板、私有参考数据或工序/NCI坐标号同步时使用对应原版交互入口并实际验证。"
+        ],
+        "outputs": [
+          "可用模块/边界对照；没有XPlusRemaining自身输出。"
+        ],
+        "effects": [
+          "此参考查询无宿主副作用。"
+        ],
+        "rollback": "无回滚对象。",
+        "automation": "not_exposed",
+        "api": [],
+        "limits": [
+          "不存在可证实的XPlusRemaining2027.Show或统一业务API。",
+          "原SetWorkoffset涉及工序字段与NCI1016同步，不等同改变WCS/T/C或夹具几何摆放。",
+          "原ToolList模板/快捷录入与私有电极属性不宣称被重建完整覆盖。"
+        ],
+        "evidence": [
+          "catalog/modules.json",
+          "catalog/package.json",
+          "docs/PLUGINS.md",
+          "local-source: MC2027-PluginSuite/XPlusRemaining2027/README.md"
+        ]
+      }
+    ]
+  },
+  {
+    "module": "XPlusOriginal2027",
+    "summary": "公开包包含15个原版API29入口/39个原样文件；与自有重建模块并存，未修改原版DLL。",
+    "concepts": [
+      "FT APPLICATION+CPP m_main是原版路由，不是结构化业务API。",
+      "注册/入口可用不证明完整业务等价、成功输出或回滚可靠；API28 Ribbon及缺失FlowTo5Axis不在本包。",
+      "数值必须来自用户或工程上下文；界面初始值仅为演示/输入示例，不是加工默认值或推荐值。"
+    ],
+    "workflows": [
+      {
+        "id": "original_chainit",
+        "title": "原版X+：串连选择",
+        "when": "交互选择连续线框",
+        "inputs": [
+          "由原版界面选择的对象/参数；不臆造统一参数协议。"
+        ],
+        "preconditions": [
+          "安装了catalog记录的原版X+及依赖；使用当前API29宿主。",
+          "根据具体操作明确源对象、输出路径和预期变化。"
+        ],
+        "steps": [
+          "从Workshop的X+原版分组进入对应功能。",
+          "在原版界面检查参数并按用户意图确认/取消；若为直接切换命令则读回实际显示状态。",
+          "核对实际对象/文件结果；路由返回不代替业务验收。"
+        ],
+        "outputs": [
+          "原版界面的实际结果；重建参考：ChainTools2027。"
+        ],
+        "effects": [
+          "改变选择；确切副作用需在该原版流程实测读回。"
+        ],
+        "rollback": "没有对外证实的统一精确回滚凭据；未提交时使用原版取消，已提交按该业务的宿主撤销/备份规则处理，不调用重建模块的receipt回滚原版对象。",
+        "automation": "interactive",
+        "api": [
+          "Mastercam.Support.ExternalAppsManager.RunFTCommand(\"ChainIt\", \"m_main\")",
+          "APPLICATION \"ChainIt\"",
+          "FUNCTION CPP \"m_main\""
+        ],
+        "limits": [
+          "不直接调用未知原生ABI或猜测参数。",
+          "原版与重建方法名相似不保证输入、算法、输出及撤销语义相同。"
+        ],
+        "evidence": [
+          "catalog/modules.json",
+          "payload/chooks/XPlusReuse2027.ChainIt.ft",
+          "src/Workshop/Workflow.cs",
+          "validation/xplus-provenance.json",
+          "local-source: MC2027-PluginSuite/XPlusRemaining2027/README.md"
+        ]
+      },
+      {
+        "id": "original_hirth",
+        "title": "原版X+：分度拟合平面",
+        "when": "原版离散分度/平面流程",
+        "inputs": [
+          "由原版界面选择的对象/参数；不臆造统一参数协议。"
+        ],
+        "preconditions": [
+          "安装了catalog记录的原版X+及依赖；使用当前API29宿主。",
+          "根据具体操作明确源对象、输出路径和预期变化。"
+        ],
+        "steps": [
+          "从Workshop的X+原版分组进入对应功能。",
+          "在原版界面检查参数并按用户意图确认/取消；若为直接切换命令则读回实际显示状态。",
+          "核对实际对象/文件结果；路由返回不代替业务验收。"
+        ],
+        "outputs": [
+          "原版界面的实际结果；重建参考：HirthTools2027。"
+        ],
+        "effects": [
+          "可能创建/切换平面；确切副作用需在该原版流程实测读回。"
+        ],
+        "rollback": "没有对外证实的统一精确回滚凭据；未提交时使用原版取消，已提交按该业务的宿主撤销/备份规则处理，不调用重建模块的receipt回滚原版对象。",
+        "automation": "interactive",
+        "api": [
+          "Mastercam.Support.ExternalAppsManager.RunFTCommand(\"Hirth\", \"m_main\")",
+          "APPLICATION \"Hirth\"",
+          "FUNCTION CPP \"m_main\""
+        ],
+        "limits": [
+          "不直接调用未知原生ABI或猜测参数。",
+          "原版与重建方法名相似不保证输入、算法、输出及撤销语义相同。"
+        ],
+        "evidence": [
+          "catalog/modules.json",
+          "payload/chooks/XPlusReuse2027.Hirth.ft",
+          "src/Workshop/Workflow.cs",
+          "validation/xplus-provenance.json",
+          "local-source: MC2027-PluginSuite/XPlusRemaining2027/README.md"
+        ]
+      },
+      {
+        "id": "original_svgimage",
+        "title": "原版X+：SVG导入",
+        "when": "原版SVG导入流程",
+        "inputs": [
+          "由原版界面选择的对象/参数；不臆造统一参数协议。"
+        ],
+        "preconditions": [
+          "安装了catalog记录的原版X+及依赖；使用当前API29宿主。",
+          "根据具体操作明确源对象、输出路径和预期变化。"
+        ],
+        "steps": [
+          "从Workshop的X+原版分组进入对应功能。",
+          "在原版界面检查参数并按用户意图确认/取消；若为直接切换命令则读回实际显示状态。",
+          "核对实际对象/文件结果；路由返回不代替业务验收。"
+        ],
+        "outputs": [
+          "原版界面的实际结果；重建参考：SVGGeometry2027。"
+        ],
+        "effects": [
+          "可能创建几何；确切副作用需在该原版流程实测读回。"
+        ],
+        "rollback": "没有对外证实的统一精确回滚凭据；未提交时使用原版取消，已提交按该业务的宿主撤销/备份规则处理，不调用重建模块的receipt回滚原版对象。",
+        "automation": "interactive",
+        "api": [
+          "Mastercam.Support.ExternalAppsManager.RunFTCommand(\"SVGImage\", \"m_main\")",
+          "APPLICATION \"SVGImage\"",
+          "FUNCTION CPP \"m_main\""
+        ],
+        "limits": [
+          "不直接调用未知原生ABI或猜测参数。",
+          "原版与重建方法名相似不保证输入、算法、输出及撤销语义相同。"
+        ],
+        "evidence": [
+          "catalog/modules.json",
+          "payload/chooks/XPlusReuse2027.SVGImage.ft",
+          "src/Workshop/Workflow.cs",
+          "validation/xplus-provenance.json",
+          "local-source: MC2027-PluginSuite/XPlusRemaining2027/README.md"
+        ]
+      },
+      {
+        "id": "original_setworkoffset",
+        "title": "原版X+：操作坐标系编号",
+        "when": "原版工序/NCI坐标号同步",
+        "inputs": [
+          "由原版界面选择的对象/参数；不臆造统一参数协议。"
+        ],
+        "preconditions": [
+          "安装了catalog记录的原版X+及依赖；使用当前API29宿主。",
+          "根据具体操作明确源对象、输出路径和预期变化。"
+        ],
+        "steps": [
+          "从Workshop的X+原版分组进入对应功能。",
+          "在原版界面检查参数并按用户意图确认/取消；若为直接切换命令则读回实际显示状态。",
+          "核对实际对象/文件结果；路由返回不代替业务验收。"
+        ],
+        "outputs": [
+          "原版界面的实际结果；重建参考：无已证实等价重建。"
+        ],
+        "effects": [
+          "可能修改工序工作偏置和NCI1016信息；确切副作用需在该原版流程实测读回。"
+        ],
+        "rollback": "没有对外证实的统一精确回滚凭据；未提交时使用原版取消，已提交按该业务的宿主撤销/备份规则处理，不调用重建模块的receipt回滚原版对象。",
+        "automation": "interactive",
+        "api": [
+          "Mastercam.Support.ExternalAppsManager.RunFTCommand(\"SetWorkoffset\", \"m_main\")",
+          "APPLICATION \"SetWorkoffset\"",
+          "FUNCTION CPP \"m_main\""
+        ],
+        "limits": [
+          "不直接调用未知原生ABI或猜测参数。",
+          "原版与重建方法名相似不保证输入、算法、输出及撤销语义相同。"
+        ],
+        "evidence": [
+          "catalog/modules.json",
+          "payload/chooks/XPlusReuse2027.SetWorkoffset.ft",
+          "src/Workshop/Workflow.cs",
+          "validation/xplus-provenance.json",
+          "local-source: MC2027-PluginSuite/XPlusRemaining2027/README.md"
+        ]
+      },
+      {
+        "id": "original_tpsketcher",
+        "title": "原版X+：草绘刀路",
+        "when": "原版交互草绘刀路流程",
+        "inputs": [
+          "由原版界面选择的对象/参数；不臆造统一参数协议。"
+        ],
+        "preconditions": [
+          "安装了catalog记录的原版X+及依赖；使用当前API29宿主。",
+          "根据具体操作明确源对象、输出路径和预期变化。"
+        ],
+        "steps": [
+          "从Workshop的X+原版分组进入对应功能。",
+          "在原版界面检查参数并按用户意图确认/取消；若为直接切换命令则读回实际显示状态。",
+          "核对实际对象/文件结果；路由返回不代替业务验收。"
+        ],
+        "outputs": [
+          "原版界面的实际结果；重建参考：TpSketcher2027。"
+        ],
+        "effects": [
+          "可能创建几何/工序；确切副作用需在该原版流程实测读回。"
+        ],
+        "rollback": "没有对外证实的统一精确回滚凭据；未提交时使用原版取消，已提交按该业务的宿主撤销/备份规则处理，不调用重建模块的receipt回滚原版对象。",
+        "automation": "interactive",
+        "api": [
+          "Mastercam.Support.ExternalAppsManager.RunFTCommand(\"TpSketcher\", \"m_main\")",
+          "APPLICATION \"TpSketcher\"",
+          "FUNCTION CPP \"m_main\""
+        ],
+        "limits": [
+          "不直接调用未知原生ABI或猜测参数。",
+          "原版与重建方法名相似不保证输入、算法、输出及撤销语义相同。"
+        ],
+        "evidence": [
+          "catalog/modules.json",
+          "payload/chooks/XPlusReuse2027.TpSketcher.ft",
+          "src/Workshop/Workflow.cs",
+          "validation/xplus-provenance.json",
+          "local-source: MC2027-PluginSuite/XPlusRemaining2027/README.md"
+        ]
+      },
+      {
+        "id": "original_holder_ch",
+        "title": "原版X+：几何创建刀柄",
+        "when": "原版按几何创建刀柄流程",
+        "inputs": [
+          "由原版界面选择的对象/参数；不臆造统一参数协议。"
+        ],
+        "preconditions": [
+          "安装了catalog记录的原版X+及依赖；使用当前API29宿主。",
+          "根据具体操作明确源对象、输出路径和预期变化。"
+        ],
+        "steps": [
+          "从Workshop的X+原版分组进入对应功能。",
+          "在原版界面检查参数并按用户意图确认/取消；若为直接切换命令则读回实际显示状态。",
+          "核对实际对象/文件结果；路由返回不代替业务验收。"
+        ],
+        "outputs": [
+          "原版界面的实际结果；重建参考：HolderTools2027仅手工分段定义。"
+        ],
+        "effects": [
+          "可能写刀库；确切副作用需在该原版流程实测读回。"
+        ],
+        "rollback": "没有对外证实的统一精确回滚凭据；未提交时使用原版取消，已提交按该业务的宿主撤销/备份规则处理，不调用重建模块的receipt回滚原版对象。",
+        "automation": "interactive",
+        "api": [
+          "Mastercam.Support.ExternalAppsManager.RunFTCommand(\"Holder_CH\", \"m_main\")",
+          "APPLICATION \"Holder_CH\"",
+          "FUNCTION CPP \"m_main\""
+        ],
+        "limits": [
+          "不直接调用未知原生ABI或猜测参数。",
+          "原版与重建方法名相似不保证输入、算法、输出及撤销语义相同。"
+        ],
+        "evidence": [
+          "catalog/modules.json",
+          "payload/chooks/XPlusReuse2027.Holder_CH.ft",
+          "src/Workshop/Workflow.cs",
+          "validation/xplus-provenance.json",
+          "local-source: MC2027-PluginSuite/XPlusRemaining2027/README.md"
+        ]
+      },
+      {
+        "id": "original_mergefixture",
+        "title": "原版X+：添加夹具",
+        "when": "原版夹具插入流程",
+        "inputs": [
+          "由原版界面选择的对象/参数；不臆造统一参数协议。"
+        ],
+        "preconditions": [
+          "安装了catalog记录的原版X+及依赖；使用当前API29宿主。",
+          "根据具体操作明确源对象、输出路径和预期变化。"
+        ],
+        "steps": [
+          "从Workshop的X+原版分组进入对应功能。",
+          "在原版界面检查参数并按用户意图确认/取消；若为直接切换命令则读回实际显示状态。",
+          "核对实际对象/文件结果；路由返回不代替业务验收。"
+        ],
+        "outputs": [
+          "原版界面的实际结果；重建参考：FixtureTools2027受限子集。"
+        ],
+        "effects": [
+          "可能创建/摆放几何；确切副作用需在该原版流程实测读回。"
+        ],
+        "rollback": "没有对外证实的统一精确回滚凭据；未提交时使用原版取消，已提交按该业务的宿主撤销/备份规则处理，不调用重建模块的receipt回滚原版对象。",
+        "automation": "interactive",
+        "api": [
+          "Mastercam.Support.ExternalAppsManager.RunFTCommand(\"MergeFixture\", \"m_main\")",
+          "APPLICATION \"MergeFixture\"",
+          "FUNCTION CPP \"m_main\""
+        ],
+        "limits": [
+          "不直接调用未知原生ABI或猜测参数。",
+          "原版与重建方法名相似不保证输入、算法、输出及撤销语义相同。"
+        ],
+        "evidence": [
+          "catalog/modules.json",
+          "payload/chooks/XPlusReuse2027.MergeFixture.ft",
+          "src/Workshop/Workflow.cs",
+          "validation/xplus-provenance.json",
+          "local-source: MC2027-PluginSuite/XPlusRemaining2027/README.md"
+        ]
+      },
+      {
+        "id": "original_fixturesetup",
+        "title": "原版X+：夹具设置",
+        "when": "原版夹具设置流程",
+        "inputs": [
+          "由原版界面选择的对象/参数；不臆造统一参数协议。"
+        ],
+        "preconditions": [
+          "安装了catalog记录的原版X+及依赖；使用当前API29宿主。",
+          "根据具体操作明确源对象、输出路径和预期变化。"
+        ],
+        "steps": [
+          "从Workshop的X+原版分组进入对应功能。",
+          "在原版界面检查参数并按用户意图确认/取消；若为直接切换命令则读回实际显示状态。",
+          "核对实际对象/文件结果；路由返回不代替业务验收。"
+        ],
+        "outputs": [
+          "原版界面的实际结果；重建参考：FixtureTools2027不声明等价。"
+        ],
+        "effects": [
+          "可能修改夹具定义/设置；确切副作用需在该原版流程实测读回。"
+        ],
+        "rollback": "没有对外证实的统一精确回滚凭据；未提交时使用原版取消，已提交按该业务的宿主撤销/备份规则处理，不调用重建模块的receipt回滚原版对象。",
+        "automation": "interactive",
+        "api": [
+          "Mastercam.Support.ExternalAppsManager.RunFTCommand(\"FixtureSetup\", \"m_main\")",
+          "APPLICATION \"FixtureSetup\"",
+          "FUNCTION CPP \"m_main\""
+        ],
+        "limits": [
+          "不直接调用未知原生ABI或猜测参数。",
+          "原版与重建方法名相似不保证输入、算法、输出及撤销语义相同。"
+        ],
+        "evidence": [
+          "catalog/modules.json",
+          "payload/chooks/XPlusReuse2027.FixtureSetup.ft",
+          "src/Workshop/Workflow.cs",
+          "validation/xplus-provenance.json",
+          "local-source: MC2027-PluginSuite/XPlusRemaining2027/README.md"
+        ]
+      },
+      {
+        "id": "original_setupsheet",
+        "title": "原版X+：加工报表",
+        "when": "原版设置表输出",
+        "inputs": [
+          "由原版界面选择的对象/参数；不臆造统一参数协议。"
+        ],
+        "preconditions": [
+          "安装了catalog记录的原版X+及依赖；使用当前API29宿主。",
+          "根据具体操作明确源对象、输出路径和预期变化。"
+        ],
+        "steps": [
+          "从Workshop的X+原版分组进入对应功能。",
+          "在原版界面检查参数并按用户意图确认/取消；若为直接切换命令则读回实际显示状态。",
+          "核对实际对象/文件结果；路由返回不代替业务验收。"
+        ],
+        "outputs": [
+          "原版界面的实际结果；重建参考：SetupSheets2027。"
+        ],
+        "effects": [
+          "可能写报告/模板文件；确切副作用需在该原版流程实测读回。"
+        ],
+        "rollback": "没有对外证实的统一精确回滚凭据；未提交时使用原版取消，已提交按该业务的宿主撤销/备份规则处理，不调用重建模块的receipt回滚原版对象。",
+        "automation": "interactive",
+        "api": [
+          "Mastercam.Support.ExternalAppsManager.RunFTCommand(\"SetupSheet\", \"m_main\")",
+          "APPLICATION \"SetupSheet\"",
+          "FUNCTION CPP \"m_main\""
+        ],
+        "limits": [
+          "不直接调用未知原生ABI或猜测参数。",
+          "原版与重建方法名相似不保证输入、算法、输出及撤销语义相同。"
+        ],
+        "evidence": [
+          "catalog/modules.json",
+          "payload/chooks/XPlusReuse2027.SetupSheet.ft",
+          "src/Workshop/Workflow.cs",
+          "validation/xplus-provenance.json",
+          "local-source: MC2027-PluginSuite/XPlusRemaining2027/README.md"
+        ]
+      },
+      {
+        "id": "original_toollist",
+        "title": "原版X+：刀具清单",
+        "when": "原版刀具清单/模板流程",
+        "inputs": [
+          "由原版界面选择的对象/参数；不臆造统一参数协议。"
+        ],
+        "preconditions": [
+          "安装了catalog记录的原版X+及依赖；使用当前API29宿主。",
+          "根据具体操作明确源对象、输出路径和预期变化。"
+        ],
+        "steps": [
+          "从Workshop的X+原版分组进入对应功能。",
+          "在原版界面检查参数并按用户意图确认/取消；若为直接切换命令则读回实际显示状态。",
+          "核对实际对象/文件结果；路由返回不代替业务验收。"
+        ],
+        "outputs": [
+          "原版界面的实际结果；重建参考：SetupSheets2027仅部分报告语义。"
+        ],
+        "effects": [
+          "可能写报告/模板文件；确切副作用需在该原版流程实测读回。"
+        ],
+        "rollback": "没有对外证实的统一精确回滚凭据；未提交时使用原版取消，已提交按该业务的宿主撤销/备份规则处理，不调用重建模块的receipt回滚原版对象。",
+        "automation": "interactive",
+        "api": [
+          "Mastercam.Support.ExternalAppsManager.RunFTCommand(\"ToolList\", \"m_main\")",
+          "APPLICATION \"ToolList\"",
+          "FUNCTION CPP \"m_main\""
+        ],
+        "limits": [
+          "不直接调用未知原生ABI或猜测参数。",
+          "原版与重建方法名相似不保证输入、算法、输出及撤销语义相同。"
+        ],
+        "evidence": [
+          "catalog/modules.json",
+          "payload/chooks/XPlusReuse2027.ToolList.ft",
+          "src/Workshop/Workflow.cs",
+          "validation/xplus-provenance.json",
+          "local-source: MC2027-PluginSuite/XPlusRemaining2027/README.md"
+        ]
+      },
+      {
+        "id": "original_electrodesreport",
+        "title": "原版X+：电极报告",
+        "when": "原版电极及参考数据报表流程",
+        "inputs": [
+          "由原版界面选择的对象/参数；不臆造统一参数协议。"
+        ],
+        "preconditions": [
+          "安装了catalog记录的原版X+及依赖；使用当前API29宿主。",
+          "根据具体操作明确源对象、输出路径和预期变化。"
+        ],
+        "steps": [
+          "从Workshop的X+原版分组进入对应功能。",
+          "在原版界面检查参数并按用户意图确认/取消；若为直接切换命令则读回实际显示状态。",
+          "核对实际对象/文件结果；路由返回不代替业务验收。"
+        ],
+        "outputs": [
+          "原版界面的实际结果；重建参考：ElectrodeReport2027显式参考数据子集。"
+        ],
+        "effects": [
+          "可能写报告/参考数据；确切副作用需在该原版流程实测读回。"
+        ],
+        "rollback": "没有对外证实的统一精确回滚凭据；未提交时使用原版取消，已提交按该业务的宿主撤销/备份规则处理，不调用重建模块的receipt回滚原版对象。",
+        "automation": "interactive",
+        "api": [
+          "Mastercam.Support.ExternalAppsManager.RunFTCommand(\"ElectrodesReport\", \"m_main\")",
+          "APPLICATION \"ElectrodesReport\"",
+          "FUNCTION CPP \"m_main\""
+        ],
+        "limits": [
+          "不直接调用未知原生ABI或猜测参数。",
+          "原版与重建方法名相似不保证输入、算法、输出及撤销语义相同。"
+        ],
+        "evidence": [
+          "catalog/modules.json",
+          "payload/chooks/XPlusReuse2027.ElectrodesReport.ft",
+          "src/Workshop/Workflow.cs",
+          "validation/xplus-provenance.json",
+          "local-source: MC2027-PluginSuite/XPlusRemaining2027/README.md"
+        ]
+      },
+      {
+        "id": "original_level2stl",
+        "title": "原版X+：图层导出STL",
+        "when": "原版分层网格导出",
+        "inputs": [
+          "由原版界面选择的对象/参数；不臆造统一参数协议。"
+        ],
+        "preconditions": [
+          "安装了catalog记录的原版X+及依赖；使用当前API29宿主。",
+          "根据具体操作明确源对象、输出路径和预期变化。"
+        ],
+        "steps": [
+          "从Workshop的X+原版分组进入对应功能。",
+          "在原版界面检查参数并按用户意图确认/取消；若为直接切换命令则读回实际显示状态。",
+          "核对实际对象/文件结果；路由返回不代替业务验收。"
+        ],
+        "outputs": [
+          "原版界面的实际结果；重建参考：LevelExport2027。"
+        ],
+        "effects": [
+          "写STL文件；确切副作用需在该原版流程实测读回。"
+        ],
+        "rollback": "没有对外证实的统一精确回滚凭据；未提交时使用原版取消，已提交按该业务的宿主撤销/备份规则处理，不调用重建模块的receipt回滚原版对象。",
+        "automation": "interactive",
+        "api": [
+          "Mastercam.Support.ExternalAppsManager.RunFTCommand(\"Level2STL\", \"m_main\")",
+          "APPLICATION \"Level2STL\"",
+          "FUNCTION CPP \"m_main\""
+        ],
+        "limits": [
+          "不直接调用未知原生ABI或猜测参数。",
+          "原版与重建方法名相似不保证输入、算法、输出及撤销语义相同。"
+        ],
+        "evidence": [
+          "catalog/modules.json",
+          "payload/chooks/XPlusReuse2027.Level2STL.ft",
+          "src/Workshop/Workflow.cs",
+          "validation/xplus-provenance.json",
+          "local-source: MC2027-PluginSuite/XPlusRemaining2027/README.md"
+        ]
+      },
+      {
+        "id": "original_renamenci",
+        "title": "原版X+：重命名NCI",
+        "when": "原版NCI命名流程",
+        "inputs": [
+          "由原版界面选择的对象/参数；不臆造统一参数协议。"
+        ],
+        "preconditions": [
+          "安装了catalog记录的原版X+及依赖；使用当前API29宿主。",
+          "根据具体操作明确源对象、输出路径和预期变化。"
+        ],
+        "steps": [
+          "从Workshop的X+原版分组进入对应功能。",
+          "在原版界面检查参数并按用户意图确认/取消；若为直接切换命令则读回实际显示状态。",
+          "核对实际对象/文件结果；路由返回不代替业务验收。"
+        ],
+        "outputs": [
+          "原版界面的实际结果；重建参考：不与几何重命名混同。"
+        ],
+        "effects": [
+          "可能修改工序/NCI名称；确切副作用需在该原版流程实测读回。"
+        ],
+        "rollback": "没有对外证实的统一精确回滚凭据；未提交时使用原版取消，已提交按该业务的宿主撤销/备份规则处理，不调用重建模块的receipt回滚原版对象。",
+        "automation": "interactive",
+        "api": [
+          "Mastercam.Support.ExternalAppsManager.RunFTCommand(\"RenameNCI\", \"m_main\")",
+          "APPLICATION \"RenameNCI\"",
+          "FUNCTION CPP \"m_main\""
+        ],
+        "limits": [
+          "不直接调用未知原生ABI或猜测参数。",
+          "原版与重建方法名相似不保证输入、算法、输出及撤销语义相同。"
+        ],
+        "evidence": [
+          "catalog/modules.json",
+          "payload/chooks/XPlusReuse2027.RenameNCI.ft",
+          "src/Workshop/Workflow.cs",
+          "validation/xplus-provenance.json",
+          "local-source: MC2027-PluginSuite/XPlusRemaining2027/README.md"
+        ]
+      },
+      {
+        "id": "original_switchbg",
+        "title": "原版X+：背景切换",
+        "when": "原版背景显示切换",
+        "inputs": [
+          "由原版界面选择的对象/参数；不臆造统一参数协议。"
+        ],
+        "preconditions": [
+          "安装了catalog记录的原版X+及依赖；使用当前API29宿主。",
+          "根据具体操作明确源对象、输出路径和预期变化。"
+        ],
+        "steps": [
+          "从Workshop的X+原版分组进入对应功能。",
+          "在原版界面检查参数并按用户意图确认/取消；若为直接切换命令则读回实际显示状态。",
+          "核对实际对象/文件结果；路由返回不代替业务验收。"
+        ],
+        "outputs": [
+          "原版界面的实际结果；重建参考：ScreenTools2027。"
+        ],
+        "effects": [
+          "改变显示背景；确切副作用需在该原版流程实测读回。"
+        ],
+        "rollback": "没有对外证实的统一精确回滚凭据；未提交时使用原版取消，已提交按该业务的宿主撤销/备份规则处理，不调用重建模块的receipt回滚原版对象。",
+        "automation": "interactive",
+        "api": [
+          "Mastercam.Support.ExternalAppsManager.RunFTCommand(\"SwitchBG\", \"m_main\")",
+          "APPLICATION \"SwitchBG\"",
+          "FUNCTION CPP \"m_main\""
+        ],
+        "limits": [
+          "不直接调用未知原生ABI或猜测参数。",
+          "原版与重建方法名相似不保证输入、算法、输出及撤销语义相同。"
+        ],
+        "evidence": [
+          "catalog/modules.json",
+          "payload/chooks/XPlusReuse2027.SwitchBG.ft",
+          "src/Workshop/Workflow.cs",
+          "validation/xplus-provenance.json",
+          "local-source: MC2027-PluginSuite/XPlusRemaining2027/README.md"
+        ]
+      },
+      {
+        "id": "original_xsnapshot",
+        "title": "原版X+：白底框选截图",
+        "when": "原版截图输出",
+        "inputs": [
+          "由原版界面选择的对象/参数；不臆造统一参数协议。"
+        ],
+        "preconditions": [
+          "安装了catalog记录的原版X+及依赖；使用当前API29宿主。",
+          "根据具体操作明确源对象、输出路径和预期变化。"
+        ],
+        "steps": [
+          "从Workshop的X+原版分组进入对应功能。",
+          "在原版界面检查参数并按用户意图确认/取消；若为直接切换命令则读回实际显示状态。",
+          "核对实际对象/文件结果；路由返回不代替业务验收。"
+        ],
+        "outputs": [
+          "原版界面的实际结果；重建参考：ScreenTools2027。"
+        ],
+        "effects": [
+          "可能写图片或替换剪贴板；确切副作用需在该原版流程实测读回。"
+        ],
+        "rollback": "没有对外证实的统一精确回滚凭据；未提交时使用原版取消，已提交按该业务的宿主撤销/备份规则处理，不调用重建模块的receipt回滚原版对象。",
+        "automation": "interactive",
+        "api": [
+          "Mastercam.Support.ExternalAppsManager.RunFTCommand(\"XSnapShot\", \"m_main\")",
+          "APPLICATION \"XSnapShot\"",
+          "FUNCTION CPP \"m_main\""
+        ],
+        "limits": [
+          "不直接调用未知原生ABI或猜测参数。",
+          "原版与重建方法名相似不保证输入、算法、输出及撤销语义相同。"
+        ],
+        "evidence": [
+          "catalog/modules.json",
+          "payload/chooks/XPlusReuse2027.XSnapShot.ft",
+          "src/Workshop/Workflow.cs",
+          "validation/xplus-provenance.json",
+          "local-source: MC2027-PluginSuite/XPlusRemaining2027/README.md"
+        ]
+      }
+    ]
+  },
+  {
+    "module": "CIMCO",
+    "summary": "合集编排官方CIMCO Verify for Mastercam联网安装，固定安装器26.9.11.46240；不包含其仿真结构化API。",
+    "concepts": [
+      "独立官方组件，非CIMCO Edit，也非本合集自有几何算法。",
+      "固定安装器43230352字节；SHA256=0925229394EFCBA51E0B14F59456F2CADDC18128971F3F4BC039F9F8DA40E72E；须同时通过CIMCO A/S Authenticode验证。",
+      "数值必须来自用户或工程上下文；界面初始值仅为演示/输入示例，不是加工默认值或推荐值。"
+    ],
+    "workflows": [
+      {
+        "id": "cimco_install",
+        "title": "检查并安装官方Verify集成",
+        "when": "需要在注册的Mastercam 2027中使用官方Verify。",
+        "inputs": [
+          "注册的MastercamRoot",
+          "联网下载缓存和安装报告目录"
+        ],
+        "preconditions": [
+          "Mastercam正常关闭；目录必须与唯一Mastercam 2027注册项匹配。",
+          "已有完整且兼容签名安装直接Skip；较新但集成不全则NeedsOfficialRepair，不降级覆盖。"
+        ],
+        "steps": [
+          "运行Install.cmd（调用Manage.ps1 -Action Install -WithCimco -Interactive）。",
+          "安装编排读取注册/文件/签名，必要时官方HTTPS下载并检查大小/SHA256/签名。",
+          "官方安装器完成后读回；3010表示重启后重跑验证，不等于已验证完成。"
+        ],
+        "outputs": [
+          "安装/跳过/需官方修复状态；官方安装日志及验证报告。"
+        ],
+        "effects": [
+          "必要时下载缓存、运行官方安装器并修改官方安装/注册；不是复制几个DLL。"
+        ],
+        "rollback": "合集卸载保留CIMCO；修复/卸载通过官方安装器管理，不手删共享CIMCO目录。",
+        "automation": "interactive",
+        "api": [
+          "scripts/Cimco.ps1::Get-CimcoSpec",
+          "scripts/Cimco.ps1::Get-CimcoState([string]$MastercamRoot)",
+          "scripts/Cimco.ps1::Get-CimcoInstaller([string]$CacheDirectory)",
+          "scripts/Cimco.ps1::Invoke-CimcoInstall([string]$MastercamRoot,[string]$Installer,[string]$ReportDirectory)"
+        ],
+        "limits": [
+          "脚本函数依赖合集公共脚本上下文；对外入口为Install.cmd/Manage.ps1，不把函数当成MCP。",
+          "当前证据覆盖下载签名/缓存与现有安装跳过；不冒充干净机器首次安装和真实材料去除验证。"
+        ],
+        "evidence": [
+          "scripts/Cimco.ps1",
+          "Install.cmd",
+          "Manage.ps1",
+          "docs/EXTERNAL.md",
+          "validation/README.md"
+        ]
+      },
+      {
+        "id": "cimco_verify_interactive",
+        "title": "使用官方Verify审阅加工仿真",
+        "when": "用户需要在官方界面检查刀路仿真。",
+        "inputs": [
+          "实际模型/毛坯/刀具/夹具/刀路及官方界面所需设置"
+        ],
+        "preconditions": [
+          "官方集成实际安装验证通过；使用用户明确的加工数据。"
+        ],
+        "steps": [
+          "进入已安装的官方Verify界面。",
+          "在官方流程设置/运行并审阅实际结果，保存可追溯结果或截图。"
+        ],
+        "outputs": [
+          "实际官方界面/报告提供的仿真结果；此知识文件不生成仿真结论。"
+        ],
+        "effects": [
+          "由官方仿真界面决定；不默认自动后处理或机床运行。"
+        ],
+        "rollback": "官方仿真/设置按官方界面恢复；无合集专用仿真回滚API。",
+        "automation": "not_exposed",
+        "api": [],
+        "limits": [
+          "未证实仿真启动/材料去除/碰撞结果的typed接口，不猜FT名或声明MCP已支持。",
+          "安装验证、界面打开和刀路计算成功都不能推出无碰撞。"
+        ],
+        "evidence": [
+          "docs/EXTERNAL.md",
+          "scripts/Cimco.ps1",
+          "validation/README.md"
+        ]
+      }
+    ]
+  }
+]

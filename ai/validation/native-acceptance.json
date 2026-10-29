@@ -1,0 +1,88 @@
+{
+  "date": "2026-10-29",
+  "bridge": {
+    "version": "1.0.2.0",
+    "file": "MastercamPluginAI102.dll",
+    "sha256": "F90D1147B64AE566173225068585E6EEFD67C5B08CE60203F2919CB149A17ACE"
+  },
+  "transport": "actual stdio MCP -> existing Mastercam MCP -> API29 host",
+  "passed": true,
+  "toolCount": 11,
+  "tools": [
+    "mc_catalog",
+    "mc_capability",
+    "mc_inspect",
+    "mc_operation_information",
+    "mc_prepare_change",
+    "mc_apply_plan",
+    "mc_rollback_plan",
+    "mc_regenerate_hsm_plan",
+    "mc_plan_status",
+    "mc_discard_plan",
+    "mc_request_status"
+  ],
+  "nativeCalls": 35,
+  "actions": [
+    {
+      "action": "operation.depth",
+      "prepared": true,
+      "createdLineCount": null
+    },
+    {
+      "action": "operation.finish",
+      "prepared": true,
+      "createdLineCount": null
+    },
+    {
+      "action": "operation.chamfer",
+      "prepared": true,
+      "createdLineCount": null
+    },
+    {
+      "action": "hsm.pocket",
+      "prepared": true,
+      "createdLineCount": null
+    },
+    {
+      "action": "mp.sections",
+      "prepared": true,
+      "createdLineCount": 88
+    },
+    {
+      "action": "mp.draft",
+      "prepared": true,
+      "createdLineCount": 385
+    }
+  ],
+  "discoveryAndPlanLifecycleCalls": 6,
+  "discoverySourceSha256": "73A3178BC46AF378574D66747E39D030F9EAE894083997405698E64F0DA7758E",
+  "sameRequestReplayReturnedOriginalResult": true,
+  "secondApplyRejected": true,
+  "wrongPreviewHashRejected": true,
+  "hsmRegeneration": "Native regeneration and fresh-state checks passed through the HSM plugin.",
+  "cleanup": {
+    "ok": true,
+    "ownedFixtureDeleted": 17,
+    "originalOperations": 13,
+    "originalGeometry": 57,
+    "originalTools": 11,
+    "geometryTimestampsAttributesAndSelectionPreserved": true,
+    "operationSelectionPreserved": true,
+    "fixtureParametersRestored": true
+  },
+  "nativeResultSha256": "954996C1DED822F4A0B70E869192858E58FE883FC9DCB38A75857F73668A7E1A",
+  "cleanupSha256": "F1561C914D3CA510A494AD64DDD07CDD34762F20F3AE652F66F50ABF6AD6F968",
+  "sourceFileHashes": {
+    "ai/bridge/PluginBridge.cs": "2441C2CEF99FEF63062B99A0729C3EB596916F6ACD8C80503FE97E654AD6D1D5",
+    "ai/bridge/PreviewGuard.cs": "877EB7537F3DD3589370E6C0FD2AF96EFEE7F02EFCED9398631B13BFDBE365FC",
+    "ai/mcp/server.py": "ACF03C374ED4FF1312BA0F16F7418FAC2DC2E7AC9AA6C1520121DECEC1CB3535",
+    "ai/mcp/models.py": "554C9EFC8D41F78D1556EDB64946F7AF25F7A723511BA0DAE9650A5617641428",
+    "ai/mcp/runtime.py": "971F891186B38792FD786BDD547196DC76EE1CE8363C36BD77EADE895988D092"
+  },
+  "limits": [
+    "One local Mastercam 2027/API29 build and disposable fixture document.",
+    "No original X+ or CIMCO headless business API tested.",
+    "Not machining collision, postprocessor or production NC certification.",
+    "UI-only and source-API candidates remain separate from six typed actions."
+  ]
+}

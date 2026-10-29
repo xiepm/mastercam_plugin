@@ -1,0 +1,4497 @@
+[
+  {
+    "module": "HSMRebuild2027",
+    "summary": "0.1.0：基于公开 PocketOperation 的真实高速/摆线、恒定重叠螺旋、TrueSpiral 挖槽编排；业务 DLL 冻结，FT资源修复已验收。",
+    "concepts": [
+      "HighSpeed 是 Pocket 的真实粗加工策略；PocketSubtype=Standard 并不等于 Dynamic Mill、OptiRough 或完整 HSM 内核。",
+      "径向步距与轴向层深控制不同方向；摆线环尺寸仅在 HighSpeed 下启用。",
+      "创建、回读、计算、回滚是不同步骤；创建成功不代表已有有效刀路。",
+      "typed_candidate 仅表示适合将现有公开 C# 接口封装，本文没有实现任何 MCP。"
+    ],
+    "workflows": [
+      {
+        "id": "hsm.create",
+        "title": "单闭合边界新建高速/摆线挖槽",
+        "when": "已有参考工序、边界及合格平底刀，需要明确参数的新 Pocket。",
+        "inputs": {
+          "referenceId": "int；已保存文档中当前机床组的一项未锁定二维 Contour/Pocket 参考工序。UI 要求恰选一项。",
+          "chains": "Mastercam.Database.Chain[]；参考工序的完整原生链结果，恰一条闭合平面链；不要把多个原生链包装器过滤/截断后提交。",
+          "settings": {
+            "Name": "string，1–50可显示字符",
+            "Metric": "bool，必须等于文档；长度为 mm 或 inch，不自动转换",
+            "ToolSlot": "int，现有平底立铣刀内部槽号，不是 T 刀号",
+            "ToolDiameter": "double，与现有刀具一致",
+            "Strategy": "PocketStrategy: HighSpeed | ConstantOverlapSpiral | TrueSpiral",
+            "Trochoid": "TrochoidMode: Off=0 | FullMaterialOnly=1 | EntirePocket=2；非HighSpeed必须Off",
+            "Entry": "EntryChoice: Helix | Ramp",
+            "Climb": "bool，顺铣",
+            "MinimizeBurial": "bool",
+            "SpiralOut": "bool",
+            "StepOver": "double，0<径向步距<刀径",
+            "StepDown": "double，最大层深>0",
+            "WallStock": "double>=0",
+            "FloorStock": "double>=0且小于Top-Bottom",
+            "Tolerance": "double，0<容差<StepOver",
+            "LoopRadius": "double，摆线开启时>0",
+            "LoopSpacing": "double，摆线开启时0<间距<=2*LoopRadius",
+            "SmoothingRadius": "double>=0",
+            "EntryMinimum": "double>0；Helix半径/Ramp长度",
+            "EntryMaximum": "double>=EntryMinimum",
+            "EntryAngle": "double，度，0<角度<90",
+            "EntryClearanceXY": "double>=0",
+            "EntryClearanceZ": "double>=0",
+            "Clearance": "double，刀具平面绝对Z",
+            "Retract": "double，刀具平面绝对Z",
+            "FeedPlane": "double，刀具平面绝对Z",
+            "Top": "double，刀具平面绝对Z",
+            "Bottom": "double，刀具平面绝对Z",
+            "Feed": "double>0，宿主进给模式原始数值",
+            "Plunge": "double>0，同上",
+            "RetractFeed": "double>0，同上",
+            "Rpm": "int>0，rpm",
+            "ReviewedCuttingData": "bool=true，用户确认；不是模式设置开关"
+          }
+        },
+        "preconditions": [
+          "Mastercam 2027/API29、Windows x64、.NET 10；已安装匹配 payload 与依赖。",
+          "宿主对象须在 Mastercam UI 线程串行调用；先核文档、单位、活动机床组与选择。",
+          "已保存文件；无其他撤销事务；链几何未改变，与参考刀具平面一致。",
+          "现有刀具在同机床组、单位/刀径相符、刃长覆盖总深度；参考非恒线速。",
+          "Clearance>=Retract>=FeedPlane>Top>Bottom；先确认全部切削数据。"
+        ],
+        "steps": [
+          "准备 settings 并 Validate；读取参考与完整单链。",
+          "Host.Prepare 获取会话内 PocketPlan，向用户展示计划。",
+          "仅确认后 Apply；取 CreatedId、Status、Observations 与 AuditPath。"
+        ],
+        "outputs": [
+          "一个真实 PocketOperation；严格字段/刀具/链回读；状态与审计JSON。"
+        ],
+        "effects": [
+          "新增1工序，Posting=false、Dirty=true；继承参考的机床/坐标设置。",
+          "写 HSMREBUILD2027_DATA 或 %LOCALAPPDATA%/HSMRebuild2027 审计；不保存文档、不post。"
+        ],
+        "rollback": "Apply失败执行自有对象清理；成功后用同一 PocketPlan.Rollback。人工编辑、文档/源/工具变化会阻止盲删。",
+        "automation": "typed_candidate",
+        "api": [
+          "HSMRebuild2027.Host :: public static PocketPlan Prepare(int referenceId,Chain[] chains,PocketSettings settings)",
+          "HSMRebuild2027.PocketSettings :: public void Validate()",
+          "HSMRebuild2027.PocketSettings :: public PocketSettings Copy()",
+          "HSMRebuild2027.PocketPlan :: public void Apply()"
+        ],
+        "limits": [
+          "不支持岛屿、开放挖槽、残料模型、三维自适应、五轴或旧HSM格式。",
+          "宿主进给模式未由API自动设置；默认值不能当作切削建议。"
+        ],
+        "evidence": [
+          {
+            "kind": "source",
+            "path": "author:MC2027-PluginSuite/HSMRebuild2027/src/Host.cs",
+            "sha256": "5E41F9EB8BFC7EB1A22E44D4EB59CDF3C557AB79754C8CBE9BF7AF1AC7299616",
+            "lines": [
+              36,
+              157
+            ]
+          },
+          {
+            "kind": "source",
+            "path": "author:MC2027-PluginSuite/HSMRebuild2027/src/Core.cs",
+            "sha256": "E36ADE92051197C2BF63651509634D1D8721ED0E1A1AFE5B3F8F092DE33DD721",
+            "lines": [
+              49,
+              64
+            ]
+          },
+          {
+            "kind": "reference",
+            "path": "author:MC2027-PluginSuite/HSMRebuild2027/src/Core.cs"
+          },
+          {
+            "kind": "acceptance_scope",
+            "path": "repo:validation/hsm-native-acceptance.json"
+          },
+          {
+            "kind": "acceptance_scope",
+            "path": "repo:validation/bundle-host-integration.json"
+          },
+          {
+            "kind": "payload_identity",
+            "path": "repo:payload/chooks/HSMRebuild2027/HSMRebuild2027.dll",
+            "assemblyVersion": "0.1.0.0",
+            "sha256": "2862C7CD7E7203FE373F89EDDC1F58CB2627002CB94D224F9C383D98D30BC69C",
+            "manifestMatch": true
+          }
+        ]
+      },
+      {
+        "id": "hsm.readback",
+        "title": "检查本批状态与当前挖槽参数",
+        "when": "创建或重算后需要区分期望值、历史观察和fresh参数。",
+        "inputs": {
+          "operationId": "int=本批CreatedId",
+          "entry": "EntryChoice，必须与计划入刀方式一致",
+          "plan": "同会话对象；读取Id/Document/Status/Error/CreatedId/Settings/Observations/AuditPath"
+        },
+        "preconditions": [
+          "Mastercam 2027/API29、Windows x64、.NET 10；已安装匹配 payload 与依赖。",
+          "宿主对象须在 Mastercam UI 线程串行调用；先核文档、单位、活动机床组与选择。"
+        ],
+        "steps": [
+          "UI Readback 展示最近计划及已记录观察。",
+          "typed适配应 Host.Read 后确认 PocketOperation，再 Host.Parameters；连同计划字段返回。"
+        ],
+        "outputs": [
+          "参数字典、平面/链描述、状态、审计路径。"
+        ],
+        "effects": [
+          "Read/Parameters本身只读；LastPlan是会话状态。"
+        ],
+        "rollback": "只读无需回滚。",
+        "automation": "typed_candidate",
+        "api": [
+          "HSMRebuild2027.Host :: public static int[] AllIds()",
+          "HSMRebuild2027.Host :: public static int[] SelectedIds()",
+          "HSMRebuild2027.Host :: public static Operation Read(int id)",
+          "HSMRebuild2027.Host :: public static object Frame(MCView v)",
+          "HSMRebuild2027.Host :: public static object ChainInfo(Chain[] chains)",
+          "HSMRebuild2027.Host :: public static Dictionary<string,object> Parameters(PocketOperation o,EntryChoice entry)",
+          "HSMRebuild2027.Main :: public MCamReturn Readback(int p)"
+        ],
+        "limits": [
+          "UI Readback显示计划/历史观察，不等于每次重新比较数据库；typed层需明确fresh标记。"
+        ],
+        "evidence": [
+          {
+            "kind": "source",
+            "path": "author:MC2027-PluginSuite/HSMRebuild2027/src/Host.cs",
+            "sha256": "5E41F9EB8BFC7EB1A22E44D4EB59CDF3C557AB79754C8CBE9BF7AF1AC7299616",
+            "lines": [
+              21,
+              22,
+              23,
+              33,
+              35,
+              60
+            ]
+          },
+          {
+            "kind": "source",
+            "path": "author:MC2027-PluginSuite/HSMRebuild2027/src/Main.cs",
+            "sha256": "297413C3B3BF8CFA4FA87D0C2995C2ACA45CE9A811A7D166ADE98BE2301E64D5",
+            "lines": [
+              23
+            ]
+          },
+          {
+            "kind": "acceptance_scope",
+            "path": "repo:validation/hsm-native-acceptance.json"
+          },
+          {
+            "kind": "acceptance_scope",
+            "path": "repo:validation/bundle-host-integration.json"
+          },
+          {
+            "kind": "payload_identity",
+            "path": "repo:payload/chooks/HSMRebuild2027/HSMRebuild2027.dll",
+            "assemblyVersion": "0.1.0.0",
+            "sha256": "2862C7CD7E7203FE373F89EDDC1F58CB2627002CB94D224F9C383D98D30BC69C",
+            "manifestMatch": true
+          }
+        ]
+      },
+      {
+        "id": "hsm.regenerate",
+        "title": "计算本批新建挖槽",
+        "when": "已创建且尚未计算，用户明确要求计算。",
+        "inputs": {
+          "plan": "同会话已Applied的PocketPlan"
+        },
+        "preconditions": [
+          "Mastercam 2027/API29、Windows x64、.NET 10；已安装匹配 payload 与依赖。",
+          "宿主对象须在 Mastercam UI 线程串行调用；先核文档、单位、活动机床组与选择。",
+          "本批归属、工序参数和文档仍通过计划守卫。"
+        ],
+        "steps": [
+          "显示新建工序ID并确认。",
+          "调用 PocketPlan.Regenerate；保存raw结果与重新获取工序的Dirty和参数读回。"
+        ],
+        "outputs": [
+          "原生计算观察及更新后的回滚检查点。"
+        ],
+        "effects": [
+          "仅重算本批新工序，生成宿主刀路缓存；不post/NC、不保存文档。"
+        ],
+        "rollback": "同计划 Rollback；不能用旧缓存包装器Dirty判断再生失败。",
+        "automation": "typed_candidate",
+        "api": [
+          "HSMRebuild2027.PocketPlan :: public void Regenerate()",
+          "HSMRebuild2027.Main :: public MCamReturn Recalculate(int p)"
+        ],
+        "limits": [
+          "HighSpeed与ConstantOverlapSpiral已native重算PASS；TrueSpiral只验证创建/回读。",
+          "raw=true及fresh Dirty=false不证明逐段轨迹、碰撞或机床安全。"
+        ],
+        "evidence": [
+          {
+            "kind": "source",
+            "path": "author:MC2027-PluginSuite/HSMRebuild2027/src/Host.cs",
+            "sha256": "5E41F9EB8BFC7EB1A22E44D4EB59CDF3C557AB79754C8CBE9BF7AF1AC7299616",
+            "lines": [
+              209
+            ]
+          },
+          {
+            "kind": "source",
+            "path": "author:MC2027-PluginSuite/HSMRebuild2027/src/Main.cs",
+            "sha256": "297413C3B3BF8CFA4FA87D0C2995C2ACA45CE9A811A7D166ADE98BE2301E64D5",
+            "lines": [
+              24
+            ]
+          },
+          {
+            "kind": "acceptance_scope",
+            "path": "repo:validation/hsm-native-acceptance.json"
+          },
+          {
+            "kind": "acceptance_scope",
+            "path": "repo:validation/bundle-host-integration.json"
+          },
+          {
+            "kind": "payload_identity",
+            "path": "repo:payload/chooks/HSMRebuild2027/HSMRebuild2027.dll",
+            "assemblyVersion": "0.1.0.0",
+            "sha256": "2862C7CD7E7203FE373F89EDDC1F58CB2627002CB94D224F9C383D98D30BC69C",
+            "manifestMatch": true
+          }
+        ]
+      },
+      {
+        "id": "hsm.rollback",
+        "title": "显式回滚本批工序",
+        "when": "撤回本会话刚创建、且未被外部编辑的结果。",
+        "inputs": {
+          "plan": "原PocketPlan对象，不是反序列化审计文件"
+        },
+        "preconditions": [
+          "Mastercam 2027/API29、Windows x64、.NET 10；已安装匹配 payload 与依赖。",
+          "宿主对象须在 Mastercam UI 线程串行调用；先核文档、单位、活动机床组与选择。",
+          "回到同文档，保留会话计划；所有归属/时间戳/参数守卫通过。"
+        ],
+        "steps": [
+          "展示CreatedId与归属。",
+          "调用Rollback并读状态/审计。"
+        ],
+        "outputs": [
+          "RolledBack或明确失败原因。"
+        ],
+        "effects": [
+          "删除本批新工序；保留源工序/刀具/边界。"
+        ],
+        "rollback": "回滚本身不提供redo；失败保留审计，不通过改守卫强制删除。",
+        "automation": "typed_candidate",
+        "api": [
+          "HSMRebuild2027.PocketPlan :: public void Rollback()",
+          "HSMRebuild2027.Main :: public MCamReturn Rollback(int p)"
+        ],
+        "limits": [
+          "进程关闭后不承诺恢复内存计划。"
+        ],
+        "evidence": [
+          {
+            "kind": "source",
+            "path": "author:MC2027-PluginSuite/HSMRebuild2027/src/Host.cs",
+            "sha256": "5E41F9EB8BFC7EB1A22E44D4EB59CDF3C557AB79754C8CBE9BF7AF1AC7299616",
+            "lines": [
+              203
+            ]
+          },
+          {
+            "kind": "source",
+            "path": "author:MC2027-PluginSuite/HSMRebuild2027/src/Main.cs",
+            "sha256": "297413C3B3BF8CFA4FA87D0C2995C2ACA45CE9A811A7D166ADE98BE2301E64D5",
+            "lines": [
+              25
+            ]
+          },
+          {
+            "kind": "acceptance_scope",
+            "path": "repo:validation/hsm-native-acceptance.json"
+          },
+          {
+            "kind": "acceptance_scope",
+            "path": "repo:validation/bundle-host-integration.json"
+          },
+          {
+            "kind": "payload_identity",
+            "path": "repo:payload/chooks/HSMRebuild2027/HSMRebuild2027.dll",
+            "assemblyVersion": "0.1.0.0",
+            "sha256": "2862C7CD7E7203FE373F89EDDC1F58CB2627002CB94D224F9C383D98D30BC69C",
+            "manifestMatch": true
+          }
+        ]
+      },
+      {
+        "id": "hsm.ui",
+        "title": "打开挖槽面板与创建表单",
+        "when": "使用中文属性界面检查参数。",
+        "inputs": {
+          "p": "int，FT宿主参数；不是业务参数",
+          "selection": "恰选一项参考工序"
+        },
+        "preconditions": [
+          "Mastercam 2027/API29、Windows x64、.NET 10；已安装匹配 payload 与依赖。",
+          "宿主对象须在 Mastercam UI 线程串行调用；先核文档、单位、活动机床组与选择。"
+        ],
+        "steps": [
+          "工艺助手 HsmPocket 或 HSMRebuild2027.CreatePocket；总面板 OpenHub。",
+          "填写参数、预览、确认创建；另行计算或回滚。"
+        ],
+        "outputs": [
+          "模态面板及用户确认后的上述结果。"
+        ],
+        "effects": [
+          "仅打开/取消不应创建工序；提交才产生create流程效果。"
+        ],
+        "rollback": "取消表单；已创建结果依照本批Rollback。",
+        "automation": "interactive",
+        "api": [
+          "HSMRebuild2027.Main :: public MCamReturn OpenHub(int p)",
+          "HSMRebuild2027.Main :: public MCamReturn CreatePocket(int p)"
+        ],
+        "limits": [
+          "FT依赖 Workshop2027.Resources.dll 与 dnRES_NAME Workshop2027.NETHook；FT SHA 8F751974...已通过安装重启UI验收。"
+        ],
+        "evidence": [
+          {
+            "kind": "source",
+            "path": "author:MC2027-PluginSuite/HSMRebuild2027/src/Main.cs",
+            "sha256": "297413C3B3BF8CFA4FA87D0C2995C2ACA45CE9A811A7D166ADE98BE2301E64D5",
+            "lines": [
+              21,
+              22
+            ]
+          },
+          {
+            "kind": "acceptance_scope",
+            "path": "repo:validation/hsm-native-acceptance.json"
+          },
+          {
+            "kind": "acceptance_scope",
+            "path": "repo:validation/bundle-host-integration.json"
+          },
+          {
+            "kind": "payload_identity",
+            "path": "repo:payload/chooks/HSMRebuild2027/HSMRebuild2027.dll",
+            "assemblyVersion": "0.1.0.0",
+            "sha256": "2862C7CD7E7203FE373F89EDDC1F58CB2627002CB94D224F9C383D98D30BC69C",
+            "manifestMatch": true
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "module": "OperationTools2027",
+    "summary": "1.0.3：现有2D工序参数转换、链替换、按规则钻孔、三轮廓编排，以及修正原点后的范围/时间/装刀下界报告。",
+    "concepts": [
+      "Finish/Chamfer/Depth/ReplaceGeometry直接修改所给现有工序；Sequence/Drilling创建新工序。",
+      "Slot为刀具内部槽，Number为T号，LengthOffset/ DiameterOffset为H/D；不得混用。",
+      "Information的时间是有效缓存刀路的SDK秒数；装刀长度只是轴向下界。",
+      "1.0.3读取的刀具平面范围已扣除平面原点在各轴投影，不把旋转世界坐标端点当局部端点。"
+    ],
+    "workflows": [
+      {
+        "id": "op.finish",
+        "title": "粗加工参数转精光",
+        "when": "将Basic contour或Standard pocket改为明确刀具与零余量精光。",
+        "inputs": {
+          "ids": "int[]",
+          "config": {
+            "Tool": {
+              "ExistingSlot": "int；内部槽号优先，不是刀号",
+              "CreateIfMissing": "bool，必须显式允许；指定ExistingSlot时不可同时建刀",
+              "Kind": "ToolKind: FlatEndMill | ChamferMill | Drill",
+              "Number": "int；刀号",
+              "LengthOffset": "int；H",
+              "DiameterOffset": "int；D",
+              "Name": "string；新刀必填",
+              "Diameter": "double；当前文档长度单位",
+              "OverallLength": "double",
+              "FluteLength": "double",
+              "ShoulderLength": "double；刃长<=肩长<=总长",
+              "ShankDiameter": "double",
+              "TipAngleDegrees": "double；0..180度的内部角",
+              "TipDiameter": "double；0<=值<刀径",
+              "Flutes": "short>=1；新刀必填"
+            },
+            "Cutting": {
+              "Feed": "double>0；宿主原进给模式数值",
+              "Plunge": "double>0",
+              "Retract": "double>0",
+              "Rpm": "int>0",
+              "ConfirmOriginalFeedMode": "bool=true；不切换每分/每转模式"
+            },
+            "Compensation": "Computer|Control|Wear|ReverseWear",
+            "Side": "Left|Right",
+            "UseDepthCuts": "bool",
+            "MaximumStepDown": "double>0，启用分层时"
+          }
+        },
+        "preconditions": [
+          "Mastercam 2027/API29、Windows x64、.NET 10；已安装匹配 payload 与依赖。",
+          "宿主对象须在 Mastercam UI 线程串行调用；先核文档、单位、活动机床组与选择。",
+          "已保存文档；工序ID非空、唯一、未锁定；无其他Undo事务；平面与机床组符合该操作。"
+        ],
+        "steps": [
+          "PrepareFinish预检并展示Batch.Plan。",
+          "确认后Apply；核工具、H/D、零余量、精光次数、补偿、Dirty及审计。"
+        ],
+        "outputs": [
+          "PreparedChange/ChangeBatch；逐字段读回。"
+        ],
+        "effects": [
+          "改原工序，可能创建刀具；标记Dirty；写审计。"
+        ],
+        "rollback": "保留 PreparedChange.Batch 句柄；Apply失败会显式恢复所触及参数并清理自建工序/未被引用的自建刀具。成功后 Batch.Rollback 按时间戳/字段/源链守卫恢复；刀路仍需重算，遇 RestoreIncomplete 不可自动重复执行。",
+        "automation": "typed_candidate",
+        "api": [
+          "OperationTools2027.Host :: public static PreparedChange PrepareFinish(int[] ids,FinishConfig config)",
+          "OperationTools2027.PreparedChange :: public void Apply()",
+          "OperationTools2027.Main :: public MCamReturn Finish(int p)"
+        ],
+        "limits": [
+          "仅Basic contour/Standard pocket；Pocket分支不能从Contour测试推广为全部已验收。"
+        ],
+        "evidence": [
+          {
+            "kind": "source",
+            "path": "author:MC2027-PluginSuite/OperationTools2027/src/HostCommands.cs",
+            "sha256": "681FBF73961DBC7091B32B34DA7E0B2911F33CA4FCF91A2FECC91D62244AD6BA",
+            "lines": [
+              99,
+              18
+            ]
+          },
+          {
+            "kind": "source",
+            "path": "author:MC2027-PluginSuite/OperationTools2027/src/Main.cs",
+            "sha256": "76530C1BEC1381618F74A4394B9C79D9797B004FDFC767752732D4FF304A0EE4",
+            "lines": [
+              23
+            ]
+          },
+          {
+            "kind": "acceptance_scope",
+            "path": "repo:validation/README.md"
+          },
+          {
+            "kind": "acceptance_scope",
+            "path": "author:MC2027-PluginSuite/OperationTools2027/HANDOFF-1.0.3.md"
+          },
+          {
+            "kind": "payload_identity",
+            "path": "repo:payload/chooks/OperationTools2027/OperationTools2027.dll",
+            "assemblyVersion": "1.0.3.0",
+            "sha256": "26074B7E8EEBEE2C6B2CA52D1ED9744F42DDC894D245B86B4610E71C656A4B50",
+            "manifestMatch": true
+          }
+        ]
+      },
+      {
+        "id": "op.chamfer",
+        "title": "2D轮廓转倒角",
+        "when": "明确边缘宽度与刀尖偏移后将轮廓工序改为Chamfer2D。",
+        "inputs": {
+          "ids": "int[]",
+          "config": {
+            "Tool": {
+              "ExistingSlot": "int；内部槽号优先，不是刀号",
+              "CreateIfMissing": "bool，必须显式允许；指定ExistingSlot时不可同时建刀",
+              "Kind": "ToolKind: FlatEndMill | ChamferMill | Drill",
+              "Number": "int；刀号",
+              "LengthOffset": "int；H",
+              "DiameterOffset": "int；D",
+              "Name": "string；新刀必填",
+              "Diameter": "double；当前文档长度单位",
+              "OverallLength": "double",
+              "FluteLength": "double",
+              "ShoulderLength": "double；刃长<=肩长<=总长",
+              "ShankDiameter": "double",
+              "TipAngleDegrees": "double；0..180度的内部角",
+              "TipDiameter": "double；0<=值<刀径",
+              "Flutes": "short>=1；新刀必填"
+            },
+            "Cutting": {
+              "Feed": "double>0；宿主原进给模式数值",
+              "Plunge": "double>0",
+              "Retract": "double>0",
+              "Rpm": "int>0",
+              "ConfirmOriginalFeedMode": "bool=true；不切换每分/每转模式"
+            },
+            "Compensation": "Computer|Control|Wear|ReverseWear",
+            "Side": "Left|Right",
+            "Width": "double>0；倒角宽",
+            "ToolTipOffset": "double>=0",
+            "ChamferDepth": "double>=0"
+          }
+        },
+        "preconditions": [
+          "Mastercam 2027/API29、Windows x64、.NET 10；已安装匹配 payload 与依赖。",
+          "宿主对象须在 Mastercam UI 线程串行调用；先核文档、单位、活动机床组与选择。",
+          "已保存文档；工序ID非空、唯一、未锁定；无其他Undo事务；平面与机床组符合该操作。"
+        ],
+        "steps": [
+          "PrepareChamfer，明确真实ChamferMill刀。",
+          "Apply后以CutParams.ContourSubtype回读，不能只读顶层缓存Subtype。"
+        ],
+        "outputs": [
+          "改为Chamfer2D的现有Contour及审计。"
+        ],
+        "effects": [
+          "换刀绑定、清零壁/底余量、关闭多重径向与深度分层；标Dirty。"
+        ],
+        "rollback": "保留 PreparedChange.Batch 句柄；Apply失败会显式恢复所触及参数并清理自建工序/未被引用的自建刀具。成功后 Batch.Rollback 按时间戳/字段/源链守卫恢复；刀路仍需重算，遇 RestoreIncomplete 不可自动重复执行。",
+        "automation": "typed_candidate",
+        "api": [
+          "OperationTools2027.Host :: public static PreparedChange PrepareChamfer(int[] ids,ChamferConfig config)",
+          "OperationTools2027.Main :: public MCamReturn Chamfer(int p)"
+        ],
+        "limits": [
+          "不是挖槽转倒角；挖槽边缘须明确新建Contour。"
+        ],
+        "evidence": [
+          {
+            "kind": "source",
+            "path": "author:MC2027-PluginSuite/OperationTools2027/src/HostCommands.cs",
+            "sha256": "681FBF73961DBC7091B32B34DA7E0B2911F33CA4FCF91A2FECC91D62244AD6BA",
+            "lines": [
+              121
+            ]
+          },
+          {
+            "kind": "source",
+            "path": "author:MC2027-PluginSuite/OperationTools2027/src/Main.cs",
+            "sha256": "76530C1BEC1381618F74A4394B9C79D9797B004FDFC767752732D4FF304A0EE4",
+            "lines": [
+              24
+            ]
+          },
+          {
+            "kind": "acceptance_scope",
+            "path": "repo:validation/README.md"
+          },
+          {
+            "kind": "acceptance_scope",
+            "path": "author:MC2027-PluginSuite/OperationTools2027/HANDOFF-1.0.3.md"
+          },
+          {
+            "kind": "payload_identity",
+            "path": "repo:payload/chooks/OperationTools2027/OperationTools2027.dll",
+            "assemblyVersion": "1.0.3.0",
+            "sha256": "26074B7E8EEBEE2C6B2CA52D1ED9744F42DDC894D245B86B4610E71C656A4B50",
+            "manifestMatch": true
+          }
+        ]
+      },
+      {
+        "id": "op.depth",
+        "title": "批量修改2D深度",
+        "when": "数值修改所选工序连接深度。",
+        "inputs": {
+          "ids": "int[]",
+          "config": {
+            "Depth": "double有限；文档单位，按原生Linking深度坐标语义",
+            "Incremental": "bool；设置原生DepthIncremental，不是把输入加到原深度",
+            "DetachAssociativeDepth": "bool；原有深度关联时需显式true"
+          }
+        },
+        "preconditions": [
+          "Mastercam 2027/API29、Windows x64、.NET 10；已安装匹配 payload 与依赖。",
+          "宿主对象须在 Mastercam UI 线程串行调用；先核文档、单位、活动机床组与选择。",
+          "已保存文档；工序ID非空、唯一、未锁定；无其他Undo事务；平面与机床组符合该操作。"
+        ],
+        "steps": [
+          "PrepareDepth检查关联。",
+          "确认绝对/增量模式后Apply并fresh回读。"
+        ],
+        "outputs": [
+          "更新Depth、DepthIncremental、DepthAssociative=false。"
+        ],
+        "effects": [
+          "改原工序、解除被明确许可的关联、Dirty。"
+        ],
+        "rollback": "保留 PreparedChange.Batch 句柄；Apply失败会显式恢复所触及参数并清理自建工序/未被引用的自建刀具。成功后 Batch.Rollback 按时间戳/字段/源链守卫恢复；刀路仍需重算，遇 RestoreIncomplete 不可自动重复执行。",
+        "automation": "typed_candidate",
+        "api": [
+          "OperationTools2027.Host :: public static PreparedChange PrepareDepth(int[] ids,DepthConfig config)",
+          "OperationTools2027.Main :: public MCamReturn Depth(int p)"
+        ],
+        "limits": [
+          "不是图形拾点；不自动检查夹具或刀柄碰撞。"
+        ],
+        "evidence": [
+          {
+            "kind": "source",
+            "path": "author:MC2027-PluginSuite/OperationTools2027/src/HostCommands.cs",
+            "sha256": "681FBF73961DBC7091B32B34DA7E0B2911F33CA4FCF91A2FECC91D62244AD6BA",
+            "lines": [
+              138
+            ]
+          },
+          {
+            "kind": "source",
+            "path": "author:MC2027-PluginSuite/OperationTools2027/src/Main.cs",
+            "sha256": "76530C1BEC1381618F74A4394B9C79D9797B004FDFC767752732D4FF304A0EE4",
+            "lines": [
+              25
+            ]
+          },
+          {
+            "kind": "acceptance_scope",
+            "path": "repo:validation/README.md"
+          },
+          {
+            "kind": "acceptance_scope",
+            "path": "author:MC2027-PluginSuite/OperationTools2027/HANDOFF-1.0.3.md"
+          },
+          {
+            "kind": "payload_identity",
+            "path": "repo:payload/chooks/OperationTools2027/OperationTools2027.dll",
+            "assemblyVersion": "1.0.3.0",
+            "sha256": "26074B7E8EEBEE2C6B2CA52D1ED9744F42DDC894D245B86B4610E71C656A4B50",
+            "manifestMatch": true
+          }
+        ]
+      },
+      {
+        "id": "op.replace_geometry",
+        "title": "替换2D轮廓/挖槽完整串连",
+        "when": "目标工序应使用另一条明确边界。",
+        "inputs": {
+          "ids": "int[]",
+          "chains": "Chain[]；同平面有效完整独立原生链；Pocket必须闭合；链View与ToolPlane.ViewNumber相同"
+        },
+        "preconditions": [
+          "Mastercam 2027/API29、Windows x64、.NET 10；已安装匹配 payload 与依赖。",
+          "宿主对象须在 Mastercam UI 线程串行调用；先核文档、单位、活动机床组与选择。",
+          "已保存文档；工序ID非空、唯一、未锁定；无其他Undo事务；平面与机床组符合该操作。"
+        ],
+        "steps": [
+          "交互重选完整链，或构建独立原生链列表；不要LINQ过滤共享原生链包装器。",
+          "PrepareReplaceGeometry预览来源ID/时间戳后Apply；比较新链与目标，保留原链快照。"
+        ],
+        "outputs": [
+          "精确新链成员/顺序/方向读回与回滚快照。"
+        ],
+        "effects": [
+          "改现有工序关联并Dirty；不改输入几何。"
+        ],
+        "rollback": "保留 PreparedChange.Batch 句柄；Apply失败会显式恢复所触及参数并清理自建工序/未被引用的自建刀具。成功后 Batch.Rollback 按时间戳/字段/源链守卫恢复；刀路仍需重算，遇 RestoreIncomplete 不可自动重复执行。",
+        "automation": "typed_candidate",
+        "api": [
+          "OperationTools2027.Host :: public static PreparedChange PrepareReplaceGeometry(int[] ids,Chain[] chains)",
+          "OperationTools2027.Main :: public MCamReturn ReplaceGeometry(int p)"
+        ],
+        "limits": [
+          "外部数组隔离不是当前预检可证明的条件；typed层必须自己建立完整链或限制交互获取。",
+          "独立Contour A→B→A已验收，不能推广所有Pocket、多链、多目标组合。"
+        ],
+        "evidence": [
+          {
+            "kind": "source",
+            "path": "author:MC2027-PluginSuite/OperationTools2027/src/HostCommands.cs",
+            "sha256": "681FBF73961DBC7091B32B34DA7E0B2911F33CA4FCF91A2FECC91D62244AD6BA",
+            "lines": [
+              146
+            ]
+          },
+          {
+            "kind": "source",
+            "path": "author:MC2027-PluginSuite/OperationTools2027/src/Main.cs",
+            "sha256": "76530C1BEC1381618F74A4394B9C79D9797B004FDFC767752732D4FF304A0EE4",
+            "lines": [
+              29
+            ]
+          },
+          {
+            "kind": "reference",
+            "path": "author:MC2027-PluginSuite/OperationTools2027/evidence/API-CHAIN-INPUT-CONTRACT.md"
+          },
+          {
+            "kind": "acceptance_scope",
+            "path": "repo:validation/README.md"
+          },
+          {
+            "kind": "acceptance_scope",
+            "path": "author:MC2027-PluginSuite/OperationTools2027/HANDOFF-1.0.3.md"
+          },
+          {
+            "kind": "payload_identity",
+            "path": "repo:payload/chooks/OperationTools2027/OperationTools2027.dll",
+            "assemblyVersion": "1.0.3.0",
+            "sha256": "26074B7E8EEBEE2C6B2CA52D1ED9744F42DDC894D245B86B4610E71C656A4B50",
+            "manifestMatch": true
+          }
+        ]
+      },
+      {
+        "id": "op.detect_drill",
+        "title": "检测简单孔并按用户规则创建钻孔",
+        "when": "已选实体简单孔、完整圆或点，需要真实DrillOperation。",
+        "inputs": {
+          "referenceId": "int，未锁定2D参考",
+          "selection": "预选非隐藏实体/完整圆/PointGeometry；选区参与检测",
+          "config": {
+            "Metric": "bool，匹配文档",
+            "ClearanceAboveTop": "double>0",
+            "RetractAboveTop": "double>0",
+            "FeedAboveTop": "double>0",
+            "WireframeDepth": "double>0，点/圆需要",
+            "PointDiameter": "double>0，点需要",
+            "IgnoreColor": "int，-1不忽略",
+            "Rules": "DrillRule[]；闭区间MinDiameter/MaxDiameter不得重叠；每条Label、Tool、Cutting、Cycle(Drill|PeckDrill|ChipBreak)、Peck、PeckClearance、ChipBreak、DwellSeconds、AddTipDepth、ThroughDistance。Tool与Cutting结构同op.finish。"
+          }
+        },
+        "preconditions": [
+          "Mastercam 2027/API29、Windows x64、.NET 10；已安装匹配 payload 与依赖。",
+          "宿主对象须在 Mastercam UI 线程串行调用；先核文档、单位、活动机床组与选择。",
+          "已保存文档；工序ID非空、唯一、未锁定；无其他Undo事务；平面与机床组符合该操作。",
+          "当前机床组=参考工序组；工具直径匹配孔径；刃长覆盖总加工深度。"
+        ],
+        "steps": [
+          "DetectSelectedHoles返回Holes/Skipped/SourceTimestamps；核对被跳过项。",
+          "确认DrillConfig；PrepareDrilling重新检测，按规则和精确Top/Bottom分组。",
+          "Apply；核DrillPoints局部坐标、循环、深度、刀具、Posting=false/Dirty=true。"
+        ],
+        "outputs": [
+          "HoleReport或新建DrillOperation批次。"
+        ],
+        "effects": [
+          "创建工序，必要时建刀；写审计；不自动再生/NC。"
+        ],
+        "rollback": "保留 PreparedChange.Batch 句柄；Apply失败会显式恢复所触及参数并清理自建工序/未被引用的自建刀具。成功后 Batch.Rollback 按时间戳/字段/源链守卫恢复；刀路仍需重算，遇 RestoreIncomplete 不可自动重复执行。",
+        "automation": "typed_candidate",
+        "api": [
+          "OperationTools2027.Host :: public static HoleReport DetectSelectedHoles(int referenceId,DrillConfig config)",
+          "OperationTools2027.Host :: public static PreparedChange PrepareDrilling(int referenceId,DrillConfig config)",
+          "OperationTools2027.Main :: public MCamReturn Drill(int p)",
+          "OperationTools2027.Main :: public MCamReturn DetectHoles(int p)"
+        ],
+        "limits": [
+          "实体仅单圆柱Simple、正当前刀轴；复合/斜向不匹配孔跳过。",
+          "AddTipDepth显式加 D/(2*tan(夹角/2))，通孔额外量另加；实体盲孔不允许ThroughDistance>0。",
+          "不识别螺纹、不按材料表自动填安全参数。"
+        ],
+        "evidence": [
+          {
+            "kind": "source",
+            "path": "author:MC2027-PluginSuite/OperationTools2027/src/Drilling.cs",
+            "sha256": "E1861C945C1F47222B3BCBE15A4FA9BFCA62E42B5243D424EEF580AA07627DF1",
+            "lines": [
+              33,
+              71
+            ]
+          },
+          {
+            "kind": "source",
+            "path": "author:MC2027-PluginSuite/OperationTools2027/src/Main.cs",
+            "sha256": "76530C1BEC1381618F74A4394B9C79D9797B004FDFC767752732D4FF304A0EE4",
+            "lines": [
+              26,
+              28
+            ]
+          },
+          {
+            "kind": "reference",
+            "path": "author:MC2027-PluginSuite/OperationTools2027/src/Drilling.cs"
+          },
+          {
+            "kind": "reference",
+            "path": "author:MC2027-PluginSuite/OperationTools2027/src/Core.cs"
+          },
+          {
+            "kind": "acceptance_scope",
+            "path": "repo:validation/README.md"
+          },
+          {
+            "kind": "acceptance_scope",
+            "path": "author:MC2027-PluginSuite/OperationTools2027/HANDOFF-1.0.3.md"
+          },
+          {
+            "kind": "payload_identity",
+            "path": "repo:payload/chooks/OperationTools2027/OperationTools2027.dll",
+            "assemblyVersion": "1.0.3.0",
+            "sha256": "26074B7E8EEBEE2C6B2CA52D1ED9744F42DDC894D245B86B4610E71C656A4B50",
+            "manifestMatch": true
+          }
+        ]
+      },
+      {
+        "id": "op.sequence",
+        "title": "闭合边界粗轮廓→精光→倒角",
+        "when": "有用户确认的2D完整闭合链，需要三道顺序工序。",
+        "inputs": {
+          "referenceId": "int",
+          "chains": "完整独立原生Chain[]，闭合共面且与参考刀具平面一致",
+          "config": {
+            "RoughTool": {
+              "ExistingSlot": "int；内部槽号优先，不是刀号",
+              "CreateIfMissing": "bool，必须显式允许；指定ExistingSlot时不可同时建刀",
+              "Kind": "ToolKind: FlatEndMill | ChamferMill | Drill",
+              "Number": "int；刀号",
+              "LengthOffset": "int；H",
+              "DiameterOffset": "int；D",
+              "Name": "string；新刀必填",
+              "Diameter": "double；当前文档长度单位",
+              "OverallLength": "double",
+              "FluteLength": "double",
+              "ShoulderLength": "double；刃长<=肩长<=总长",
+              "ShankDiameter": "double",
+              "TipAngleDegrees": "double；0..180度的内部角",
+              "TipDiameter": "double；0<=值<刀径",
+              "Flutes": "short>=1；新刀必填"
+            },
+            "RoughCutting": {
+              "Feed": "double>0；宿主原进给模式数值",
+              "Plunge": "double>0",
+              "Retract": "double>0",
+              "Rpm": "int>0",
+              "ConfirmOriginalFeedMode": "bool=true；不切换每分/每转模式"
+            },
+            "RoughCompensation": "Compensation",
+            "RoughSide": "CompSide",
+            "RoughWallStock": "double>=0",
+            "RoughFloorStock": "double>=0",
+            "RoughPasses": "short>=1",
+            "RoughPassSpacing": "double>0",
+            "RoughMaximumStepDown": "double>0",
+            "Finish": "FinishConfig，见op.finish",
+            "Chamfer": "ChamferConfig，见op.chamfer",
+            "TopStock": "double",
+            "Bottom": "double",
+            "Clearance": "double",
+            "Retract": "double",
+            "FeedPlane": "double；均刀具平面绝对高度"
+          }
+        },
+        "preconditions": [
+          "Mastercam 2027/API29、Windows x64、.NET 10；已安装匹配 payload 与依赖。",
+          "宿主对象须在 Mastercam UI 线程串行调用；先核文档、单位、活动机床组与选择。",
+          "已保存文档；工序ID非空、唯一、未锁定；无其他Undo事务；平面与机床组符合该操作。",
+          "Clearance>=Retract>=FeedPlane>TopStock>Bottom；新刀号不可冲突。"
+        ],
+        "steps": [
+          "PrepareSequence展示3阶段和刀具计划。",
+          "Apply；核三Contour的切削、补偿、几何、坐标和Post/Dirty。"
+        ],
+        "outputs": [
+          "粗轮廓、精光、倒角3个真实Contour工序。"
+        ],
+        "effects": [
+          "创建工序/可选刀具；保留参考与几何；Posting=false、Dirty=true。"
+        ],
+        "rollback": "保留 PreparedChange.Batch 句柄；Apply失败会显式恢复所触及参数并清理自建工序/未被引用的自建刀具。成功后 Batch.Rollback 按时间戳/字段/源链守卫恢复；刀路仍需重算，遇 RestoreIncomplete 不可自动重复执行。",
+        "automation": "typed_candidate",
+        "api": [
+          "OperationTools2027.Host :: public static PreparedChange PrepareSequence(int referenceId,Chain[] chains,SequenceConfig config)",
+          "OperationTools2027.Main :: public MCamReturn AutoProgram(int p)"
+        ],
+        "limits": [
+          "不是Pocket/HSM、体积清料或自动实体投影；三阶段默认不自动重算。"
+        ],
+        "evidence": [
+          {
+            "kind": "source",
+            "path": "author:MC2027-PluginSuite/OperationTools2027/src/Sequence.cs",
+            "sha256": "16C6E8AD90758087FB7A93D2B32039B96486E339A12FEAC9641B10E1B756EA86",
+            "lines": [
+              41
+            ]
+          },
+          {
+            "kind": "source",
+            "path": "author:MC2027-PluginSuite/OperationTools2027/src/Main.cs",
+            "sha256": "76530C1BEC1381618F74A4394B9C79D9797B004FDFC767752732D4FF304A0EE4",
+            "lines": [
+              32
+            ]
+          },
+          {
+            "kind": "acceptance_scope",
+            "path": "repo:validation/README.md"
+          },
+          {
+            "kind": "acceptance_scope",
+            "path": "author:MC2027-PluginSuite/OperationTools2027/HANDOFF-1.0.3.md"
+          },
+          {
+            "kind": "payload_identity",
+            "path": "repo:payload/chooks/OperationTools2027/OperationTools2027.dll",
+            "assemblyVersion": "1.0.3.0",
+            "sha256": "26074B7E8EEBEE2C6B2CA52D1ED9744F42DDC894D245B86B4610E71C656A4B50",
+            "manifestMatch": true
+          }
+        ]
+      },
+      {
+        "id": "op.information_reach",
+        "title": "读取时间/范围/轴向装刀下界",
+        "when": "需要可审计刀路信息或同刀平面的下界估算。",
+        "inputs": {
+          "ids": "int[]",
+          "reach": "可null；ReachConfig{ObstacleTopInToolPlane:double,ClearanceMargin:double>=0}，同刀具平面局部Z/文档单位"
+        },
+        "preconditions": [
+          "Mastercam 2027/API29、Windows x64、.NET 10；已安装匹配 payload 与依赖。",
+          "宿主对象须在 Mastercam UI 线程串行调用；先核文档、单位、活动机床组与选择。",
+          "Reach时全部工序同ToolPlane；原选择必须可由托管API读取以保证恢复。"
+        ],
+        "steps": [
+          "Information(ids,null)读信息；需要Reach则明确障碍最高Z与净空。",
+          "返回每行Unavailable/Dirty/有效范围/raw秒数，禁止把null解释为0加工时间。"
+        ],
+        "outputs": [
+          "类型、刀具、机床/三面、世界/局部/原始范围、有效时间累计、可选AxialStickoutLowerBound。"
+        ],
+        "effects": [
+          "原生查询可能临时改选择；finally恢复并核对；不重算、不保存。"
+        ],
+        "rollback": "选择自动恢复；只读业务参数无需回滚。",
+        "automation": "typed_candidate",
+        "api": [
+          "OperationTools2027.Host :: public static LocalExtentRange LocalToolPlaneExtents(OperationExtentsData e,MCView plane)",
+          "OperationTools2027.Host :: public static object Information(int[] ids,ReachConfig reach=null)",
+          "OperationTools2027.Host :: public static Operation Read(int id)",
+          "OperationTools2027.Host :: public static Operation ReadEditable(int id)",
+          "OperationTools2027.Host :: public static Operation[] Selected()",
+          "OperationTools2027.Main :: public MCamReturn Information(int p)",
+          "OperationTools2027.Main :: public MCamReturn Reach(int p)"
+        ],
+        "limits": [
+          "max(0,障碍最高Z-局部刀尖最低Z)+净空；不是最短安全装刀长度、碰撞检查或实际节拍保证。",
+          "Dirty/无有效NCI时不返回有效时间或装刀估算。"
+        ],
+        "evidence": [
+          {
+            "kind": "source",
+            "path": "author:MC2027-PluginSuite/OperationTools2027/src/Reports.cs",
+            "sha256": "7AA1B28A8F5C2D993629F34C4796389B923B35BB233FBC440A8CC9422B51E11B",
+            "lines": [
+              22,
+              28
+            ]
+          },
+          {
+            "kind": "source",
+            "path": "author:MC2027-PluginSuite/OperationTools2027/src/Transactions.cs",
+            "sha256": "C9C112D7A16C36189E7BB4C27C9CADED97828F9BED187FCFB2A310A0B857425F",
+            "lines": [
+              149,
+              150,
+              151
+            ]
+          },
+          {
+            "kind": "source",
+            "path": "author:MC2027-PluginSuite/OperationTools2027/src/Main.cs",
+            "sha256": "76530C1BEC1381618F74A4394B9C79D9797B004FDFC767752732D4FF304A0EE4",
+            "lines": [
+              30,
+              31
+            ]
+          },
+          {
+            "kind": "acceptance_scope",
+            "path": "repo:validation/README.md"
+          },
+          {
+            "kind": "acceptance_scope",
+            "path": "author:MC2027-PluginSuite/OperationTools2027/HANDOFF-1.0.3.md"
+          },
+          {
+            "kind": "payload_identity",
+            "path": "repo:payload/chooks/OperationTools2027/OperationTools2027.dll",
+            "assemblyVersion": "1.0.3.0",
+            "sha256": "26074B7E8EEBEE2C6B2CA52D1ED9744F42DDC894D245B86B4610E71C656A4B50",
+            "manifestMatch": true
+          }
+        ]
+      },
+      {
+        "id": "op.rollback",
+        "title": "回滚最近或持有的批次",
+        "when": "需要恢复上述修改或删除本批新增对象。",
+        "inputs": {
+          "batch": "PreparedChange.Batch会话对象；UI使用内部LastBatch"
+        },
+        "preconditions": [
+          "Mastercam 2027/API29、Windows x64、.NET 10；已安装匹配 payload 与依赖。",
+          "宿主对象须在 Mastercam UI 线程串行调用；先核文档、单位、活动机床组与选择。",
+          "已保存文档；工序ID非空、唯一、未锁定；无其他Undo事务；平面与机床组符合该操作。"
+        ],
+        "steps": [
+          "先核Status=Applied与后续编辑守卫。",
+          "ChangeBatch.Rollback并检查Status/Error/Readbacks/AuditPath。"
+        ],
+        "outputs": [
+          "恢复参数/原链或移除本批对象的记录。"
+        ],
+        "effects": [
+          "恢复后仍Dirty；只清理未被其他工序引用的自建刀。"
+        ],
+        "rollback": "会话内一次回滚；不保证跨重开恢复。",
+        "automation": "typed_candidate",
+        "api": [
+          "OperationTools2027.ChangeBatch :: public void Rollback()",
+          "OperationTools2027.Main :: public MCamReturn Rollback(int p)"
+        ],
+        "limits": [
+          "Host.LastBatch是internal，typed外部应保存Prepare返回的Batch，不能直接调用internal成员。"
+        ],
+        "evidence": [
+          {
+            "kind": "source",
+            "path": "author:MC2027-PluginSuite/OperationTools2027/src/Transactions.cs",
+            "sha256": "C9C112D7A16C36189E7BB4C27C9CADED97828F9BED187FCFB2A310A0B857425F",
+            "lines": [
+              116
+            ]
+          },
+          {
+            "kind": "source",
+            "path": "author:MC2027-PluginSuite/OperationTools2027/src/Main.cs",
+            "sha256": "76530C1BEC1381618F74A4394B9C79D9797B004FDFC767752732D4FF304A0EE4",
+            "lines": [
+              33
+            ]
+          },
+          {
+            "kind": "acceptance_scope",
+            "path": "repo:validation/README.md"
+          },
+          {
+            "kind": "acceptance_scope",
+            "path": "author:MC2027-PluginSuite/OperationTools2027/HANDOFF-1.0.3.md"
+          },
+          {
+            "kind": "payload_identity",
+            "path": "repo:payload/chooks/OperationTools2027/OperationTools2027.dll",
+            "assemblyVersion": "1.0.3.0",
+            "sha256": "26074B7E8EEBEE2C6B2CA52D1ED9744F42DDC894D245B86B4610E71C656A4B50",
+            "manifestMatch": true
+          }
+        ]
+      },
+      {
+        "id": "op.ui_config",
+        "title": "加工面板与钻孔规则配置",
+        "when": "交互编辑规则JSON和预览各项业务操作。",
+        "inputs": {
+          "p": "int，宿主入口参数；不是配置JSON"
+        },
+        "preconditions": [
+          "Mastercam 2027/API29、Windows x64、.NET 10；已安装匹配 payload 与依赖。",
+          "宿主对象须在 Mastercam UI 线程串行调用；先核文档、单位、活动机床组与选择。"
+        ],
+        "steps": [
+          "OpenHub选择功能；DrillConfig编辑/保存明确钻孔规则，再DetectHoles/Drill。"
+        ],
+        "outputs": [
+          "规则配置文件与交互预览。"
+        ],
+        "effects": [
+          "保存用户配置；业务提交效果见对应流程。"
+        ],
+        "rollback": "取消配置窗口；恢复旧配置需用户备份，批次Rollback不撤销磁盘配置。",
+        "automation": "interactive",
+        "api": [
+          "OperationTools2027.Main :: public MCamReturn OpenHub(int p)",
+          "OperationTools2027.Main :: public MCamReturn DrillConfig(int p)"
+        ],
+        "limits": [
+          "FT共享Workshop资源；JSON工具字段不等于已适配的MCP schema。"
+        ],
+        "evidence": [
+          {
+            "kind": "source",
+            "path": "author:MC2027-PluginSuite/OperationTools2027/src/Main.cs",
+            "sha256": "76530C1BEC1381618F74A4394B9C79D9797B004FDFC767752732D4FF304A0EE4",
+            "lines": [
+              22,
+              27
+            ]
+          },
+          {
+            "kind": "acceptance_scope",
+            "path": "repo:validation/README.md"
+          },
+          {
+            "kind": "acceptance_scope",
+            "path": "author:MC2027-PluginSuite/OperationTools2027/HANDOFF-1.0.3.md"
+          },
+          {
+            "kind": "payload_identity",
+            "path": "repo:payload/chooks/OperationTools2027/OperationTools2027.dll",
+            "assemblyVersion": "1.0.3.0",
+            "sha256": "26074B7E8EEBEE2C6B2CA52D1ED9744F42DDC894D245B86B4610E71C656A4B50",
+            "manifestMatch": true
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "module": "PorscheAdvanced2027",
+    "summary": "1.0.0发布候选：实体投影边界与三轮廓工序、完整孔副本补面、孔段识别到分阶段工序。发布DLL来自candidates/1.0.0，不是根dist。",
+    "concepts": [
+      "投影使用三角网格并集，支持凹轮廓/内环/分离区域；结果是有容差的折线，不是精确B-rep silhouette。",
+      "复杂孔流程按真实入口、轴与孔段编排；轴向可达不代表碰撞检查。",
+      "副本补面保留源实体；私有特定构建桥接是现有实现事实，不可包装成通用公开SDK。",
+      "默认HoleSettings.Regenerate=true；这些流程与HSM/AD012的仅创建行为不同。"
+    ],
+    "workflows": [
+      {
+        "id": "porsche.project",
+        "title": "实体投影分析与生成边界",
+        "when": "将一个或多个可见实体投影到指定加工平面，保留凹形/孔环。",
+        "inputs": {
+          "solidIds": "int[]，非空不重复可见SolidGeometry",
+          "frame": "PlaneFrame(V3 Origin,V3 X,V3 Y,V3 Z)，右手正交；世界原点/单位轴",
+          "tolerance": "double>0，文档长度单位",
+          "height": "double?，平面局部Z；null使用MaximumZ",
+          "outputLevel": "int>=1",
+          "directory": "受控可写导出目录"
+        },
+        "preconditions": [
+          "Mastercam 2027/API29、Windows x64、.NET 10；已安装匹配 payload 与依赖。",
+          "宿主对象须在 Mastercam UI 线程串行调用；先核文档、单位、活动机床组与选择。",
+          "匹配冻结OperationTools2027 1.0.3、AdvancedDrill2027 AD012依赖；已保存文件。",
+          "选择保护/补面桥接须匹配docs/COMPATIBILITY.md中的SDK/MCCORE/MCGeomSld/PSKERNEL哈希。"
+        ],
+        "steps": [
+          "BoundaryHost.Analyze导出STL并计算ProjectionResult；检查环数、孔环、Z范围与容差。",
+          "明确高度/层后Create或CreateCurves。",
+          "typed层立即保存CurveIds并用SessionChanges.GeometryUndo生成归属清理句柄；UI已注册会话栈。"
+        ],
+        "outputs": [
+          "ProjectionResult(Loops、MinimumZ/MaximumZ、Tolerance、MeshTriangles)；BoundaryOutput及逐环CurveIds。"
+        ],
+        "effects": [
+          "Analyze也写projection-*.stl并临时改几何选择后恢复。",
+          "Create生成原生线段，外环色10/内环12；不生成工序。"
+        ],
+        "rollback": "创建中失败清理自有线；成功后GeometryUndo返回Action，调用前核时间戳/属性/引用；源或结果改变应拒绝。",
+        "automation": "typed_candidate",
+        "api": [
+          "PorscheAdvanced2027.BoundaryHost :: public static PlaneFrame FrameOf(MCView view)",
+          "PorscheAdvanced2027.BoundaryHost :: public static ProjectionResult Analyze(int[] solidIds,PlaneFrame frame,double tolerance,string outputDirectory)",
+          "PorscheAdvanced2027.BoundaryHost :: public static BoundaryOutput Create(int[] solidIds,PlaneFrame frame,double tolerance,double? height,int outputLevel,string directory)",
+          "PorscheAdvanced2027.BoundaryHost :: public static BoundaryOutput CreateCurves(ProjectionResult result,PlaneFrame frame,double height,int outputLevel)",
+          "PorscheAdvanced2027.SessionChanges :: public static Action GeometryUndo(int[] ids)"
+        ],
+        "limits": [
+          "CreateCurves对调用方传入DTO依赖较强；typed候选应把Analyze结果留在会话，禁止任意伪造ProjectionResult。",
+          "不跨进程序列化Chain/MCView或Action。"
+        ],
+        "evidence": [
+          {
+            "kind": "source",
+            "path": "author:MC2027-PluginSuite/PorscheAdvanced2027/src/BoundaryHost.cs",
+            "sha256": "1104C7DDDD16BFBF28BC5760E38D174A21BF50F7079696D46063605B81E29006",
+            "lines": [
+              32,
+              35,
+              47,
+              51
+            ]
+          },
+          {
+            "kind": "source",
+            "path": "author:MC2027-PluginSuite/PorscheAdvanced2027/src/Window.cs",
+            "sha256": "4728CE934204D7C6A4DB088A49B0FFA74D46EFAB6433056F598203B434CB6CAD",
+            "lines": [
+              27
+            ]
+          },
+          {
+            "kind": "acceptance_scope",
+            "path": "repo:validation/business-acceptance.json"
+          },
+          {
+            "kind": "acceptance_scope",
+            "path": "repo:docs/COMPATIBILITY.md"
+          },
+          {
+            "kind": "payload_identity",
+            "path": "repo:payload/chooks/PorscheAdvanced2027/PorscheAdvanced2027.dll",
+            "assemblyVersion": "1.0.0.0",
+            "sha256": "DA8E4F21100013EB766CB5C62DF47768A039E59A8CB5E986FB2D7A2FA2F231CE",
+            "manifestMatch": true
+          }
+        ]
+      },
+      {
+        "id": "porsche.boundary_sequence",
+        "title": "实体边界→粗/精/倒角三工序",
+        "when": "需要从实体直接完成投影与轮廓工序编排。",
+        "inputs": {
+          "sourceIds": "int[]",
+          "plane": "MCView，通过稳定ViewID在宿主解析",
+          "seedId": "当前机床组未锁定、平底刀Basic contour",
+          "c": "BoundarySettings{Tolerance,OutputLevel,IncludeInnerLoops,RoughDiameter,FinishDiameter,ChamferDiameter,WallStock,FloorStock,RadialPasses(short),RadialSpacing,StepDown,ChamferWidth,ChamferTipOffset,Feed,Plunge,Rpm(int),ClearanceAbove,RetractAbove,FeedAbove,UseModelBottom,Bottom,ToolLength,FluteLength,FeedModeReviewed,Regenerate}；长度用文档单位，安全高度为模型顶面以上量；Feed/Plunge为宿主模式数值",
+          "directory": "受控审计目录"
+        },
+        "preconditions": [
+          "Mastercam 2027/API29、Windows x64、.NET 10；已安装匹配 payload 与依赖。",
+          "宿主对象须在 Mastercam UI 线程串行调用；先核文档、单位、活动机床组与选择。",
+          "匹配冻结OperationTools2027 1.0.3、AdvancedDrill2027 AD012依赖；已保存文件。",
+          "选择保护/补面桥接须匹配docs/COMPATIBILITY.md中的SDK/MCCORE/MCGeomSld/PSKERNEL哈希。"
+        ],
+        "steps": [
+          "分析投影并核内环是否参与。",
+          "核刀具、层深、底面来源、安全高度、进给模式，调用BoundarySequence.Apply。",
+          "读取Output与Created.Operations、Readbacks；默认执行原生再生。"
+        ],
+        "outputs": [
+          "BoundaryRun、投影曲线、3道真实Contour工序、可选新刀与审计。"
+        ],
+        "effects": [
+          "新增边界/工序/缺失刀具；Regenerate=true时计算刀路；保留源实体/参考。"
+        ],
+        "rollback": "BoundaryRun.Rollback先核输出曲线，调用Created.Rollback移除自建工序/刀具，再删本批曲线；不接受外部编辑。",
+        "automation": "typed_candidate",
+        "api": [
+          "PorscheAdvanced2027.BoundarySequence :: public static BoundaryRun Apply(int[] sourceIds,MCView plane,int seedId,BoundarySettings c,string directory)",
+          "PorscheAdvanced2027.BoundaryRun :: public void Rollback()",
+          "PorscheAdvanced2027.Main :: public MCamReturn Boundary(int p)"
+        ],
+        "limits": [
+          "不是任意实体三维清料；外轮廓与内环的刀侧需用户复核。",
+          "原生边界/序列fixture验收通过，不代表任意零件全部策略通过。"
+        ],
+        "evidence": [
+          {
+            "kind": "source",
+            "path": "author:MC2027-PluginSuite/PorscheAdvanced2027/src/BoundarySequence.cs",
+            "sha256": "380276E566A217E30930F7DA82A58827190EEA24351BB09FF0B6E785EF1E7F16",
+            "lines": [
+              101,
+              90
+            ]
+          },
+          {
+            "kind": "source",
+            "path": "author:MC2027-PluginSuite/PorscheAdvanced2027/src/Main.cs",
+            "sha256": "76076F000627DABCFFEB67B35904C3F11ACB486F52E139F9CBD4FE69F4EC3137",
+            "lines": [
+              18
+            ]
+          },
+          {
+            "kind": "acceptance_scope",
+            "path": "repo:validation/business-acceptance.json"
+          },
+          {
+            "kind": "acceptance_scope",
+            "path": "repo:docs/COMPATIBILITY.md"
+          },
+          {
+            "kind": "payload_identity",
+            "path": "repo:payload/chooks/PorscheAdvanced2027/PorscheAdvanced2027.dll",
+            "assemblyVersion": "1.0.0.0",
+            "sha256": "DA8E4F21100013EB766CB5C62DF47768A039E59A8CB5E986FB2D7A2FA2F231CE",
+            "manifestMatch": true
+          }
+        ]
+      },
+      {
+        "id": "porsche.holes",
+        "title": "孔特征识别→中心钻/钻孔/沉孔/沉头",
+        "when": "从实体完整孔段、轴线和入口自动组织可达轴向加工。",
+        "inputs": {
+          "solidIds": "int[]",
+          "alignment": "V3，孔轴优先方向",
+          "settings": "HoleSettings{MinimumDiameter,MaximumDiameter,CenterDiameter,CenterDepth,ThroughExtraDepth,DrillTipAngle(度),Feed,Plunge,RetractFeed,Rpm,Clearance,Retract,FeedPlane,ToolLength,FluteLength,ShoulderLength,CreateMissingTools,FeedModeReviewed,Regenerate}；长度文档单位；三高度相对孔口；进给宿主模式",
+          "referenceId": "同活动机床组的参考工序，提供组/WCS",
+          "directory": "受控审计目录"
+        },
+        "preconditions": [
+          "Mastercam 2027/API29、Windows x64、.NET 10；已安装匹配 payload 与依赖。",
+          "宿主对象须在 Mastercam UI 线程串行调用；先核文档、单位、活动机床组与选择。",
+          "匹配冻结OperationTools2027 1.0.3、AdvancedDrill2027 AD012依赖；已保存文件。",
+          "选择保护/补面桥接须匹配docs/COMPATIBILITY.md中的SDK/MCCORE/MCGeomSld/PSKERNEL哈希。"
+        ],
+        "steps": [
+          "Recognize返回RecognizedPlan[]，审阅每孔轴、入口、阶段、深度与Evidence。",
+          "核对源时间戳、刀具长度与进给；Apply。",
+          "读回新工具/孔轴平面/工序；默认逐工序再生并核fresh状态和有效行程。"
+        ],
+        "outputs": [
+          "HoleRun的Operations/Tools/Planes/Readbacks/Status/AuditPath。"
+        ],
+        "effects": [
+          "匹配或按明确许可建刀；复用或新建孔轴平面；临时参考工序在创建完成后删除；生成并可重算DrillOperation。",
+          "恢复原工序/几何选择，保留源实体。"
+        ],
+        "rollback": "HoleRun.Rollback按最终状态核工序/刀具/平面并逆序清理；失败路径尝试清理，受外部引用的对象不能盲删。",
+        "automation": "typed_candidate",
+        "api": [
+          "PorscheAdvanced2027.HoleHost :: public static RecognizedPlan[] Recognize(int[] solidIds,V3 alignment,HoleSettings settings)",
+          "PorscheAdvanced2027.HoleHost :: public static HoleRun Apply(RecognizedPlan[] plans,HoleSettings settings,int referenceId,string directory)",
+          "PorscheAdvanced2027.HolePlanning :: public static RecognizedPlan Plan(int sourceId,DateTime stamp,HoleFact h,HoleSettings c)",
+          "PorscheAdvanced2027.HoleRun :: public void Rollback()",
+          "PorscheAdvanced2027.Main :: public MCamReturn Holes(int p)"
+        ],
+        "limits": [
+          "支持已识别的Cylinder、正向锥形、平底/点底等组合；拒绝内扩大/倒扣、未知过渡或轴线不符。",
+          "不从孔径推断螺纹；此流程不自动生成Tap阶段。",
+          "通孔ThroughExtraDepth显式；闭钻尖锥保留证据，不自动追加钻尖长度。"
+        ],
+        "evidence": [
+          {
+            "kind": "source",
+            "path": "author:MC2027-PluginSuite/PorscheAdvanced2027/src/HoleHost.cs",
+            "sha256": "721AD9B024FED65E37DA5CF58EA4805AABF47EA0DDA89D24B5C7D5A796D00048",
+            "lines": [
+              62,
+              100,
+              34
+            ]
+          },
+          {
+            "kind": "source",
+            "path": "author:MC2027-PluginSuite/PorscheAdvanced2027/src/HolePlanning.cs",
+            "sha256": "F3F4893527BBA4BFC2037333EC5D813341A0C6BB58FA60211263C5BD1987BF43",
+            "lines": [
+              59
+            ]
+          },
+          {
+            "kind": "source",
+            "path": "author:MC2027-PluginSuite/PorscheAdvanced2027/src/Main.cs",
+            "sha256": "76076F000627DABCFFEB67B35904C3F11ACB486F52E139F9CBD4FE69F4EC3137",
+            "lines": [
+              20
+            ]
+          },
+          {
+            "kind": "acceptance_scope",
+            "path": "repo:validation/business-acceptance.json"
+          },
+          {
+            "kind": "acceptance_scope",
+            "path": "repo:docs/COMPATIBILITY.md"
+          },
+          {
+            "kind": "payload_identity",
+            "path": "repo:payload/chooks/PorscheAdvanced2027/PorscheAdvanced2027.dll",
+            "assemblyVersion": "1.0.0.0",
+            "sha256": "DA8E4F21100013EB766CB5C62DF47768A039E59A8CB5E986FB2D7A2FA2F231CE",
+            "manifestMatch": true
+          }
+        ]
+      },
+      {
+        "id": "porsche.heal",
+        "title": "按完整孔在独立实体副本上删孔补面",
+        "when": "需要保留源实体并得到无指定孔特征的副本。",
+        "inputs": {
+          "sourceId": "int SolidGeometry；UI可多选后逐一执行",
+          "minimumRadius": "double>=0",
+          "maximumRadius": "double>minimumRadius；C#接口为半径，UI MinimumDiameter/MaximumDiameter会除2"
+        },
+        "preconditions": [
+          "Mastercam 2027/API29、Windows x64、.NET 10；已安装匹配 payload 与依赖。",
+          "宿主对象须在 Mastercam UI 线程串行调用；先核文档、单位、活动机床组与选择。",
+          "匹配冻结OperationTools2027 1.0.3、AdvancedDrill2027 AD012依赖；已保存文件。",
+          "选择保护/补面桥接须匹配docs/COMPATIBILITY.md中的SDK/MCCORE/MCGeomSld/PSKERNEL哈希。"
+        ],
+        "steps": [
+          "先在Healing页识别孔范围；检查主圆柱孔径。",
+          "执行CreateHealedFaceCopy；验证副本独立面标签、原生状态、面数减少、源时间戳/面集未变、目标孔消失。",
+          "保存HealingResult，注册GeometryUndo副本句柄。"
+        ],
+        "outputs": [
+          "HealingResult(SourceId,OutputId,NativeResult,NativeHoleCount,FacesBefore,FacesAfter)。"
+        ],
+        "effects": [
+          "新增同位置/图层实体副本，扁平化其历史并删除整组孔面/原生延伸补面；源保持。"
+        ],
+        "rollback": "失败尝试删除本次副本；成功后会话GeometryUndo按源外的输出ID守卫清理；回滚不会还原一个被直接修改的源。",
+        "automation": "interactive",
+        "api": [
+          "PorscheAdvanced2027.HoleHealing :: public static HealingResult CreateHealedFaceCopy(int sourceId,double minimumRadius,double maximumRadius)",
+          "PorscheAdvanced2027.Main :: public MCamReturn Healing(int p)",
+          "PorscheAdvanced2027.SessionChanges :: public static Action GeometryUndo(int[] ids)"
+        ],
+        "limits": [
+          "当前优先交互使用；桥接调用固定已验构建，不推荐首批公开typed MCP。",
+          "没有完整孔或剩余目标孔时失败，不承诺任意单圆柱面/复杂相交孔可补。"
+        ],
+        "evidence": [
+          {
+            "kind": "source",
+            "path": "author:MC2027-PluginSuite/PorscheAdvanced2027/src/HoleHealing.cs",
+            "sha256": "3683F91E09512E474969A992DCF9CB99C01935CC7713759822F090AF70FF286D",
+            "lines": [
+              113
+            ]
+          },
+          {
+            "kind": "source",
+            "path": "author:MC2027-PluginSuite/PorscheAdvanced2027/src/Main.cs",
+            "sha256": "76076F000627DABCFFEB67B35904C3F11ACB486F52E139F9CBD4FE69F4EC3137",
+            "lines": [
+              19
+            ]
+          },
+          {
+            "kind": "source",
+            "path": "author:MC2027-PluginSuite/PorscheAdvanced2027/src/Window.cs",
+            "sha256": "4728CE934204D7C6A4DB088A49B0FFA74D46EFAB6433056F598203B434CB6CAD",
+            "lines": [
+              27
+            ]
+          },
+          {
+            "kind": "acceptance_scope",
+            "path": "repo:validation/business-acceptance.json"
+          },
+          {
+            "kind": "acceptance_scope",
+            "path": "repo:docs/COMPATIBILITY.md"
+          },
+          {
+            "kind": "payload_identity",
+            "path": "repo:payload/chooks/PorscheAdvanced2027/PorscheAdvanced2027.dll",
+            "assemblyVersion": "1.0.0.0",
+            "sha256": "DA8E4F21100013EB766CB5C62DF47768A039E59A8CB5E986FB2D7A2FA2F231CE",
+            "manifestMatch": true
+          }
+        ]
+      },
+      {
+        "id": "porsche.session",
+        "title": "面板导航与回滚最近生成",
+        "when": "使用三标签页或撤回最近输出。",
+        "inputs": {
+          "tab": "Show/Boundary=0，Healing=1，Holes=2",
+          "selection": "面板左侧勾选可见实体；可读取当前选择/全部可见；并明确平面和参考工序"
+        },
+        "preconditions": [
+          "Mastercam 2027/API29、Windows x64、.NET 10；已安装匹配 payload 与依赖。",
+          "宿主对象须在 Mastercam UI 线程串行调用；先核文档、单位、活动机床组与选择。",
+          "匹配冻结OperationTools2027 1.0.3、AdvancedDrill2027 AD012依赖；已保存文件。",
+          "选择保护/补面桥接须匹配docs/COMPATIBILITY.md中的SDK/MCCORE/MCGeomSld/PSKERNEL哈希。"
+        ],
+        "steps": [
+          "打开对应FT；先预览，再生成。",
+          "点回滚最近一次生成，调用SessionChanges.Rollback。"
+        ],
+        "outputs": [
+          "本会话生成栈Last与操作结果。"
+        ],
+        "effects": [
+          "打开/预览可写STL/日志；生成与回滚效果见对应流程。"
+        ],
+        "rollback": "SessionChanges.Rollback仅同文档/同会话，调用成功后才出栈；重开不保留。",
+        "automation": "interactive",
+        "api": [
+          "PorscheAdvanced2027.Main :: public MCamReturn Show(int p)",
+          "PorscheAdvanced2027.SessionChanges :: public static void Add(string name,Action undo)",
+          "PorscheAdvanced2027.SessionChanges :: public static void Rollback()"
+        ],
+        "limits": [
+          "typed层不得暴露任意Action参数的SessionChanges.Add；仅由固定工作流内部登记。"
+        ],
+        "evidence": [
+          {
+            "kind": "source",
+            "path": "author:MC2027-PluginSuite/PorscheAdvanced2027/src/Main.cs",
+            "sha256": "76076F000627DABCFFEB67B35904C3F11ACB486F52E139F9CBD4FE69F4EC3137",
+            "lines": [
+              17
+            ]
+          },
+          {
+            "kind": "source",
+            "path": "author:MC2027-PluginSuite/PorscheAdvanced2027/src/Window.cs",
+            "sha256": "4728CE934204D7C6A4DB088A49B0FFA74D46EFAB6433056F598203B434CB6CAD",
+            "lines": [
+              25,
+              26
+            ]
+          },
+          {
+            "kind": "acceptance_scope",
+            "path": "repo:validation/business-acceptance.json"
+          },
+          {
+            "kind": "acceptance_scope",
+            "path": "repo:docs/COMPATIBILITY.md"
+          },
+          {
+            "kind": "payload_identity",
+            "path": "repo:payload/chooks/PorscheAdvanced2027/PorscheAdvanced2027.dll",
+            "assemblyVersion": "1.0.0.0",
+            "sha256": "DA8E4F21100013EB766CB5C62DF47768A039E59A8CB5E986FB2D7A2FA2F231CE",
+            "manifestMatch": true
+          }
+        ]
+      },
+      {
+        "id": "porsche.legacy_heal",
+        "title": "历史直接删孔辅助API（不开放自动化）",
+        "when": "供开发者识别遗留公开方法，避免误用于源实体。",
+        "inputs": {
+          "solidId": "int",
+          "minRadius": "double",
+          "maxRadius": "double"
+        },
+        "preconditions": [
+          "仅查阅源代码；不作为分发MCP业务操作。"
+        ],
+        "steps": [
+          "实际产品Healing按钮只调用CreateHealedFaceCopy。"
+        ],
+        "outputs": [
+          "API范围识别。"
+        ],
+        "effects": [
+          "ApplyOwned会直接修改所给实体；CreateHealedCopy走另一路原生检测/补面。"
+        ],
+        "rollback": "ApplyOwned没有可依赖的源恢复句柄；不得作为用户实体默认流程。",
+        "automation": "not_exposed",
+        "api": [
+          "PorscheAdvanced2027.HoleHealing :: public static HealingResult ApplyOwned(int solidId,double minRadius,double maxRadius)",
+          "PorscheAdvanced2027.HoleHealing :: public static HealingResult CreateHealedCopy(int sourceId,double minimumRadius,double maximumRadius)"
+        ],
+        "limits": [
+          "public可见性不等于推荐业务合同；历史接口不继承当前面复制验收。"
+        ],
+        "evidence": [
+          {
+            "kind": "source",
+            "path": "author:MC2027-PluginSuite/PorscheAdvanced2027/src/HoleHealing.cs",
+            "sha256": "3683F91E09512E474969A992DCF9CB99C01935CC7713759822F090AF70FF286D",
+            "lines": [
+              82,
+              98
+            ]
+          },
+          {
+            "kind": "acceptance_scope",
+            "path": "repo:validation/business-acceptance.json"
+          },
+          {
+            "kind": "acceptance_scope",
+            "path": "repo:docs/COMPATIBILITY.md"
+          },
+          {
+            "kind": "payload_identity",
+            "path": "repo:payload/chooks/PorscheAdvanced2027/PorscheAdvanced2027.dll",
+            "assemblyVersion": "1.0.0.0",
+            "sha256": "DA8E4F21100013EB766CB5C62DF47768A039E59A8CB5E986FB2D7A2FA2F231CE",
+            "manifestMatch": true
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "module": "AdvancedDrill2027",
+    "summary": "AD012/0.1.2：中心钻→钻孔→沉孔/轴向倒角；显式局部坐标与排序、严格fresh回读及归属回滚。",
+    "concepts": [
+      "一个孔集合对应明确平面与点列表，每阶段创建一项DrillOperation；不是从点径自动识别螺纹。",
+      "SelectionOrder46表示预览列表顺序，不承诺鼠标点击历史或已验证NCI访问顺序。",
+      "world=Origin+X*local.X+Y*local.Y+Z*local.Z；基向量必须右手正交；不把ViewNumber当稳定ViewID。",
+      "产品只创建Posting=false、Dirty=true工序；native harness另行重算验证，不是产品自动重算API。",
+      "根src/dist 0.1.1与AD012不同；不能沿用Off=0排序或历史pending状态。"
+    ],
+    "workflows": [
+      {
+        "id": "ad012.prepare_create",
+        "title": "计划并创建分阶段钻孔链",
+        "when": "需要稳定平面/已有刀具/明确点表的阶段编排。",
+        "inputs": {
+          "request": {
+            "Metric": "bool；与当前文档一致；Tap必须true",
+            "Sets": "HoleSet[1..100]，名称唯一",
+            "HoleSet": {
+              "Name": "string",
+              "Plane": "PlaneChoice{ReferenceOperationId:int,ToolPlaneId:int,WcsId:int,ConstructionPlaneId:int,ExpectedToolFrame:Frame}；用DescribePlane取得并保持快照",
+              "LocalPoints": "Vec[1..10000]，X/Y/Z为刀具平面局部坐标；全部Z=Top；拒绝重复，不隐式去重",
+              "Top": "required double；局部绝对顶面",
+              "Stages": "Stage[2..20]；首Center次Drill，再可选深化Drill/Counterbore/Chamfer；Tap创建拒绝"
+            },
+            "Stage": {
+              "Name": "string，组内唯一",
+              "Purpose": "Center|Drill|Counterbore|Chamfer|Tap",
+              "Cycle": "Drill|PeckDrill|ChipBreak|Tap",
+              "Sorting": "SelectionOrder=46(默认)|XPlusYPlus=1|ZBidirectionalPlusCounterclockwise=45；JSON用名称，不接受0/任意数值",
+              "Tool": "ToolChoice{Slot:int,Kind:ToolClass,Diameter:double,LengthOffset:int,DiameterOffset:int}，现有同组真实类型刀具",
+              "Cutting": "Cutting{Feed:double,Plunge:double,Retract:double,Rpm:int,NativeFeedModeReviewed:bool}；三个进给为显式宿主原始数值，不设置模式",
+              "Depth": "required double；刀具平面局部绝对值，低于Top；不自动钻尖补偿",
+              "Clearance": "required double",
+              "Retract": "required double",
+              "FeedPlane": "required double；Clearance>=Retract>=FeedPlane>Top>Depth",
+              "Peck1": "double，啄/断屑循环时>0，非使用时0",
+              "Peck2": "double，同上",
+              "PeckClearance": "double>=0",
+              "ChipBreak": "double，ChipBreak循环时>0，其余0",
+              "Dwell": "double>=0；原生Dwell数值",
+              "ThreadPitch": "仅描述，非Tap须0，不能据字段存在创建Tap"
+            }
+          },
+          "auditDirectory": "受控可写目录；不能接受任意远程调用者文件路径"
+        },
+        "preconditions": [
+          "Mastercam 2027/API29、Windows x64、.NET 10；已安装匹配 payload 与依赖。",
+          "宿主对象须在 Mastercam UI 线程串行调用；先核文档、单位、活动机床组与选择。",
+          "已保存文档、无其他事务；参考未锁定、活动机床组一致；刀槽、类型、H/D、单位、直径/刃长逐项核对。"
+        ],
+        "steps": [
+          "DescribePlane生成PlaneChoice；填完整Request；Rules.Plan纯逻辑预览局部/世界点和阶段。",
+          "Host.Prepare或PrepareJson生成一次性Batch；确认后Apply。",
+          "读取CreatedIds、Status、Error、SelectionRestored、AuditJson；每阶段和整批都fresh比对。"
+        ],
+        "outputs": [
+          "PlannedStage[]、Batch；真实阶段工序与逐字段审计。"
+        ],
+        "effects": [
+          "仅新建DrillOperation；不新建工具/平面；不再生、不post/NC、不保存。",
+          "写审计，恢复原选择；失败按归属清理已提交对象。"
+        ],
+        "rollback": "保留Batch对象；Apply失败可能RestoredAfterFailure/RestoreIncomplete。成功后Batch.Rollback；外部编辑/重算可使产品快照失效。",
+        "automation": "typed_candidate",
+        "api": [
+          "AdvancedDrill2027.Host :: public static PlaneChoice DescribePlane(int referenceId)",
+          "AdvancedDrill2027.Host :: public static Batch Prepare(Request request,string auditDirectory)",
+          "AdvancedDrill2027.Host :: public static Batch PrepareJson(string json,string auditDirectory)",
+          "AdvancedDrill2027.Rules :: public static PlannedStage[] Plan(Request original)",
+          "AdvancedDrill2027.Rules :: public static void RequireExecutable(IEnumerable<PlannedStage> plan)",
+          "AdvancedDrill2027.Batch :: public void Apply()"
+        ],
+        "limits": [
+          "AD012九条链/36次再生与fresh范围均已有native验收；不证明NCI逐孔顺序。",
+          "PrepareJson反序列化拒绝未知字段/数值枚举；typed协议应提供强类型输入而非任意C#脚本。"
+        ],
+        "evidence": [
+          {
+            "kind": "source",
+            "path": "author:MC2027-PluginSuite/AdvancedDrill2027/candidates/AD012/src/Host.cs",
+            "sha256": "61D55956E02036DD60FF415DF35328FC043EC43C1A22B19922D7DCEAB296C8BB",
+            "lines": [
+              22,
+              26,
+              34
+            ]
+          },
+          {
+            "kind": "source",
+            "path": "author:MC2027-PluginSuite/AdvancedDrill2027/candidates/AD012/src/Core.cs",
+            "sha256": "497D90F8A5F6CBEA6971A2DA5CD0812D80BBA8F3388607593F5B367BEFD410C7",
+            "lines": [
+              132,
+              181,
+              220
+            ]
+          },
+          {
+            "kind": "reference",
+            "path": "author:MC2027-PluginSuite/AdvancedDrill2027/candidates/AD012/src/Core.cs"
+          },
+          {
+            "kind": "acceptance_scope",
+            "path": "author:MC2027-PluginSuite/AdvancedDrill2027/candidates/AD012/AD012-NATIVE-ACCEPTANCE.md"
+          },
+          {
+            "kind": "payload_identity",
+            "path": "repo:payload/chooks/AdvancedDrill2027/AdvancedDrill2027.dll",
+            "assemblyVersion": "0.1.2.0",
+            "sha256": "BFE58820F988BEB388E9896EEFC06C970A5E056EEEEE071513EB016FC35DAA95",
+            "manifestMatch": true
+          }
+        ]
+      },
+      {
+        "id": "ad012.recovery",
+        "title": "批次回滚与限定重试",
+        "when": "成功批次需撤销，或失败后清理/选择恢复未完成。",
+        "inputs": {
+          "batch": "原会话Batch；不能从AuditJson重造句柄"
+        },
+        "preconditions": [
+          "Mastercam 2027/API29、Windows x64、.NET 10；已安装匹配 payload 与依赖。",
+          "宿主对象须在 Mastercam UI 线程串行调用；先核文档、单位、活动机床组与选择。"
+        ],
+        "steps": [
+          "Applied或AppliedSelectionRestoreIncomplete才Rollback。",
+          "RestoreIncomplete才RetryCleanup；无选择恢复检查点时不得RetrySelection。",
+          "再次核CreatedIds已删除/SelectionRestored及最终审计。"
+        ],
+        "outputs": [
+          "RolledBack、CleanedAfterRetry或明确未恢复状态。"
+        ],
+        "effects": [
+          "删除自有阶段工序、恢复本次选择；不删除原刀具/几何/平面。"
+        ],
+        "rollback": "所有删除前执行归属、参数、时间戳守卫；错误保持可见，不放宽检查重复Apply。",
+        "automation": "typed_candidate",
+        "api": [
+          "AdvancedDrill2027.Batch :: public void Rollback()",
+          "AdvancedDrill2027.Batch :: public void RetryCleanup()",
+          "AdvancedDrill2027.Batch :: public void RetrySelection()",
+          "AdvancedDrill2027.Host :: public static Operation Read(int id)"
+        ],
+        "limits": [
+          "harness对自身受控Regenerate另立检查点；不能把它当成产品允许任意重算后回滚。"
+        ],
+        "evidence": [
+          {
+            "kind": "source",
+            "path": "author:MC2027-PluginSuite/AdvancedDrill2027/candidates/AD012/src/Core.cs",
+            "sha256": "497D90F8A5F6CBEA6971A2DA5CD0812D80BBA8F3388607593F5B367BEFD410C7",
+            "lines": [
+              239,
+              245,
+              249
+            ]
+          },
+          {
+            "kind": "source",
+            "path": "author:MC2027-PluginSuite/AdvancedDrill2027/candidates/AD012/src/Host.cs",
+            "sha256": "61D55956E02036DD60FF415DF35328FC043EC43C1A22B19922D7DCEAB296C8BB",
+            "lines": [
+              21
+            ]
+          },
+          {
+            "kind": "acceptance_scope",
+            "path": "author:MC2027-PluginSuite/AdvancedDrill2027/candidates/AD012/AD012-NATIVE-ACCEPTANCE.md"
+          },
+          {
+            "kind": "payload_identity",
+            "path": "repo:payload/chooks/AdvancedDrill2027/AdvancedDrill2027.dll",
+            "assemblyVersion": "0.1.2.0",
+            "sha256": "BFE58820F988BEB388E9896EEFC06C970A5E056EEEEE071513EB016FC35DAA95",
+            "manifestMatch": true
+          }
+        ]
+      },
+      {
+        "id": "ad012.ui",
+        "title": "中文阶段表单、点来源与预览",
+        "when": "无需手写JSON，逐阶段选择现有刀具和明确参数。",
+        "inputs": {
+          "p": "int FT宿主参数",
+          "source": "当前选择的点/完整圆或手工局部点；参考工序/平面下拉",
+          "stages": "启用阶段，循环/排序/刀具/深度/安全高度/切削数值"
+        },
+        "preconditions": [
+          "Mastercam 2027/API29、Windows x64、.NET 10；已安装匹配 payload 与依赖。",
+          "宿主对象须在 Mastercam UI 线程串行调用；先核文档、单位、活动机床组与选择。"
+        ],
+        "steps": [
+          "Show打开模态UI；选参考、刷新刀具、捕获点或输入局部坐标。",
+          "先预览点表与阶段，再创建；需撤回时用窗口回滚。"
+        ],
+        "outputs": [
+          "预览与批次审计。"
+        ],
+        "effects": [
+          "打开/取消不创建；创建同上。"
+        ],
+        "rollback": "取消表单或显式Batch回滚；保留后续编辑保护。",
+        "automation": "interactive",
+        "api": [
+          "AdvancedDrill2027.Main :: public MCamReturn Show(int p)"
+        ],
+        "limits": [
+          "FT共享Workshop资源；宿主测试证据等级须分清native业务与UI打开。"
+        ],
+        "evidence": [
+          {
+            "kind": "source",
+            "path": "author:MC2027-PluginSuite/AdvancedDrill2027/candidates/AD012/src/Main.cs",
+            "sha256": "E8BD7046E6E1DE4BCD5E7F7AFDD5AB5A4624D96BC60916A3EBD36181F769ACD1",
+            "lines": [
+              13
+            ]
+          },
+          {
+            "kind": "acceptance_scope",
+            "path": "author:MC2027-PluginSuite/AdvancedDrill2027/candidates/AD012/AD012-NATIVE-ACCEPTANCE.md"
+          },
+          {
+            "kind": "payload_identity",
+            "path": "repo:payload/chooks/AdvancedDrill2027/AdvancedDrill2027.dll",
+            "assemblyVersion": "0.1.2.0",
+            "sha256": "BFE58820F988BEB388E9896EEFC06C970A5E056EEEEE071513EB016FC35DAA95",
+            "manifestMatch": true
+          }
+        ]
+      },
+      {
+        "id": "ad012.store_internal",
+        "title": "阶段存储低层接口（不直接暴露）",
+        "when": "标记公开CreateStore的开发用途。",
+        "inputs": {
+          "request": "Request"
+        },
+        "preconditions": [
+          "仅供封装实现内部组合。"
+        ],
+        "steps": [
+          "使用Host.Prepare统一预检、持久化、回读、清理；不把Allocate/DeleteOwned等低层阶段动作注册为任意工具。"
+        ],
+        "outputs": [
+          "IStageStore实现细节。"
+        ],
+        "effects": [
+          "绕过Batch会失去业务生命周期保护。"
+        ],
+        "rollback": "只能在受控Batch内管理。",
+        "automation": "not_exposed",
+        "api": [
+          "AdvancedDrill2027.Host :: public static IStageStore CreateStore(Request request)"
+        ],
+        "limits": [
+          "public签名存在不等于适合独立MCP端点。"
+        ],
+        "evidence": [
+          {
+            "kind": "source",
+            "path": "author:MC2027-PluginSuite/AdvancedDrill2027/candidates/AD012/src/Host.cs",
+            "sha256": "61D55956E02036DD60FF415DF35328FC043EC43C1A22B19922D7DCEAB296C8BB",
+            "lines": [
+              36
+            ]
+          },
+          {
+            "kind": "acceptance_scope",
+            "path": "author:MC2027-PluginSuite/AdvancedDrill2027/candidates/AD012/AD012-NATIVE-ACCEPTANCE.md"
+          },
+          {
+            "kind": "payload_identity",
+            "path": "repo:payload/chooks/AdvancedDrill2027/AdvancedDrill2027.dll",
+            "assemblyVersion": "0.1.2.0",
+            "sha256": "BFE58820F988BEB388E9896EEFC06C970A5E056EEEEE071513EB016FC35DAA95",
+            "manifestMatch": true
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "module": "AdvancedDrillTap2027",
+    "summary": "AD013/0.1.3：与AD012并存的独立程序集，新增显式公制右旋G84阶段。",
+    "concepts": [
+      "一个孔集合对应明确平面与点列表，每阶段创建一项DrillOperation；不是从点径自动识别螺纹。",
+      "SelectionOrder46表示预览列表顺序，不承诺鼠标点击历史或已验证NCI访问顺序。",
+      "world=Origin+X*local.X+Y*local.Y+Z*local.Z；基向量必须右手正交；不把ViewNumber当稳定ViewID。",
+      "产品只创建Posting=false、Dirty=true工序；native harness另行重算验证，不是产品自动重算API。",
+      "右旋TapRHTool、公制正螺距；进给原始数值必须用户确认；不自动乘RPM×pitch，也无刚性同步设置。"
+    ],
+    "workflows": [
+      {
+        "id": "ad013.prepare_create",
+        "title": "计划并创建中心钻→预钻→公制右旋G84",
+        "when": "需要稳定平面/已有刀具/明确点表的阶段编排。",
+        "inputs": {
+          "request": {
+            "Metric": "bool；与当前文档一致；Tap必须true",
+            "Sets": "HoleSet[1..100]，名称唯一",
+            "HoleSet": {
+              "Name": "string",
+              "Plane": "PlaneChoice{ReferenceOperationId:int,ToolPlaneId:int,WcsId:int,ConstructionPlaneId:int,ExpectedToolFrame:Frame}；用DescribePlane取得并保持快照",
+              "LocalPoints": "Vec[1..10000]，X/Y/Z为刀具平面局部坐标；全部Z=Top；拒绝重复，不隐式去重",
+              "Top": "required double；局部绝对顶面",
+              "Stages": "Stage[2..20]；首Center次Drill，再可选深化Drill/Counterbore/Chamfer/最后Tap"
+            },
+            "Stage": {
+              "Name": "string，组内唯一",
+              "Purpose": "Center|Drill|Counterbore|Chamfer|Tap",
+              "Cycle": "Drill|PeckDrill|ChipBreak|Tap",
+              "Sorting": "SelectionOrder=46(默认)|XPlusYPlus=1|ZBidirectionalPlusCounterclockwise=45；JSON用名称，不接受0/任意数值",
+              "Tool": "ToolChoice{Slot:int,Kind:ToolClass,Diameter:double,LengthOffset:int,DiameterOffset:int}，现有同组真实类型刀具",
+              "Cutting": "Cutting{Feed:double,Plunge:double,Retract:double,Rpm:int,NativeFeedModeReviewed:bool}；三个进给为显式宿主原始数值，不设置模式",
+              "Depth": "required double；刀具平面局部绝对值，低于Top；不自动钻尖补偿",
+              "Clearance": "required double",
+              "Retract": "required double",
+              "FeedPlane": "required double；Clearance>=Retract>=FeedPlane>Top>Depth",
+              "Peck1": "double，啄/断屑循环时>0，非使用时0",
+              "Peck2": "double，同上",
+              "PeckClearance": "double>=0",
+              "ChipBreak": "double，ChipBreak循环时>0，其余0",
+              "Dwell": "double>=0；原生Dwell数值",
+              "ThreadPitch": "double>0，Tap为公制mm螺距；其余0",
+              "TapTarget": "TapTarget{MachineGroupId:int,MachineName:string,PostName:string,ExplicitFeedReviewed:bool=true}；CurrentTapTarget只读取身份，确认字段须显式设置"
+            }
+          },
+          "auditDirectory": "受控可写目录；不能接受任意远程调用者文件路径"
+        },
+        "preconditions": [
+          "Mastercam 2027/API29、Windows x64、.NET 10；已安装匹配 payload 与依赖。",
+          "宿主对象须在 Mastercam UI 线程串行调用；先核文档、单位、活动机床组与选择。",
+          "已保存文档、无其他事务；参考未锁定、活动机床组一致；刀槽、类型、H/D、单位、直径/刃长逐项核对。",
+          "Tap最后，深度不得超过显式预钻深度；RH丝锥为顺时针，Threads与mm螺距一致。",
+          "Tap Feed=Plunge=Retract>0；Peck/ChipBreak/Dwell=0；创建前重新核目标机床/后处理。"
+        ],
+        "steps": [
+          "DescribePlane生成PlaneChoice；填完整Request；Rules.Plan纯逻辑预览局部/世界点和阶段。",
+          "CurrentTapTarget读取真实目标，用户确认后置ExplicitFeedReviewed=true。",
+          "Host.Prepare或PrepareJson生成一次性Batch；确认后Apply。",
+          "读取CreatedIds、Status、Error、SelectionRestored、AuditJson；每阶段和整批都fresh比对。"
+        ],
+        "outputs": [
+          "PlannedStage[]、Batch；真实阶段工序与逐字段审计。"
+        ],
+        "effects": [
+          "仅新建DrillOperation；不新建工具/平面；不再生、不post/NC、不保存。",
+          "写审计，恢复原选择；失败按归属清理已提交对象。"
+        ],
+        "rollback": "保留Batch对象；Apply失败可能RestoredAfterFailure/RestoreIncomplete。成功后Batch.Rollback；外部编辑/重算可使产品快照失效。",
+        "automation": "typed_candidate",
+        "api": [
+          "AdvancedDrillTap2027.Host :: public static PlaneChoice DescribePlane(int referenceId)",
+          "AdvancedDrillTap2027.Host :: public static Batch Prepare(Request request,string auditDirectory)",
+          "AdvancedDrillTap2027.Host :: public static Batch PrepareJson(string json,string auditDirectory)",
+          "AdvancedDrillTap2027.Rules :: public static PlannedStage[] Plan(Request original)",
+          "AdvancedDrillTap2027.Rules :: public static void RequireExecutable(IEnumerable<PlannedStage> plan)",
+          "AdvancedDrillTap2027.Batch :: public void Apply()",
+          "AdvancedDrillTap2027.Host :: public static TapTarget CurrentTapTarget()",
+          "AdvancedDrillTap2027.Rules :: public static void ValidateTap(Stage s)"
+        ],
+        "limits": [
+          "仅Top G84固定目标的创建/一次再生范围已验收；倾斜G84、模式控制、刚性同步、NC和碰撞未由此证明。",
+          "PrepareJson反序列化拒绝未知字段/数值枚举；typed协议应提供强类型输入而非任意C#脚本。"
+        ],
+        "evidence": [
+          {
+            "kind": "source",
+            "path": "author:MC2027-PluginSuite/AdvancedDrill2027/tap-contract/candidates/AD013/src/Host.cs",
+            "sha256": "C597E30D5A9BAA149AB642CCA2A36E62F0766CAD0B95D722B064FCA31981D323",
+            "lines": [
+              23,
+              27,
+              35,
+              18
+            ]
+          },
+          {
+            "kind": "source",
+            "path": "author:MC2027-PluginSuite/AdvancedDrill2027/tap-contract/candidates/AD013/src/Core.cs",
+            "sha256": "F758A4273625A0AB216FDF55DC488C214005260AB937A7A13038CEC219E620A2",
+            "lines": [
+              141,
+              194,
+              241,
+              198
+            ]
+          },
+          {
+            "kind": "reference",
+            "path": "author:MC2027-PluginSuite/AdvancedDrill2027/tap-contract/candidates/AD013/src/Core.cs"
+          },
+          {
+            "kind": "acceptance_scope",
+            "path": "author:MC2027-PluginSuite/AdvancedDrill2027/tap-contract/candidates/AD013/AD013-NATIVE-ACCEPTANCE.md"
+          },
+          {
+            "kind": "payload_identity",
+            "path": "repo:payload/chooks/AdvancedDrillTap2027/AdvancedDrillTap2027.dll",
+            "assemblyVersion": "0.1.3.0",
+            "sha256": "F1056CC3C252B3221BF99D6E5359BEBB4E70B5E8F179323E12D1048FC5CD92A6",
+            "manifestMatch": true
+          }
+        ]
+      },
+      {
+        "id": "ad013.recovery",
+        "title": "批次回滚与限定重试",
+        "when": "成功批次需撤销，或失败后清理/选择恢复未完成。",
+        "inputs": {
+          "batch": "原会话Batch；不能从AuditJson重造句柄"
+        },
+        "preconditions": [
+          "Mastercam 2027/API29、Windows x64、.NET 10；已安装匹配 payload 与依赖。",
+          "宿主对象须在 Mastercam UI 线程串行调用；先核文档、单位、活动机床组与选择。"
+        ],
+        "steps": [
+          "Applied或AppliedSelectionRestoreIncomplete才Rollback。",
+          "RestoreIncomplete才RetryCleanup；无选择恢复检查点时不得RetrySelection。",
+          "再次核CreatedIds已删除/SelectionRestored及最终审计。"
+        ],
+        "outputs": [
+          "RolledBack、CleanedAfterRetry或明确未恢复状态。"
+        ],
+        "effects": [
+          "删除自有阶段工序、恢复本次选择；不删除原刀具/几何/平面。"
+        ],
+        "rollback": "所有删除前执行归属、参数、时间戳守卫；错误保持可见，不放宽检查重复Apply。",
+        "automation": "typed_candidate",
+        "api": [
+          "AdvancedDrillTap2027.Batch :: public void Rollback()",
+          "AdvancedDrillTap2027.Batch :: public void RetryCleanup()",
+          "AdvancedDrillTap2027.Batch :: public void RetrySelection()",
+          "AdvancedDrillTap2027.Host :: public static Operation Read(int id)"
+        ],
+        "limits": [
+          "harness对自身受控Regenerate另立检查点；不能把它当成产品允许任意重算后回滚。"
+        ],
+        "evidence": [
+          {
+            "kind": "source",
+            "path": "author:MC2027-PluginSuite/AdvancedDrill2027/tap-contract/candidates/AD013/src/Core.cs",
+            "sha256": "F758A4273625A0AB216FDF55DC488C214005260AB937A7A13038CEC219E620A2",
+            "lines": [
+              260,
+              266,
+              270
+            ]
+          },
+          {
+            "kind": "source",
+            "path": "author:MC2027-PluginSuite/AdvancedDrill2027/tap-contract/candidates/AD013/src/Host.cs",
+            "sha256": "C597E30D5A9BAA149AB642CCA2A36E62F0766CAD0B95D722B064FCA31981D323",
+            "lines": [
+              22
+            ]
+          },
+          {
+            "kind": "acceptance_scope",
+            "path": "author:MC2027-PluginSuite/AdvancedDrill2027/tap-contract/candidates/AD013/AD013-NATIVE-ACCEPTANCE.md"
+          },
+          {
+            "kind": "payload_identity",
+            "path": "repo:payload/chooks/AdvancedDrillTap2027/AdvancedDrillTap2027.dll",
+            "assemblyVersion": "0.1.3.0",
+            "sha256": "F1056CC3C252B3221BF99D6E5359BEBB4E70B5E8F179323E12D1048FC5CD92A6",
+            "manifestMatch": true
+          }
+        ]
+      },
+      {
+        "id": "ad013.ui",
+        "title": "中文阶段表单、点来源与预览",
+        "when": "无需手写JSON，逐阶段选择现有刀具和明确参数。",
+        "inputs": {
+          "p": "int FT宿主参数",
+          "source": "当前选择的点/完整圆或手工局部点；参考工序/平面下拉",
+          "stages": "启用阶段，循环/排序/刀具/深度/安全高度/切削数值"
+        },
+        "preconditions": [
+          "Mastercam 2027/API29、Windows x64、.NET 10；已安装匹配 payload 与依赖。",
+          "宿主对象须在 Mastercam UI 线程串行调用；先核文档、单位、活动机床组与选择。"
+        ],
+        "steps": [
+          "Show打开模态UI；选参考、刷新刀具、捕获点或输入局部坐标。",
+          "先预览点表与阶段，再创建；需撤回时用窗口回滚。"
+        ],
+        "outputs": [
+          "预览与批次审计。"
+        ],
+        "effects": [
+          "打开/取消不创建；创建同上。"
+        ],
+        "rollback": "取消表单或显式Batch回滚；保留后续编辑保护。",
+        "automation": "interactive",
+        "api": [
+          "AdvancedDrillTap2027.Main :: public MCamReturn Show(int p)"
+        ],
+        "limits": [
+          "FT共享Workshop资源；宿主测试证据等级须分清native业务与UI打开。"
+        ],
+        "evidence": [
+          {
+            "kind": "source",
+            "path": "author:MC2027-PluginSuite/AdvancedDrill2027/tap-contract/candidates/AD013/src/Main.cs",
+            "sha256": "7630E3951A4C56D71247D013F8B0301762FF25C222903700419A99B3969A56F2",
+            "lines": [
+              13
+            ]
+          },
+          {
+            "kind": "acceptance_scope",
+            "path": "author:MC2027-PluginSuite/AdvancedDrill2027/tap-contract/candidates/AD013/AD013-NATIVE-ACCEPTANCE.md"
+          },
+          {
+            "kind": "payload_identity",
+            "path": "repo:payload/chooks/AdvancedDrillTap2027/AdvancedDrillTap2027.dll",
+            "assemblyVersion": "0.1.3.0",
+            "sha256": "F1056CC3C252B3221BF99D6E5359BEBB4E70B5E8F179323E12D1048FC5CD92A6",
+            "manifestMatch": true
+          }
+        ]
+      },
+      {
+        "id": "ad013.store_internal",
+        "title": "阶段存储低层接口（不直接暴露）",
+        "when": "标记公开CreateStore的开发用途。",
+        "inputs": {
+          "request": "Request"
+        },
+        "preconditions": [
+          "仅供封装实现内部组合。"
+        ],
+        "steps": [
+          "使用Host.Prepare统一预检、持久化、回读、清理；不把Allocate/DeleteOwned等低层阶段动作注册为任意工具。"
+        ],
+        "outputs": [
+          "IStageStore实现细节。"
+        ],
+        "effects": [
+          "绕过Batch会失去业务生命周期保护。"
+        ],
+        "rollback": "只能在受控Batch内管理。",
+        "automation": "not_exposed",
+        "api": [
+          "AdvancedDrillTap2027.Host :: public static IStageStore CreateStore(Request request)"
+        ],
+        "limits": [
+          "public签名存在不等于适合独立MCP端点。"
+        ],
+        "evidence": [
+          {
+            "kind": "source",
+            "path": "author:MC2027-PluginSuite/AdvancedDrill2027/tap-contract/candidates/AD013/src/Host.cs",
+            "sha256": "C597E30D5A9BAA149AB642CCA2A36E62F0766CAD0B95D722B064FCA31981D323",
+            "lines": [
+              37
+            ]
+          },
+          {
+            "kind": "acceptance_scope",
+            "path": "author:MC2027-PluginSuite/AdvancedDrill2027/tap-contract/candidates/AD013/AD013-NATIVE-ACCEPTANCE.md"
+          },
+          {
+            "kind": "payload_identity",
+            "path": "repo:payload/chooks/AdvancedDrillTap2027/AdvancedDrillTap2027.dll",
+            "assemblyVersion": "0.1.3.0",
+            "sha256": "F1056CC3C252B3221BF99D6E5359BEBB4E70B5E8F179323E12D1048FC5CD92A6",
+            "manifestMatch": true
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "module": "SolidBoundary2027",
+    "summary": "1.0.5/ExistingOutput105：验证凸多面直边实体拓扑证书后，生成WorldXY单外环边界；只写入已有可见层。",
+    "concepts": [
+      "先证明闭合凸多面体与直线边，再求投影凸包；不是把任意凹体近似为凸包。",
+      "Preview进行真实宿主提边但回滚临时事务；Create另行重新核验并提交结果线。",
+      "成功创建没有公开持久回滚对象/按钮；失败清理与成功后显式撤销不能混为一谈。"
+    ],
+    "workflows": [
+      {
+        "id": "solid_boundary.preview_create",
+        "title": "凸多面体边界预览→创建",
+        "when": "一个已选凸多面实体需要WorldXY单外边界。",
+        "inputs": {
+          "request": {
+            "SourceId": "int，当前选择集合必须恰好是这个非blanked实体",
+            "Origin": "V3(X,Y,Z)，世界坐标显式原点",
+            "Depth": "double，带符号；输出世界Z=Origin.Z+Depth",
+            "Tolerance": "double，1e-9..0.01，文档单位；无公英转换",
+            "OutputLevel": "int 1..999999，Create要求已存在且可见",
+            "Clockwise": "bool；从世界+Z看向XY定义CW/CCW"
+          }
+        },
+        "preconditions": [
+          "Mastercam 2027/API29、Windows x64、.NET 10；已安装匹配 payload 与依赖。",
+          "宿主对象须在 Mastercam UI 线程串行调用；先核文档、单位、活动机床组与选择。",
+          "无其他Undo事务；CPlane方向为WorldXY；单选源实体。",
+          "源必须闭合、凸、全平面面、直且未拆分的边；无孔/内腔/共面面拆分/多体。",
+          "输出层取GetExistingVisibleOutputLevels，创建前与提边后均会再核。"
+        ],
+        "steps": [
+          "Preview返回纯BoundaryResult与审计，核面积、周长、体积、方向、世界Z。",
+          "确认后Create重新验证源/选择/上下文/层准入，提交单闭合链。",
+          "保留GeometryIds和Chains；fresh读回成员、坐标、面积/长度、深度、方向。"
+        ],
+        "outputs": [
+          "BoundaryReceipt(Boundary,GeometryIds,Chains,Committed,Contract)；LastAudit。"
+        ],
+        "effects": [
+          "Preview不保留输出几何；Create新增原生线；不创建工序/刀具/平面、不保存。",
+          "原选择/源几何/上下文严格核对；禁止新建或显示隐藏输出层。"
+        ],
+        "rollback": "失败路径取消事务并按精确本次ID/线端点/属性清理。成功没有公开Rollback；用户可在宿主审阅后撤销，新MCP需另行实现带归属快照的回滚才可承诺事务闭环。",
+        "automation": "typed_candidate",
+        "api": [
+          "SolidBoundary2027.NativeBoundary :: public static BoundaryReceipt Preview(BoundaryRequest request)",
+          "SolidBoundary2027.NativeBoundary :: public static BoundaryReceipt Create(BoundaryRequest request)",
+          "SolidBoundary2027.NativeBoundary :: public static int[] GetExistingVisibleOutputLevels()"
+        ],
+        "limits": [
+          "不支持曲面/凹体/孔/多体/倾斜CPlane/极薄不确定几何。",
+          "新层恢复引擎问题未解决；不要用旧根dist 1.0.4替代。",
+          "native fixture已通过既有空/非空可见层与故障清理；不能扩展到任意实体或具名层/真实注册组所有场景。"
+        ],
+        "evidence": [
+          {
+            "kind": "source",
+            "path": "author:MC2027-PluginSuite/SolidBoundary2027/candidates/ExistingOutput105/src/NativeBoundary.cs",
+            "sha256": "84242473C057B883347490F4C82ACB7AB9927AE7219A585BE77DAC2E33AC564F",
+            "lines": [
+              24,
+              25,
+              26
+            ]
+          },
+          {
+            "kind": "acceptance_scope",
+            "path": "author:MC2027-PluginSuite/SolidBoundary2027/qualifications/1.0.5-installed-native-20261028/README.md"
+          },
+          {
+            "kind": "payload_identity",
+            "path": "repo:payload/chooks/SolidBoundary2027/SolidBoundary2027.dll",
+            "assemblyVersion": "1.0.5.0",
+            "sha256": "F887E35629305917BA6968E3E762D8DBEA2B61F2F2FEB73C0F69FE47035C591A",
+            "manifestMatch": true
+          }
+        ]
+      },
+      {
+        "id": "solid_boundary.ui",
+        "title": "已有可见层边界表单",
+        "when": "交互选择原点/深度/公差/方向并预览。",
+        "inputs": {
+          "parameter": "int宿主参数",
+          "selection": "恰一个支持的实体"
+        },
+        "preconditions": [
+          "Mastercam 2027/API29、Windows x64、.NET 10；已安装匹配 payload 与依赖。",
+          "宿主对象须在 Mastercam UI 线程串行调用；先核文档、单位、活动机床组与选择。"
+        ],
+        "steps": [
+          "Show，刷新已有可见输出层，输入参数。",
+          "计算预览，再创建已预览边界；读取Main.LastResultJson。"
+        ],
+        "outputs": [
+          "模态预览、多边形图、结果ID/JSON。"
+        ],
+        "effects": [
+          "创建前不保留新线；成功后线留文档。"
+        ],
+        "rollback": "取消只取消未提交操作；成功没有面板回滚按钮。",
+        "automation": "interactive",
+        "api": [
+          "SolidBoundary2027.Main :: public MCamReturn Show(int parameter)"
+        ],
+        "limits": [
+          "源码中native qualification pending提示是冻结时历史文字；后来native验收补充说明优先，UI验收等级另看父记录。"
+        ],
+        "evidence": [
+          {
+            "kind": "source",
+            "path": "author:MC2027-PluginSuite/SolidBoundary2027/candidates/ExistingOutput105/src/Entry.cs",
+            "sha256": "16D49782986F1C693D363AA06F0D972C427573324E67D000C3EECC57701D21B8",
+            "lines": [
+              23
+            ]
+          },
+          {
+            "kind": "acceptance_scope",
+            "path": "author:MC2027-PluginSuite/SolidBoundary2027/qualifications/1.0.5-installed-native-20261028/README.md"
+          },
+          {
+            "kind": "payload_identity",
+            "path": "repo:payload/chooks/SolidBoundary2027/SolidBoundary2027.dll",
+            "assemblyVersion": "1.0.5.0",
+            "sha256": "F887E35629305917BA6968E3E762D8DBEA2B61F2F2FEB73C0F69FE47035C591A",
+            "manifestMatch": true
+          }
+        ]
+      },
+      {
+        "id": "solid_boundary.fixture",
+        "title": "内嵌诊断/fixture入口（不暴露）",
+        "when": "防止把公开测试入口误当生产业务。",
+        "inputs": {
+          "parameter": "int"
+        },
+        "preconditions": [
+          "不得在用户零件运行。"
+        ],
+        "steps": [
+          "仅记录：Main.FixtureHarness是显式测试入口，生产FT不注册它。"
+        ],
+        "outputs": [
+          "开发fixture报告。"
+        ],
+        "effects": [
+          "可创建测试实体/哨兵并注入失败。"
+        ],
+        "rollback": "fixture依赖自己严格清理，不属于业务撤销。",
+        "automation": "not_exposed",
+        "api": [
+          "SolidBoundary2027.Main :: public MCamReturn FixtureHarness(int parameter)",
+          "SolidBoundary2027.NativeEdgeProbe :: public static string RunSelectedSource(int sourceId,double tolerance=0.0001)",
+          "SolidBoundary2027.NativeLevelProbe :: public static LevelProbeResult RunNewOutputLevel(int target,bool allowMutation)"
+        ],
+        "limits": [
+          "不得注册为通用MCP命令或启动自动执行。",
+          "NativeEdgeProbe/NativeLevelProbe为历史显式诊断，包含源/新层探测，生产Preview/Create不调用；不封装为业务工具。"
+        ],
+        "evidence": [
+          {
+            "kind": "source",
+            "path": "author:MC2027-PluginSuite/SolidBoundary2027/candidates/ExistingOutput105/src/Entry.cs",
+            "sha256": "16D49782986F1C693D363AA06F0D972C427573324E67D000C3EECC57701D21B8",
+            "lines": [
+              29
+            ]
+          },
+          {
+            "kind": "acceptance_scope",
+            "path": "author:MC2027-PluginSuite/SolidBoundary2027/qualifications/1.0.5-installed-native-20261028/README.md"
+          },
+          {
+            "kind": "payload_identity",
+            "path": "repo:payload/chooks/SolidBoundary2027/SolidBoundary2027.dll",
+            "assemblyVersion": "1.0.5.0",
+            "sha256": "F887E35629305917BA6968E3E762D8DBEA2B61F2F2FEB73C0F69FE47035C591A",
+            "manifestMatch": true
+          },
+          {
+            "kind": "source",
+            "path": "author:MC2027-PluginSuite/SolidBoundary2027/candidates/ExistingOutput105/src/NativeEdgeProbe.cs",
+            "sha256": "7125E961823D429DDCC8FF3194F148D785B8F02DC4DE85433468EC8450E52E50",
+            "lines": [
+              24
+            ]
+          },
+          {
+            "kind": "source",
+            "path": "author:MC2027-PluginSuite/SolidBoundary2027/candidates/ExistingOutput105/src/NativeLevelProbe.cs",
+            "sha256": "A203C5D3183811A08EF0747475EB52B1D488354D8A57998455E74A3FE11B9021",
+            "lines": [
+              13
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "module": "LittleBee2027",
+    "summary": "2.0.0：小蜜蜂工序编辑/命名/复制保存，坐标图层、刀单、材料、机床配置与工序交换/显式后处理。",
+    "concepts": [
+      "Main的异常包装显示错误后仍可能返回MCamReturn.NoErrors；FT布尔返回不是业务成功证明。",
+      "默认数据目录为%LOCALAPPDATA%/LittleBee2027/Rebuilt；界面保存配置、模板与日志可能写磁盘。",
+      "Main.ChangeView切换未来WCS跟随；Commands.ChangeView是立即选择工序并切换坐标的另一方法。",
+      "材料尺寸/密度/单价是用户资料或注明来源的测量；不是自动刀具进给推荐。",
+      "只有少数Materials纯逻辑/导入函数是公开typed候选；大量业务实现为private/internal UI流程。"
+    ],
+    "workflows": [
+      {
+        "id": "bee.hub",
+        "title": "小蜜蜂功能集锦",
+        "when": "选择坐标层别、刀单、材料、机床、执行、导入导出或命名。",
+        "inputs": {
+          "parameter": "int，FT宿主参数"
+        },
+        "preconditions": [
+          "Mastercam 2027/API29、Windows x64、.NET 10；已安装匹配 payload 与依赖。",
+          "宿主对象须在 Mastercam UI 线程串行调用；先核文档、单位、活动机床组与选择。"
+        ],
+        "steps": [
+          "LittleBee或Hub.Show打开功能集锦。",
+          "选择功能；打开配置目录只显示本机文件夹。"
+        ],
+        "outputs": [
+          "功能窗口。"
+        ],
+        "effects": [
+          "打开目录可能启动资源管理器；具体写入由子流程决定。"
+        ],
+        "rollback": "关闭面板。",
+        "automation": "interactive",
+        "api": [
+          "LittleBee.Rebuilt.Main :: public MCamReturn LittleBee(int parameter)",
+          "LittleBee.Rebuilt.Hub :: public static void Show()"
+        ],
+        "limits": [
+          "不要把总面板开放当作各业务已完成。"
+        ],
+        "evidence": [
+          {
+            "kind": "source",
+            "path": "author:LittleBee2027-independent/src/Main.cs",
+            "sha256": "9A644F9718C28327C57FDE65F6B057ECD122E370459EA5268F02423FA0C2365C",
+            "lines": [
+              41,
+              56
+            ]
+          },
+          {
+            "kind": "acceptance_scope",
+            "path": "author:LittleBee2027-independent/evidence/build-manifest.json"
+          },
+          {
+            "kind": "acceptance_scope",
+            "path": "author:LittleBee2027-independent/evidence/toolbar-native-validation.md"
+          },
+          {
+            "kind": "payload_identity",
+            "path": "repo:payload/chooks/LittleBee2027/LittleBee2027.dll",
+            "assemblyVersion": "2.0.0.0",
+            "sha256": "52C059253E5E63DE87457B00DB3D552340B486C9C7950ED2BAFB1E0D1E538975",
+            "manifestMatch": true
+          }
+        ]
+      },
+      {
+        "id": "bee.edit",
+        "title": "编辑工序、刀具、几何与共同参数",
+        "when": "需要Mastercam原生专用参数窗口。",
+        "inputs": {
+          "selection": "至少一项工序；单项编辑多选时再选一项",
+          "parameter": "int"
+        },
+        "preconditions": [
+          "Mastercam 2027/API29、Windows x64、.NET 10；已安装匹配 payload 与依赖。",
+          "宿主对象须在 Mastercam UI 线程串行调用；先核文档、单位、活动机床组与选择。"
+        ],
+        "steps": [
+          "打开EditOperation/EditTool/EditOperationGeometry，或EditCommonParameters批量共同参数。",
+          "在原生窗口确认/取消；返回后核实际工序/刀具。"
+        ],
+        "outputs": [
+          "原生编辑窗口及用户确认的参数修改。"
+        ],
+        "effects": [
+          "原生对话框确认会提交；工具可能被多个工序引用；选择由保护流程恢复。"
+        ],
+        "rollback": "未确认时原生取消；确认后无此模块公开批次Rollback，需原生编辑/撤销与回读。",
+        "automation": "interactive",
+        "api": [
+          "LittleBee.Rebuilt.Commands :: public static void EditOperation()",
+          "LittleBee.Rebuilt.Commands :: public static void EditOperationGeometry()",
+          "LittleBee.Rebuilt.Commands :: public static void EditTool()",
+          "LittleBee.Rebuilt.Commands :: public static void EditCommonParameters()",
+          "LittleBee.Rebuilt.Main :: public MCamReturn EditOperation(int parameter)",
+          "LittleBee.Rebuilt.Main :: public MCamReturn EditTool(int parameter)",
+          "LittleBee.Rebuilt.Main :: public MCamReturn EditOperationGeometry(int parameter)",
+          "LittleBee.Rebuilt.Main :: public MCamReturn EditCommonParameters(int parameter)"
+        ],
+        "limits": [
+          "已有证据为四窗口打开/取消；不等于所有专用字段完整修改验收。"
+        ],
+        "evidence": [
+          {
+            "kind": "source",
+            "path": "author:LittleBee2027-independent/src/Commands.cs",
+            "sha256": "5E010BDE7385891BD279F48473B1016AFB092E9C7E0CAC1444C0F1F363213632",
+            "lines": [
+              311,
+              312,
+              313,
+              332
+            ]
+          },
+          {
+            "kind": "source",
+            "path": "author:LittleBee2027-independent/src/Main.cs",
+            "sha256": "9A644F9718C28327C57FDE65F6B057ECD122E370459EA5268F02423FA0C2365C",
+            "lines": [
+              47,
+              48,
+              49,
+              50
+            ]
+          },
+          {
+            "kind": "acceptance_scope",
+            "path": "author:LittleBee2027-independent/evidence/build-manifest.json"
+          },
+          {
+            "kind": "acceptance_scope",
+            "path": "author:LittleBee2027-independent/evidence/toolbar-native-validation.md"
+          },
+          {
+            "kind": "payload_identity",
+            "path": "repo:payload/chooks/LittleBee2027/LittleBee2027.dll",
+            "assemblyVersion": "2.0.0.0",
+            "sha256": "52C059253E5E63DE87457B00DB3D552340B486C9C7950ED2BAFB1E0D1E538975",
+            "manifestMatch": true
+          }
+        ]
+      },
+      {
+        "id": "bee.copy_paste",
+        "title": "复制工序并粘贴到明确位置",
+        "when": "复用当前宿主剪贴板中的工序。",
+        "inputs": {
+          "selection": "Copy至少一项；Paste最多一个目标工序，或无选中工序并激活刀路组"
+        },
+        "preconditions": [
+          "Mastercam 2027/API29、Windows x64、.NET 10；已安装匹配 payload 与依赖。",
+          "宿主对象须在 Mastercam UI 线程串行调用；先核文档、单位、活动机床组与选择。"
+        ],
+        "steps": [
+          "CopyOperation调用原生OMOnCopy。",
+          "明确插入位置后PasteOperation调用OMOnPaste；核新增ID而非只看返回值。"
+        ],
+        "outputs": [
+          "新增工序ID或无新增提示。"
+        ],
+        "effects": [
+          "读写宿主剪贴板；Paste新增工序；恢复原选择。"
+        ],
+        "rollback": "无公开归属回滚；用户核新增ID后通过原生管理器撤销/删除，不能清空全部新工序。",
+        "automation": "interactive",
+        "api": [
+          "LittleBee.Rebuilt.Commands :: public static void CopyOperation()",
+          "LittleBee.Rebuilt.Commands :: public static void PasteOperation()",
+          "LittleBee.Rebuilt.Main :: public MCamReturn CopyOperation(int parameter)",
+          "LittleBee.Rebuilt.Main :: public MCamReturn PasteOperation(int parameter)"
+        ],
+        "limits": [
+          "已有样例仅核一个拷贝的19参数/20刀具字段；完整链、轨迹、持久性未由此证明。"
+        ],
+        "evidence": [
+          {
+            "kind": "source",
+            "path": "author:LittleBee2027-independent/src/Commands.cs",
+            "sha256": "5E010BDE7385891BD279F48473B1016AFB092E9C7E0CAC1444C0F1F363213632",
+            "lines": [
+              338,
+              344
+            ]
+          },
+          {
+            "kind": "source",
+            "path": "author:LittleBee2027-independent/src/Main.cs",
+            "sha256": "9A644F9718C28327C57FDE65F6B057ECD122E370459EA5268F02423FA0C2365C",
+            "lines": [
+              51,
+              52
+            ]
+          },
+          {
+            "kind": "acceptance_scope",
+            "path": "author:LittleBee2027-independent/evidence/build-manifest.json"
+          },
+          {
+            "kind": "acceptance_scope",
+            "path": "author:LittleBee2027-independent/evidence/toolbar-native-validation.md"
+          },
+          {
+            "kind": "payload_identity",
+            "path": "repo:payload/chooks/LittleBee2027/LittleBee2027.dll",
+            "assemblyVersion": "2.0.0.0",
+            "sha256": "52C059253E5E63DE87457B00DB3D552340B486C9C7950ED2BAFB1E0D1E538975",
+            "manifestMatch": true
+          }
+        ]
+      },
+      {
+        "id": "bee.rename",
+        "title": "群组与NCI程序名称预览重命名",
+        "when": "整理刀路树与程序分组命名。",
+        "inputs": {
+          "scope": "打开时选择，可显式扩大到全文件勾选",
+          "prefix": "自定义/当前文件名",
+          "separator": "string",
+          "start": "int>=0",
+          "step": "int非0",
+          "grouping": "每加工工序|连续同刀|刀路组编号|与刀路组同名"
+        },
+        "preconditions": [
+          "Mastercam 2027/API29、Windows x64、.NET 10；已安装匹配 payload 与依赖。",
+          "宿主对象须在 Mastercam UI 线程串行调用；先核文档、单位、活动机床组与选择。"
+        ],
+        "steps": [
+          "ReNameGroup或ChangeNci打开预览；核每行旧名→新名。",
+          "应用预览；原工序选择恢复后检查结果。"
+        ],
+        "outputs": [
+          "群组名/NCI名；设置与错误记录。"
+        ],
+        "effects": [
+          "改组名/NCI名称及相关NCI路径，不重算或post；需保存文档才持久。"
+        ],
+        "rollback": "提交失败尝试恢复原组名或NCI名称/路径；成功无公开Undo句柄。",
+        "automation": "interactive",
+        "api": [
+          "LittleBee.Rebuilt.Commands :: public static void ReNameGroup()",
+          "LittleBee.Rebuilt.Commands :: public static void ChangeNci()",
+          "LittleBee.Rebuilt.Main :: public MCamReturn ChangeNci(int parameter)",
+          "LittleBee.Rebuilt.Main :: public MCamReturn ReNameGroup(int parameter)"
+        ],
+        "limits": [
+          "NCI名称不是NC输出；禁路径字符、设备名、.nci后缀。手动条目随邻近切削工序，不独占编号。"
+        ],
+        "evidence": [
+          {
+            "kind": "source",
+            "path": "author:LittleBee2027-independent/src/Commands.cs",
+            "sha256": "5E010BDE7385891BD279F48473B1016AFB092E9C7E0CAC1444C0F1F363213632",
+            "lines": [
+              364,
+              369
+            ]
+          },
+          {
+            "kind": "source",
+            "path": "author:LittleBee2027-independent/src/Main.cs",
+            "sha256": "9A644F9718C28327C57FDE65F6B057ECD122E370459EA5268F02423FA0C2365C",
+            "lines": [
+              42,
+              43
+            ]
+          },
+          {
+            "kind": "reference",
+            "path": "author:LittleBee2027-independent/src/RenameDialogs.cs"
+          },
+          {
+            "kind": "acceptance_scope",
+            "path": "author:LittleBee2027-independent/evidence/build-manifest.json"
+          },
+          {
+            "kind": "acceptance_scope",
+            "path": "author:LittleBee2027-independent/evidence/toolbar-native-validation.md"
+          },
+          {
+            "kind": "payload_identity",
+            "path": "repo:payload/chooks/LittleBee2027/LittleBee2027.dll",
+            "assemblyVersion": "2.0.0.0",
+            "sha256": "52C059253E5E63DE87457B00DB3D552340B486C9C7950ED2BAFB1E0D1E538975",
+            "manifestMatch": true
+          }
+        ]
+      },
+      {
+        "id": "bee.follow_view",
+        "title": "WCS跟随开关与立即切换坐标",
+        "when": "查看选中工序的设置方向，或启用后续选中事件跟随。",
+        "inputs": {
+          "mode": "Main.ChangeView/ToggleFollow切换保存的Enabled；Commands.ChangeView立即从所选工序选WCS",
+          "FollowGraphicsView": "配置默认false，仅跟随设置开启时显式切图形视图"
+        },
+        "preconditions": [
+          "Mastercam 2027/API29、Windows x64、.NET 10；已安装匹配 payload 与依赖。",
+          "宿主对象须在 Mastercam UI 线程串行调用；先核文档、单位、活动机床组与选择。"
+        ],
+        "steps": [
+          "区分切换开关与立即切换；ToggleFollow不即时改变平面。",
+          "Enabled时未来OperationSelectionsChanged取宿主顺序首个有效WCS；WCS不同才赋值W/C/T。",
+          "立即ChangeView选择一工序，设置W/C/T/G并刷新。"
+        ],
+        "outputs": [
+          "跟随状态、LastFollowError或坐标变化。"
+        ],
+        "effects": [
+          "Toggle写wcs-follow.json；通知可能改变当前W/C/T；不改工序选择。"
+        ],
+        "rollback": "开关可再次关闭；切换异常尝试恢复旧平面；成功后的视图需用户切回，没有会话Rollback。",
+        "automation": "interactive",
+        "api": [
+          "LittleBee.Rebuilt.Commands :: public static void ToggleFollow()",
+          "LittleBee.Rebuilt.Commands :: public static void ChangeView()",
+          "LittleBee.Rebuilt.Main :: public MCamReturn ChangeView(int parameter)"
+        ],
+        "limits": [
+          "当前WCS已相同则跟随不重设C/T；宿主自己的follow偏好仍有效。FollowNotification由生命周期调用，不供外部伪造事件。"
+        ],
+        "evidence": [
+          {
+            "kind": "source",
+            "path": "author:LittleBee2027-independent/src/Commands.cs",
+            "sha256": "5E010BDE7385891BD279F48473B1016AFB092E9C7E0CAC1444C0F1F363213632",
+            "lines": [
+              42,
+              271
+            ]
+          },
+          {
+            "kind": "source",
+            "path": "author:LittleBee2027-independent/src/Main.cs",
+            "sha256": "9A644F9718C28327C57FDE65F6B057ECD122E370459EA5268F02423FA0C2365C",
+            "lines": [
+              46
+            ]
+          },
+          {
+            "kind": "acceptance_scope",
+            "path": "author:LittleBee2027-independent/evidence/build-manifest.json"
+          },
+          {
+            "kind": "acceptance_scope",
+            "path": "author:LittleBee2027-independent/evidence/toolbar-native-validation.md"
+          },
+          {
+            "kind": "payload_identity",
+            "path": "repo:payload/chooks/LittleBee2027/LittleBee2027.dll",
+            "assemblyVersion": "2.0.0.0",
+            "sha256": "52C059253E5E63DE87457B00DB3D552340B486C9C7950ED2BAFB1E0D1E538975",
+            "manifestMatch": true
+          }
+        ]
+      },
+      {
+        "id": "bee.save",
+        "title": "保存/另存为并可附现有毛坯尺寸",
+        "when": "用户明确要求写MCAM文件。",
+        "inputs": {
+          "destination": "SaveAs原生保存框；.mcam完整路径<260字符",
+          "stockNaming": "一个机床组且有有效现存StockSize时，可追加_size_大X中X小；已有_size_不重复"
+        },
+        "preconditions": [
+          "Mastercam 2027/API29、Windows x64、.NET 10；已安装匹配 payload 与依赖。",
+          "宿主对象须在 Mastercam UI 线程串行调用；先核文档、单位、活动机床组与选择。"
+        ],
+        "steps": [
+          "SaveFile计算建议文件名；无合法路径时转SaveAs。",
+          "确认覆盖/另存位置，保存后核非空文件及CurrentFileName回读。"
+        ],
+        "outputs": [
+          "MCAM磁盘文件与活动文件名。"
+        ],
+        "effects": [
+          "真实保存、可改变当前文档路径；不新建机床组/毛坯，不手动清dirty标记。"
+        ],
+        "rollback": "写文件不属于批次Rollback；覆盖前由用户决定，依赖文件备份恢复。",
+        "automation": "interactive",
+        "api": [
+          "LittleBee.Rebuilt.Commands :: public static void SaveFile()",
+          "LittleBee.Rebuilt.Commands :: public static void SaveAs()",
+          "LittleBee.Rebuilt.Main :: public MCamReturn SaveFile(int parameter)",
+          "LittleBee.Rebuilt.Main :: public MCamReturn SaveAs(int parameter)"
+        ],
+        "limits": [
+          "适配器不得在普通查询/规划时隐式调用SaveFile。"
+        ],
+        "evidence": [
+          {
+            "kind": "source",
+            "path": "author:LittleBee2027-independent/src/Commands.cs",
+            "sha256": "5E010BDE7385891BD279F48473B1016AFB092E9C7E0CAC1444C0F1F363213632",
+            "lines": [
+              164,
+              182
+            ]
+          },
+          {
+            "kind": "source",
+            "path": "author:LittleBee2027-independent/src/Main.cs",
+            "sha256": "9A644F9718C28327C57FDE65F6B057ECD122E370459EA5268F02423FA0C2365C",
+            "lines": [
+              44,
+              45
+            ]
+          },
+          {
+            "kind": "acceptance_scope",
+            "path": "author:LittleBee2027-independent/evidence/build-manifest.json"
+          },
+          {
+            "kind": "acceptance_scope",
+            "path": "author:LittleBee2027-independent/evidence/toolbar-native-validation.md"
+          },
+          {
+            "kind": "payload_identity",
+            "path": "repo:payload/chooks/LittleBee2027/LittleBee2027.dll",
+            "assemblyVersion": "2.0.0.0",
+            "sha256": "52C059253E5E63DE87457B00DB3D552340B486C9C7950ED2BAFB1E0D1E538975",
+            "manifestMatch": true
+          }
+        ]
+      },
+      {
+        "id": "bee.geometry",
+        "title": "坐标展开、旋转、对齐、图层与结果几何",
+        "when": "把指定几何按源坐标框架整理到世界坐标及目标图层。",
+        "inputs": {
+          "action": "移动|复制|只改层/颜色|创建包围矩形4线|创建命名坐标平面",
+          "input": "捕获选择|全图素含隐藏|全部实体含隐藏|可见未隐藏",
+          "boundary": "输入|输入实体|捕获选择仅作参考",
+          "sourceFrame": "World|WCS|CPlane|图形视图",
+          "xy": "九点包围框锚或自定义参考点",
+          "z": "顶/中/底/参考点Z/保留源Z",
+          "rotation": "0|+90|-90|180度，绕世界+Z",
+          "target": "世界XYZ，文档单位",
+          "attributes": "目标层、层名、颜色0..255、显示层/设主层",
+          "plane": "名字<=39，当前图形方向或World，世界原点或参考点，可激活W/C/T"
+        },
+        "preconditions": [
+          "Mastercam 2027/API29、Windows x64、.NET 10；已安装匹配 payload 与依赖。",
+          "宿主对象须在 Mastercam UI 线程串行调用；先核文档、单位、活动机床组与选择。"
+        ],
+        "steps": [
+          "GeometryTools.Show，捕获输入并确认包含隐藏对象的范围。",
+          "计算/更新预览；先展开源框架，再绕Z旋转并对齐；输入变化必须重新预览。",
+          "执行后核输出数量/位置/图层；矩形和MCView含义不同。"
+        ],
+        "outputs": [
+          "移动/复制结果、属性变更、4线矩形或命名视图。"
+        ],
+        "effects": [
+          "可改几何、主层/层名/可见性与W/C/T/G；Plane是视图，不是实体面。"
+        ],
+        "rollback": "失败取消事务、恢复层/平面，并显式清理本次MCView；成功几何用原生撤销，MCView不随几何撤销删除，需平面管理器处理。",
+        "automation": "interactive",
+        "api": [
+          "LittleBee.Rebuilt.GeometryTools :: public static void Show()"
+        ],
+        "limits": [
+          "业务执行计划类为private，不存在公开参数化Move/Copy方法；不能编造typed签名。",
+          "尺寸为包围范围，不是精确实体剪影。"
+        ],
+        "evidence": [
+          {
+            "kind": "source",
+            "path": "author:LittleBee2027-independent/src/GeometryTools.cs",
+            "sha256": "5EB2F9FAD68BFDD3AA7A261929E6D265F5385438E56014235C10043B81A92828",
+            "lines": [
+              29
+            ]
+          },
+          {
+            "kind": "acceptance_scope",
+            "path": "author:LittleBee2027-independent/evidence/build-manifest.json"
+          },
+          {
+            "kind": "acceptance_scope",
+            "path": "author:LittleBee2027-independent/evidence/toolbar-native-validation.md"
+          },
+          {
+            "kind": "payload_identity",
+            "path": "repo:payload/chooks/LittleBee2027/LittleBee2027.dll",
+            "assemblyVersion": "2.0.0.0",
+            "sha256": "52C059253E5E63DE87457B00DB3D552340B486C9C7950ED2BAFB1E0D1E538975",
+            "manifestMatch": true
+          }
+        ]
+      },
+      {
+        "id": "bee.toolsheet",
+        "title": "程序/刀具报告、工单模板与截图",
+        "when": "需要来源明确的刀路/刀具记录和打印。",
+        "inputs": {
+          "job": "工单字段；用户填写工件信息",
+          "template": "页眉页脚、列显隐/排序/权重、字体、审计附录",
+          "snapshots": "用户触发捕获当前图形视图，独立时间戳",
+          "output": "CSV完整字段/HTML打印/工单与模板JSON"
+        },
+        "preconditions": [
+          "Mastercam 2027/API29、Windows x64、.NET 10；已安装匹配 payload 与依赖。",
+          "宿主对象须在 Mastercam UI 线程串行调用；先核文档、单位、活动机床组与选择。"
+        ],
+        "steps": [
+          "ToolSheet.Show读取当前文件。",
+          "核字段来源与未读状态，编辑工单/模板，可导入导出模板或设默认；必要时重新读取。",
+          "保存工单/快照，导出完整CSV或打印HTML；可删除所选快照。"
+        ],
+        "outputs": [
+          "报告、模板、PNG快照及来源/时间记录。"
+        ],
+        "effects": [
+          "写本地工单/模板/图片/导出文件；浏览/打印可开外部浏览器；不自动重算。"
+        ],
+        "rollback": "无文档加工修改；磁盘导出和模板更改不由CAM回滚。",
+        "automation": "interactive",
+        "api": [
+          "LittleBee.Rebuilt.ToolSheet :: public static void Show()"
+        ],
+        "limits": [
+          "Capture/BuildCsv/BuildHtml为internal，不可作为现有公开typed API。",
+          "刀具工序快照与目录分别保留，不按T号盲合并；截图不自动切换视图。"
+        ],
+        "evidence": [
+          {
+            "kind": "source",
+            "path": "author:LittleBee2027-independent/src/ToolSheet.cs",
+            "sha256": "2D50466FAFB7050E805D89363401F2B3673BA9ECA9B1E49E253AF9556AE64610",
+            "lines": [
+              26
+            ]
+          },
+          {
+            "kind": "acceptance_scope",
+            "path": "author:LittleBee2027-independent/evidence/build-manifest.json"
+          },
+          {
+            "kind": "acceptance_scope",
+            "path": "author:LittleBee2027-independent/evidence/toolbar-native-validation.md"
+          },
+          {
+            "kind": "payload_identity",
+            "path": "repo:payload/chooks/LittleBee2027/LittleBee2027.dll",
+            "assemblyVersion": "2.0.0.0",
+            "sha256": "52C059253E5E63DE87457B00DB3D552340B486C9C7950ED2BAFB1E0D1E538975",
+            "manifestMatch": true
+          }
+        ]
+      },
+      {
+        "id": "bee.materials_calc",
+        "title": "材料毛坯重量/成本计算与清单导入",
+        "when": "已有明确尺寸/单位/密度/价格，需要纯逻辑预算或整理待测文件。",
+        "inputs": {
+          "stock": "Materials.StockItem{Name,MaterialId,Shape(长方体|圆棒|圆管),Unit(mm|inch),X,Y,Z,AddX,AddY,AddZ:decimal,Quantity:int,IncludeInTotals,...}",
+          "material": "MaterialDefinition{Id,Name,Density:decimal(g/cm³),PricePerKg:decimal,Currency,Reference}",
+          "files": "IEnumerable<string>本地CAD文件，ImportSavedFiles只读文件元数据",
+          "manifest": "CSV/TXT路径；必须明确unit与include标志，尺寸标记为用户清单值"
+        },
+        "preconditions": [
+          "Calculate/Validate为纯逻辑；导入需受控文件读权限；材料Id对应且尺寸合法。"
+        ],
+        "steps": [
+          "ValidateMaterial/Validate检查。",
+          "Calculate：先换mm，加量是总尺寸量；圆管内径=Z-AddZ；计算kg与币种金额。",
+          "ImportSavedFiles产生待填写条目；ImportFileManifest解析显式尺寸；均不打开CAD/测量实体。"
+        ],
+        "outputs": [
+          "StockEstimate{FinishedXmm/Ymm/Zmm,VolumeCm3,EachKg,TotalKg,TotalCost,Formula}或List<StockItem>。"
+        ],
+        "effects": [
+          "Calculate不调用宿主、不写库；导入读取文件，不隐式纳入缺尺寸条目。"
+        ],
+        "rollback": "纯计算无需回滚；只有通过UI保存才写库。",
+        "automation": "typed_candidate",
+        "api": [
+          "LittleBee.Rebuilt.Materials :: public static StockEstimate Calculate(StockItem stock, MaterialDefinition material)",
+          "LittleBee.Rebuilt.Materials :: public static void ValidateMaterial(MaterialDefinition material)",
+          "LittleBee.Rebuilt.Materials :: public static void Validate(MaterialsData data)",
+          "LittleBee.Rebuilt.Materials :: public static List<StockItem> ImportSavedFiles(IEnumerable<string> files)",
+          "LittleBee.Rebuilt.Materials :: public static List<StockItem> ImportFileManifest(string path, IEnumerable<MaterialDefinition> materials)"
+        ],
+        "limits": [
+          "不按文件名推断尺寸；不是读取MCAM已保存毛坯或自动生成加工参数。"
+        ],
+        "evidence": [
+          {
+            "kind": "source",
+            "path": "author:LittleBee2027-independent/src/Materials.cs",
+            "sha256": "7D4D7C4BFA97ADACE8545C732794F204D3FFB20053F16D755163F8A6D34AACAD",
+            "lines": [
+              128,
+              183,
+              193,
+              238,
+              266
+            ]
+          },
+          {
+            "kind": "acceptance_scope",
+            "path": "author:LittleBee2027-independent/evidence/build-manifest.json"
+          },
+          {
+            "kind": "acceptance_scope",
+            "path": "author:LittleBee2027-independent/evidence/toolbar-native-validation.md"
+          },
+          {
+            "kind": "payload_identity",
+            "path": "repo:payload/chooks/LittleBee2027/LittleBee2027.dll",
+            "assemblyVersion": "2.0.0.0",
+            "sha256": "52C059253E5E63DE87457B00DB3D552340B486C9C7950ED2BAFB1E0D1E538975",
+            "manifestMatch": true
+          }
+        ]
+      },
+      {
+        "id": "bee.materials_ui_batch",
+        "title": "材料库维护及批量实体测量",
+        "when": "编辑材料/毛坯，或用户明确同意保存并切换临时文件测实体包围尺寸。",
+        "inputs": {
+          "ui": "新增/删行、读取当前毛坯、计算、保存、JSON备份/导入、CSV/HTML/文件清单导出",
+          "batch": "用户选择文件、材料、长边排序、是否逐文件确认；只能UI发起"
+        },
+        "preconditions": [
+          "Mastercam 2027/API29、Windows x64、.NET 10；已安装匹配 payload 与依赖。",
+          "宿主对象须在 Mastercam UI 线程串行调用；先核文档、单位、活动机床组与选择。"
+        ],
+        "steps": [
+          "Materials.Show维护资料；普通文件清单导入不测量。",
+          "批量实体自动测量先显式保存当前文档，创建恢复副本和逐源哈希副本。",
+          "模态窗关闭后才打开临时副本，新建临时铣削组和矩形毛坯SetToAllSolids测量；结束恢复原文档。"
+        ],
+        "outputs": [
+          "尺寸、单位、实体数、来源SHA、BatchJournal及恢复状态；成功条目存材料库。"
+        ],
+        "effects": [
+          "真实保存原文档并切换文档；临时文档创建组/毛坯；写恢复副本/日志，源测量文件不写回。"
+        ],
+        "rollback": "finally尝试重开原文档；失败保留恢复副本并要求交互决定；不是保持所有内存会话状态的事务。",
+        "automation": "interactive",
+        "api": [
+          "LittleBee.Rebuilt.Materials :: public static void Show()"
+        ],
+        "limits": [
+          "RunBatchCore/RunInteractiveBatch不是公开typed API；首批MCP不封装文件切换测量。",
+          "只测导入后的实体；曲面/网格不冒充实体；包围尺寸不是净体积。"
+        ],
+        "evidence": [
+          {
+            "kind": "source",
+            "path": "author:LittleBee2027-independent/src/Materials.cs",
+            "sha256": "7D4D7C4BFA97ADACE8545C732794F204D3FFB20053F16D755163F8A6D34AACAD",
+            "lines": [
+              22
+            ]
+          },
+          {
+            "kind": "acceptance_scope",
+            "path": "author:LittleBee2027-independent/evidence/build-manifest.json"
+          },
+          {
+            "kind": "acceptance_scope",
+            "path": "author:LittleBee2027-independent/evidence/toolbar-native-validation.md"
+          },
+          {
+            "kind": "payload_identity",
+            "path": "repo:payload/chooks/LittleBee2027/LittleBee2027.dll",
+            "assemblyVersion": "2.0.0.0",
+            "sha256": "52C059253E5E63DE87457B00DB3D552340B486C9C7950ED2BAFB1E0D1E538975",
+            "manifestMatch": true
+          }
+        ]
+      },
+      {
+        "id": "bee.machines",
+        "title": "机床/后处理/输出配置与适配合同",
+        "when": "建立可选择的机床配置档案与受控后处理选项。",
+        "inputs": {
+          "profile": "Machines.Profile：名称、控制器、可选MachineDefinition、PostFile(.pst)、ImageFile、OutputDirectories、TemplateDirectory/PreferredTemplate、NcExtension、日期/零件子目录、检查选项、Compatibility"
+        },
+        "preconditions": [
+          "Mastercam 2027/API29、Windows x64、.NET 10；已安装匹配 payload 与依赖。",
+          "宿主对象须在 Mastercam UI 线程串行调用；先核文档、单位、活动机床组与选择。"
+        ],
+        "steps": [
+          "Machines.Show新增/复制/编辑/删除并保存档案，检查文件路径。",
+          "PostDefault保留post默认；其他兼容选项必须有匹配post哈希/依赖的适配器映射。"
+        ],
+        "outputs": [
+          "machines.json中的Profile/Catalog与兼容检查。"
+        ],
+        "effects": [
+          "修改本地配置；选择Profile本身不切换宿主机床组，不改机床定义。"
+        ],
+        "rollback": "恢复用户配置备份；没有CAM批次Rollback。",
+        "automation": "interactive",
+        "api": [
+          "LittleBee.Rebuilt.Machines :: public static void Show()"
+        ],
+        "limits": [
+          "Load/Save/ResolveCompatibility是internal，不能把档案字段当公开执行API。",
+          "post选项不等于机床安全验证。"
+        ],
+        "evidence": [
+          {
+            "kind": "source",
+            "path": "author:LittleBee2027-independent/src/Machines.cs",
+            "sha256": "5F4DC64ADE64B2522E369D80CB4A495674D3F5130B09B631840A84CE280DD12F",
+            "lines": [
+              67
+            ]
+          },
+          {
+            "kind": "acceptance_scope",
+            "path": "author:LittleBee2027-independent/evidence/build-manifest.json"
+          },
+          {
+            "kind": "acceptance_scope",
+            "path": "author:LittleBee2027-independent/evidence/toolbar-native-validation.md"
+          },
+          {
+            "kind": "payload_identity",
+            "path": "repo:payload/chooks/LittleBee2027/LittleBee2027.dll",
+            "assemblyVersion": "2.0.0.0",
+            "sha256": "52C059253E5E63DE87457B00DB3D552340B486C9C7950ED2BAFB1E0D1E538975",
+            "manifestMatch": true
+          }
+        ]
+      },
+      {
+        "id": "bee.exchange",
+        "title": "导出/导入工序库与模板管理",
+        "when": "保存可复用的工序库并按明确目标导入。",
+        "inputs": {
+          "export": "选中工序；.lbmc ZIP按组打包原生工序库+JSON/CSV，或直接.mcam-operations；可选关联几何/配置引用快照",
+          "import": "来源.lbmc/.mcam-operations/.mcam；勾选工序；保留组、导入几何、用当前视图、清注释、单工序编辑、另存包内配置",
+          "templates": "记为机床模板、打开目录、归档模板文件"
+        },
+        "preconditions": [
+          "Mastercam 2027/API29、Windows x64、.NET 10；已安装匹配 payload 与依赖。",
+          "宿主对象须在 Mastercam UI 线程串行调用；先核文档、单位、活动机床组与选择。"
+        ],
+        "steps": [
+          "ShowExport核选择并导出。",
+          "ShowImport浏览并预览，核源哈希与活动目标机床组后逐工序导入。",
+          "核新增ID/选择/日志，导入后用户检查几何并按需重算。"
+        ],
+        "outputs": [
+          "工序包与附属清单；导入工序ID和日志。"
+        ],
+        "effects": [
+          "导出写文件；导入可能新增工序、刀具、组/几何并选中结果；不自动计算进给转速；归档会移动模板文件。"
+        ],
+        "rollback": "导入部分失败会保留新增工序并列出AddedIds，不自动撤销；须审阅日志和原生管理器处理。磁盘归档/导出另行管理。",
+        "automation": "interactive",
+        "api": [
+          "LittleBee.Rebuilt.Exchange :: public static void ShowImport()",
+          "LittleBee.Rebuilt.Exchange :: public static void ShowExport()"
+        ],
+        "limits": [
+          "实现为private流程，未公开参数化Import/Export；配置快照仅文件引用，不打包通用机床环境。"
+        ],
+        "evidence": [
+          {
+            "kind": "source",
+            "path": "author:LittleBee2027-independent/src/Exchange.cs",
+            "sha256": "91B47035E5DD3422815BDB0E37A1EA243907185C34C5338B24C2E28330A4042A",
+            "lines": [
+              34,
+              35
+            ]
+          },
+          {
+            "kind": "acceptance_scope",
+            "path": "author:LittleBee2027-independent/evidence/build-manifest.json"
+          },
+          {
+            "kind": "acceptance_scope",
+            "path": "author:LittleBee2027-independent/evidence/toolbar-native-validation.md"
+          },
+          {
+            "kind": "payload_identity",
+            "path": "repo:payload/chooks/LittleBee2027/LittleBee2027.dll",
+            "assemblyVersion": "2.0.0.0",
+            "sha256": "52C059253E5E63DE87457B00DB3D552340B486C9C7950ED2BAFB1E0D1E538975",
+            "manifestMatch": true
+          }
+        ]
+      },
+      {
+        "id": "bee.post",
+        "title": "显式执行/后处理（仅交互流程）",
+        "when": "用户明确要求对审核后的选中工序生成NC。",
+        "inputs": {
+          "selection": "选中工序；单组或按所选工序涉及的多机床组",
+          "profile": "逐组已保存机床配置、确切post/依赖哈希、输出目录",
+          "confirm": "用户预览后勾选生成NC；可选已声明适配器的MI/MR参数准备"
+        },
+        "preconditions": [
+          "Mastercam 2027/API29、Windows x64、.NET 10；已安装匹配 payload 与依赖。",
+          "宿主对象须在 Mastercam UI 线程串行调用；先核文档、单位、活动机床组与选择。"
+        ],
+        "steps": [
+          "ShowExecute检查选中工序、工具/补偿/脏状态/行程与配置。",
+          "需要参数准备时先备份原生工序包，写并回读20槽；不隐式重算。",
+          "再次核目标与post，用户确认后生成；多组任一失败停止后续组。"
+        ],
+        "outputs": [
+          "独立批次目录内NC和HTML/CSV/JSON、文件存在/哈希与恢复记录。"
+        ],
+        "effects": [
+          "此流程确实生成NC；执行时临时使用所选post，结束恢复原post/活动组/选择。",
+          "可显式修改MI/MR并标需重算；不将语义选项直接改写post代码。"
+        ],
+        "rollback": "恢复临时post和选择；已输出文件保留，部分失败目录保留；参数失败尝试恢复并保留备份，成功无统一公开Rollback。",
+        "automation": "interactive",
+        "api": [
+          "LittleBee.Rebuilt.Exchange :: public static void ShowExecute()"
+        ],
+        "limits": [
+          "本文仅记录源码能力，没有执行post或宣称NC正确；native返回/文件存在不能证明NC语义、仿真或机床安全。",
+          "ExecutePost/ExecuteGroups/参数准备为private；不得暴露任意反射执行或把ShowExecute包装成无人值守typed成功。"
+        ],
+        "evidence": [
+          {
+            "kind": "source",
+            "path": "author:LittleBee2027-independent/src/Exchange.cs",
+            "sha256": "91B47035E5DD3422815BDB0E37A1EA243907185C34C5338B24C2E28330A4042A",
+            "lines": [
+              36
+            ]
+          },
+          {
+            "kind": "acceptance_scope",
+            "path": "author:LittleBee2027-independent/evidence/build-manifest.json"
+          },
+          {
+            "kind": "acceptance_scope",
+            "path": "author:LittleBee2027-independent/evidence/toolbar-native-validation.md"
+          },
+          {
+            "kind": "payload_identity",
+            "path": "repo:payload/chooks/LittleBee2027/LittleBee2027.dll",
+            "assemblyVersion": "2.0.0.0",
+            "sha256": "52C059253E5E63DE87457B00DB3D552340B486C9C7950ED2BAFB1E0D1E538975",
+            "manifestMatch": true
+          }
+        ]
+      },
+      {
+        "id": "bee.registration",
+        "title": "启动注册与跟随通知（不直接开放）",
+        "when": "覆盖源码公开的注册/事件动作；交给宿主生命周期。",
+        "inputs": {
+          "parameter": "int宿主参数",
+          "notification": "MCamEvent，仅宿主通知"
+        },
+        "preconditions": [
+          "不作为普通加工任务调用；不得伪造宿主事件。"
+        ],
+        "steps": [
+          "Main.InstallRibbon/RibbonSetup.Install注册页签；FollowNotification由Main.Notify接入。"
+        ],
+        "outputs": [
+          "界面注册与跟随事件状态。"
+        ],
+        "effects": [
+          "可能注册UI或按跟随设置改变平面；没有加工输出。"
+        ],
+        "rollback": "按宿主生命周期管理；不是CAM批次回滚。",
+        "automation": "not_exposed",
+        "api": [
+          "LittleBee.Rebuilt.Main :: public MCamReturn InstallRibbon(int parameter)",
+          "LittleBee.Rebuilt.RibbonSetup :: public static bool Install()",
+          "LittleBee.Rebuilt.Commands :: public static void FollowNotification(MCamEvent notification)"
+        ],
+        "limits": [
+          "不要将任意事件/启动生命周期注册为公开MCP工具。"
+        ],
+        "evidence": [
+          {
+            "kind": "source",
+            "path": "author:LittleBee2027-independent/src/Main.cs",
+            "sha256": "9A644F9718C28327C57FDE65F6B057ECD122E370459EA5268F02423FA0C2365C",
+            "lines": [
+              38
+            ]
+          },
+          {
+            "kind": "source",
+            "path": "author:LittleBee2027-independent/src/RibbonSetup.cs",
+            "sha256": "EACFEDD2AC747AEC7BA970300DD78FC1B77F92D677DD8AB60DFF4C6EDD8B664F",
+            "lines": [
+              10
+            ]
+          },
+          {
+            "kind": "source",
+            "path": "author:LittleBee2027-independent/src/Commands.cs",
+            "sha256": "5E010BDE7385891BD279F48473B1016AFB092E9C7E0CAC1444C0F1F363213632",
+            "lines": [
+              74
+            ]
+          },
+          {
+            "kind": "acceptance_scope",
+            "path": "author:LittleBee2027-independent/evidence/build-manifest.json"
+          },
+          {
+            "kind": "acceptance_scope",
+            "path": "author:LittleBee2027-independent/evidence/toolbar-native-validation.md"
+          },
+          {
+            "kind": "payload_identity",
+            "path": "repo:payload/chooks/LittleBee2027/LittleBee2027.dll",
+            "assemblyVersion": "2.0.0.0",
+            "sha256": "52C059253E5E63DE87457B00DB3D552340B486C9C7950ED2BAFB1E0D1E538975",
+            "manifestMatch": true
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "module": "Workshop2027",
+    "summary": "2.8.0公开仓库整合版：批量参数/三面/群组、视图与毛坯有本模块实现；其余57个Forward方法是目标模块路由。",
+    "concepts": [
+      "public Work/Workflow提供部分真实typed候选；Main(int p)通常打开模态UI或转发。",
+      "三面=WCS工作坐标、ConstructionPlane构图面、ToolPlane刀具平面；ID/原点/方向须一起理解。",
+      "批量参数/三面/毛坯只有失败恢复，没有成功后的统一公开回滚句柄。",
+      "当前源位于repo:src/Workshop；作者WorkshopTools2027根dist为旧CAC432B4...，不能代替发布4E9B1E08...。"
+    ],
+    "workflows": [
+      {
+        "id": "workshop.inspect",
+        "title": "读取所选工序三面与参数",
+        "when": "批量修改前检查WCS/CPlane/TPlane及Feed/Spindle/余量。",
+        "inputs": {
+          "ids": "int[]；SelectedIds可读当前选择"
+        },
+        "preconditions": [
+          "Mastercam 2027/API29、Windows x64、.NET 10；已安装匹配 payload 与依赖。",
+          "宿主对象须在 Mastercam UI 线程串行调用；先核文档、单位、活动机床组与选择。"
+        ],
+        "steps": [
+          "ReadPlanes/ReadParameters按ID读取。",
+          "检查Equal、Css、Locked、Dirty、Kind以及Wall/Floor可空。"
+        ],
+        "outputs": [
+          "PlaneRow[]、ParameterRow[]。"
+        ],
+        "effects": [
+          "只读；无自动重算或保存。"
+        ],
+        "rollback": "无需回滚。",
+        "automation": "typed_candidate",
+        "api": [
+          "Workshop2027.Work :: public static int[] SelectedIds()",
+          "Workshop2027.Work :: public static PlaneRow[] ReadPlanes(int[] ids)",
+          "Workshop2027.Work :: public static ParameterRow[] ReadParameters(int[] ids)",
+          "Workshop2027.Main :: public MCamReturn CheckPlanes(int p)"
+        ],
+        "limits": [
+          "三面ID相同只说明引用一致，不证明工艺或机床运动正确。"
+        ],
+        "evidence": [
+          {
+            "kind": "source",
+            "path": "repo:src/Workshop/Workshop.cs",
+            "sha256": "82FB62ACB5E2C626FA6B2523C32201C4CFDDA125D977938BDE8E7D49C3931ACA",
+            "lines": [
+              53,
+              54,
+              55,
+              29
+            ]
+          },
+          {
+            "kind": "acceptance_scope",
+            "path": "repo:validation/bundle-host-integration.json"
+          },
+          {
+            "kind": "acceptance_scope",
+            "path": "repo:validation/README.md"
+          },
+          {
+            "kind": "payload_identity",
+            "path": "repo:payload/chooks/Workshop2027/Workshop2027.dll",
+            "assemblyVersion": "2.8.0.0",
+            "sha256": "4E9B1E0836D46A69068FD3D5429A37551CA631CF3449E886D3CDE1C6F196E384",
+            "manifestMatch": true
+          }
+        ]
+      },
+      {
+        "id": "workshop.parameters",
+        "title": "批量设置2D工序进给/转速/余量",
+        "when": "选择原生Contour/Pocket/Facing，修改明确勾选字段。",
+        "inputs": {
+          "ids": "int[]非空不重复",
+          "feed": "double?，null保留；>0，原工序模式",
+          "spindle": "double?，null保留；有效整数rpm",
+          "wall": "double?，null保留；>=0文档单位",
+          "floor": "double?，null保留；>=0文档单位"
+        },
+        "preconditions": [
+          "Mastercam 2027/API29、Windows x64、.NET 10；已安装匹配 payload 与依赖。",
+          "宿主对象须在 Mastercam UI 线程串行调用；先核文档、单位、活动机床组与选择。",
+          "未锁定且仅Contour/Pocket/Facing；至少一项非null；恒线速工序不能设rpm。",
+          "无活动Undo事务。"
+        ],
+        "steps": [
+          "读取前值并展示差异。",
+          "SetParameters提交并fresh逐项回读。",
+          "返回审计与Dirty状态；用户另行重算。"
+        ],
+        "outputs": [
+          "已应用参数；Before/After审计JSON。"
+        ],
+        "effects": [
+          "改原工序并MarkDirty；写MC2027Workshop审计。"
+        ],
+        "rollback": "失败Cancel后显式恢复原值并回读；成功没有公开批次Rollback，typed候选需提供独立前值/时间戳守卫才可承诺显式撤回。",
+        "automation": "typed_candidate",
+        "api": [
+          "Workshop2027.Work :: public static void SetParameters(int[] ids,double? feed,double? spindle,double? wall,double? floor)",
+          "Workshop2027.Main :: public MCamReturn BatchParameters(int p)"
+        ],
+        "limits": [
+          "不改原进给模式；不适用于所有工序类型。"
+        ],
+        "evidence": [
+          {
+            "kind": "source",
+            "path": "repo:src/Workshop/Workshop.cs",
+            "sha256": "82FB62ACB5E2C626FA6B2523C32201C4CFDDA125D977938BDE8E7D49C3931ACA",
+            "lines": [
+              84,
+              28
+            ]
+          },
+          {
+            "kind": "acceptance_scope",
+            "path": "repo:validation/bundle-host-integration.json"
+          },
+          {
+            "kind": "acceptance_scope",
+            "path": "repo:validation/README.md"
+          },
+          {
+            "kind": "payload_identity",
+            "path": "repo:payload/chooks/Workshop2027/Workshop2027.dll",
+            "assemblyVersion": "2.8.0.0",
+            "sha256": "4E9B1E0836D46A69068FD3D5429A37551CA631CF3449E886D3CDE1C6F196E384",
+            "manifestMatch": true
+          }
+        ]
+      },
+      {
+        "id": "workshop.planes",
+        "title": "将WCS/构图/刀具三面统一",
+        "when": "明确希望所选2D工序统一到一个现有平面。",
+        "inputs": {
+          "ids": "int[]",
+          "plane": "MCView，UI取当前WCS；typed候选应按ViewID解析并读原点/矩阵"
+        },
+        "preconditions": [
+          "Mastercam 2027/API29、Windows x64、.NET 10；已安装匹配 payload 与依赖。",
+          "宿主对象须在 Mastercam UI 线程串行调用；先核文档、单位、活动机床组与选择。",
+          "未锁定Contour/Pocket/Facing；无Undo事务。"
+        ],
+        "steps": [
+          "ReadPlanes显示前值，确认目标平面。",
+          "SetPlanes设置三引用和Use flags，Commit(false)，验证ID并Dirty。"
+        ],
+        "outputs": [
+          "三面ID一致的工序。"
+        ],
+        "effects": [
+          "改工序坐标定义；不移动源几何，不自动计算。"
+        ],
+        "rollback": "失败显式恢复各原平面和Use flags；成功无公开回滚句柄。",
+        "automation": "typed_candidate",
+        "api": [
+          "Workshop2027.Work :: public static void SetPlanes(int[] ids,MCView plane)",
+          "Workshop2027.Main :: public MCamReturn MatchPlanes(int p)"
+        ],
+        "limits": [
+          "坐标改变会影响加工，不能只据Equal=true判定刀路正确。"
+        ],
+        "evidence": [
+          {
+            "kind": "source",
+            "path": "repo:src/Workshop/Workshop.cs",
+            "sha256": "82FB62ACB5E2C626FA6B2523C32201C4CFDDA125D977938BDE8E7D49C3931ACA",
+            "lines": [
+              105,
+              30
+            ]
+          },
+          {
+            "kind": "acceptance_scope",
+            "path": "repo:validation/bundle-host-integration.json"
+          },
+          {
+            "kind": "acceptance_scope",
+            "path": "repo:validation/README.md"
+          },
+          {
+            "kind": "payload_identity",
+            "path": "repo:payload/chooks/Workshop2027/Workshop2027.dll",
+            "assemblyVersion": "2.8.0.0",
+            "sha256": "4E9B1E0836D46A69068FD3D5429A37551CA631CF3449E886D3CDE1C6F196E384",
+            "manifestMatch": true
+          }
+        ]
+      },
+      {
+        "id": "workshop.groups",
+        "title": "批量创建刀路群组与插入位置",
+        "when": "整理机床/刀路树层次。",
+        "inputs": {
+          "parentId": "int，现有机床或刀路父组；UI用活动组",
+          "prefix": "1..40可见字符",
+          "start": "int>=0，须满足start<=999999-count",
+          "count": "int 1..200",
+          "insert": "InsertAfter使用当前选中工序并调用原生OMarrowRight"
+        },
+        "preconditions": [
+          "Mastercam 2027/API29、Windows x64、.NET 10；已安装匹配 payload 与依赖。",
+          "宿主对象须在 Mastercam UI 线程串行调用；先核文档、单位、活动机床组与选择。"
+        ],
+        "steps": [
+          "CreateGroups生成prefix+两位起号名称，先拒绝冲突。",
+          "核返回的组ID/名称；要调整插入箭头时用InsertAfter交互入口。"
+        ],
+        "outputs": [
+          "新群组ID，或宿主插入箭头位置。"
+        ],
+        "effects": [
+          "创建群组/刷新管理器；InsertAfter只转原生命令。"
+        ],
+        "rollback": "创建中失败逆序删除本批组；成功没有公开Rollback；含后续工序的组不可盲删。",
+        "automation": "typed_candidate",
+        "api": [
+          "Workshop2027.Work :: public static int[] CreateGroups(int parentId,string prefix,int start,int count)",
+          "Workshop2027.Main :: public MCamReturn InsertAfter(int p)",
+          "Workshop2027.Main :: public MCamReturn BatchGroups(int p)"
+        ],
+        "limits": [
+          "InsertAfter仅interactive子动作，不是typed群组创建的一部分；没有公共数值式设置插入点接口。"
+        ],
+        "evidence": [
+          {
+            "kind": "source",
+            "path": "repo:src/Workshop/Workshop.cs",
+            "sha256": "82FB62ACB5E2C626FA6B2523C32201C4CFDDA125D977938BDE8E7D49C3931ACA",
+            "lines": [
+              114,
+              27
+            ]
+          },
+          {
+            "kind": "source",
+            "path": "repo:src/Workshop/Workflow.cs",
+            "sha256": "D44F47B36DEF676571D01261F873B842F009263568DFA84DF0B419291A143C75",
+            "lines": [
+              23
+            ]
+          },
+          {
+            "kind": "acceptance_scope",
+            "path": "repo:validation/bundle-host-integration.json"
+          },
+          {
+            "kind": "acceptance_scope",
+            "path": "repo:validation/README.md"
+          },
+          {
+            "kind": "payload_identity",
+            "path": "repo:payload/chooks/Workshop2027/Workshop2027.dll",
+            "assemblyVersion": "2.8.0.0",
+            "sha256": "4E9B1E0836D46A69068FD3D5429A37551CA631CF3449E886D3CDE1C6F196E384",
+            "manifestMatch": true
+          }
+        ]
+      },
+      {
+        "id": "workshop.views",
+        "title": "最近世界正交视图、跟随选项与视图对正",
+        "when": "将当前图形朝向吸附到24个世界正交旋转之一。",
+        "inputs": {
+          "matrix": "double[9]行主序、右手正交；NearestMatrix纯计算",
+          "options": "ViewOptions(bool Construction=false,bool Tool=false,bool Wcs=false)",
+          "align": "AlignView把GraphicsView设为当前CPlane并FitScreen"
+        },
+        "preconditions": [
+          "Mastercam 2027/API29、Windows x64、.NET 10；已安装匹配 payload 与依赖。",
+          "宿主对象须在 Mastercam UI 线程串行调用；先核文档、单位、活动机床组与选择。"
+        ],
+        "steps": [
+          "可纯计算OrthogonalCandidates/NearestMatrix。",
+          "LoadViewOptions/SaveViewOptions保存跟随选择；SnapView复用或创建零原点正交MCView。",
+          "按options设置W/C/T并设置G；核回读。"
+        ],
+        "outputs": [
+          "short ViewID、矩阵或view-options.json。"
+        ],
+        "effects": [
+          "改当前视图；可能新建命名视图；可写用户跟随设置。"
+        ],
+        "rollback": "SnapView失败恢复旧W/C/T/G并清理自建未被使用的视图；成功无Undo句柄，可手动切回；视图创建不等于几何可撤销。",
+        "automation": "typed_candidate",
+        "api": [
+          "Workshop2027.Workflow :: public static ViewOptions LoadViewOptions()",
+          "Workshop2027.Workflow :: public static void SaveViewOptions(ViewOptions value)",
+          "Workshop2027.Workflow :: public static double[][] OrthogonalCandidates()",
+          "Workshop2027.Workflow :: public static double[] NearestMatrix(double[] matrix)",
+          "Workshop2027.Workflow :: public static short SnapView(ViewOptions options)",
+          "Workshop2027.Main :: public MCamReturn NearestView(int p)",
+          "Workshop2027.Main :: public MCamReturn ViewOptions(int p)",
+          "Workshop2027.Main :: public MCamReturn AlignView(int p)"
+        ],
+        "limits": [
+          "ViewOptions/AlignView为UI入口；typed适配需分别标出配置写入和视图变更。"
+        ],
+        "evidence": [
+          {
+            "kind": "source",
+            "path": "repo:src/Workshop/Workflow.cs",
+            "sha256": "D44F47B36DEF676571D01261F873B842F009263568DFA84DF0B419291A143C75",
+            "lines": [
+              79,
+              80,
+              88,
+              100,
+              112,
+              20,
+              21
+            ]
+          },
+          {
+            "kind": "source",
+            "path": "repo:src/Workshop/Workshop.cs",
+            "sha256": "82FB62ACB5E2C626FA6B2523C32201C4CFDDA125D977938BDE8E7D49C3931ACA",
+            "lines": [
+              31
+            ]
+          },
+          {
+            "kind": "acceptance_scope",
+            "path": "repo:validation/bundle-host-integration.json"
+          },
+          {
+            "kind": "acceptance_scope",
+            "path": "repo:validation/README.md"
+          },
+          {
+            "kind": "payload_identity",
+            "path": "repo:payload/chooks/Workshop2027/Workshop2027.dll",
+            "assemblyVersion": "2.8.0.0",
+            "sha256": "4E9B1E0836D46A69068FD3D5429A37551CA631CF3449E886D3CDE1C6F196E384",
+            "manifestMatch": true
+          }
+        ]
+      },
+      {
+        "id": "workshop.stock",
+        "title": "设置矩形毛坯并回读",
+        "when": "当前铣削机床组需要明确矩形尺寸、原点和定位点。",
+        "inputs": {
+          "groupId": "int，已有可读MillStock组",
+          "size": "Point3D正XYZ，文档单位",
+          "origin": "Point3D有限XYZ，按StockOriginPosition定位语义",
+          "anchor": "StockOriginPosition真实SDK枚举；不要用UI下拉序号冒充稳定值",
+          "planeId": "short，已有平面ViewID"
+        },
+        "preconditions": [
+          "Mastercam 2027/API29、Windows x64、.NET 10；已安装匹配 payload 与依赖。",
+          "宿主对象须在 Mastercam UI 线程串行调用；先核文档、单位、活动机床组与选择。"
+        ],
+        "steps": [
+          "保存原MillStockData快照；明确尺寸/原点/锚点/平面。",
+          "SetRectangularStock写Rectangle、DisplayStock=true；读回尺寸/原点/锚点/平面。"
+        ],
+        "outputs": [
+          "矩形毛坯设置。"
+        ],
+        "effects": [
+          "修改组毛坯，刷新管理器/图形；不改变实体、不计算刀路。"
+        ],
+        "rollback": "失败写回原Stock并验证；成功无公开回滚句柄，typed封装需另建守卫快照。",
+        "automation": "typed_candidate",
+        "api": [
+          "Workshop2027.Workflow :: public static MillStockData CloneStock(MillStockData source)",
+          "Workshop2027.Workflow :: public static void SetRectangularStock(int groupId,Point3D size,Point3D origin,StockOriginPosition anchor,short planeId)",
+          "Workshop2027.Main :: public MCamReturn StockSetup(int p)"
+        ],
+        "limits": [
+          "不是自动实体测量或毛坯清料；尺寸/原点由用户明确。"
+        ],
+        "evidence": [
+          {
+            "kind": "source",
+            "path": "repo:src/Workshop/Workflow.cs",
+            "sha256": "D44F47B36DEF676571D01261F873B842F009263568DFA84DF0B419291A143C75",
+            "lines": [
+              147,
+              151,
+              22
+            ]
+          },
+          {
+            "kind": "acceptance_scope",
+            "path": "repo:validation/bundle-host-integration.json"
+          },
+          {
+            "kind": "acceptance_scope",
+            "path": "repo:validation/README.md"
+          },
+          {
+            "kind": "payload_identity",
+            "path": "repo:payload/chooks/Workshop2027/Workshop2027.dll",
+            "assemblyVersion": "2.8.0.0",
+            "sha256": "4E9B1E0836D46A69068FD3D5429A37551CA631CF3449E886D3CDE1C6F196E384",
+            "manifestMatch": true
+          }
+        ]
+      },
+      {
+        "id": "workshop.hub_templates",
+        "title": "工艺助手总面板、模板导入与使用目录",
+        "when": "导航功能或打开LittleBee工序库导入。",
+        "inputs": {
+          "p": "int宿主参数"
+        },
+        "preconditions": [
+          "Mastercam 2027/API29、Windows x64、.NET 10；已安装匹配 payload 与依赖。",
+          "宿主对象须在 Mastercam UI 线程串行调用；先核文档、单位、活动机床组与选择。"
+        ],
+        "steps": [
+          "OpenHub选择功能（通过PostFTCommand排队）。",
+          "Templates/ImportOperations打开LittleBee.Rebuilt.Exchange.ShowImport；Usage打开安装目录。"
+        ],
+        "outputs": [
+          "目标窗口/资源管理器。"
+        ],
+        "effects": [
+          "总面板只排队命令；模板导入效果以bee.exchange为准。"
+        ],
+        "rollback": "关闭窗口；已导入结果依照LittleBee的部分失败保留合同。",
+        "automation": "interactive",
+        "api": [
+          "Workshop2027.Main :: public MCamReturn ImportOperations(int p)",
+          "Workshop2027.Main :: public MCamReturn OpenHub(int p)",
+          "Workshop2027.Main :: public MCamReturn Templates(int p)",
+          "Workshop2027.Main :: public MCamReturn Usage(int p)"
+        ],
+        "limits": [
+          "总面板返回不证明排队命令业务完成；不能暴露ExistingModule任意type/method反射调用。"
+        ],
+        "evidence": [
+          {
+            "kind": "source",
+            "path": "repo:src/Workshop/Workflow.cs",
+            "sha256": "D44F47B36DEF676571D01261F873B842F009263568DFA84DF0B419291A143C75",
+            "lines": [
+              24
+            ]
+          },
+          {
+            "kind": "source",
+            "path": "repo:src/Workshop/Workshop.cs",
+            "sha256": "82FB62ACB5E2C626FA6B2523C32201C4CFDDA125D977938BDE8E7D49C3931ACA",
+            "lines": [
+              25,
+              40,
+              43
+            ]
+          },
+          {
+            "kind": "acceptance_scope",
+            "path": "repo:validation/bundle-host-integration.json"
+          },
+          {
+            "kind": "acceptance_scope",
+            "path": "repo:validation/README.md"
+          },
+          {
+            "kind": "payload_identity",
+            "path": "repo:payload/chooks/Workshop2027/Workshop2027.dll",
+            "assemblyVersion": "2.8.0.0",
+            "sha256": "4E9B1E0836D46A69068FD3D5429A37551CA631CF3449E886D3CDE1C6F196E384",
+            "manifestMatch": true
+          }
+        ]
+      },
+      {
+        "id": "workshop.route_machining",
+        "title": "加工业务路由",
+        "when": "进入本文对应模块的预览、创建、回读、计算或回滚。",
+        "inputs": {
+          "p": "int，宿主入口参数",
+          "routes": [
+            {
+              "entry": "PorscheBoundary",
+              "target": "PorscheAdvanced2027.Boundary"
+            },
+            {
+              "entry": "PorscheHealing",
+              "target": "PorscheAdvanced2027.Healing"
+            },
+            {
+              "entry": "PorscheHoles",
+              "target": "PorscheAdvanced2027.Holes"
+            },
+            {
+              "entry": "OperationTools",
+              "target": "OperationTools2027.OpenHub"
+            },
+            {
+              "entry": "SolidBoundary",
+              "target": "SolidBoundary2027.Show"
+            },
+            {
+              "entry": "AdvancedDrill",
+              "target": "AdvancedDrill2027.Show"
+            },
+            {
+              "entry": "TapDrill",
+              "target": "AdvancedDrillTap2027.Show"
+            },
+            {
+              "entry": "HsmPocket",
+              "target": "HSMRebuild2027.CreatePocket"
+            },
+            {
+              "entry": "HsmReadback",
+              "target": "HSMRebuild2027.Readback"
+            },
+            {
+              "entry": "HsmCalculate",
+              "target": "HSMRebuild2027.Recalculate"
+            },
+            {
+              "entry": "HsmRollback",
+              "target": "HSMRebuild2027.Rollback"
+            }
+          ]
+        },
+        "preconditions": [
+          "Mastercam 2027/API29、Windows x64、.NET 10；已安装匹配 payload 与依赖。",
+          "宿主对象须在 Mastercam UI 线程串行调用；先核文档、单位、活动机床组与选择。"
+        ],
+        "steps": [
+          "按名称打开精确目标；跟随目标模块预览、输入和确认流程。",
+          "返回后检查目标结果、ID、状态或文件；不只依赖RunFTCommand布尔值。"
+        ],
+        "outputs": [
+          "目标入口返回值/窗口；无统一类型化业务结果。"
+        ],
+        "effects": [
+          "参考工序/几何选择与参数以目标工作流为准；HsmCalculate和HsmRollback有实际计算/删除效果。"
+        ],
+        "rollback": "目标模块自己的取消/回滚合同；路由层没有统一事务。",
+        "automation": "interactive",
+        "api": [
+          "Workshop2027.Main :: public MCamReturn PorscheBoundary(int p)",
+          "Workshop2027.Main :: public MCamReturn PorscheHealing(int p)",
+          "Workshop2027.Main :: public MCamReturn PorscheHoles(int p)",
+          "Workshop2027.Main :: public MCamReturn OperationTools(int p)",
+          "Workshop2027.Main :: public MCamReturn SolidBoundary(int p)",
+          "Workshop2027.Main :: public MCamReturn AdvancedDrill(int p)",
+          "Workshop2027.Main :: public MCamReturn TapDrill(int p)",
+          "Workshop2027.Main :: public MCamReturn HsmPocket(int p)",
+          "Workshop2027.Main :: public MCamReturn HsmReadback(int p)",
+          "Workshop2027.Main :: public MCamReturn HsmCalculate(int p)",
+          "Workshop2027.Main :: public MCamReturn HsmRollback(int p)"
+        ],
+        "limits": [
+          "这些是现有公开MCamReturn入口；并未实现新的MCP工具。"
+        ],
+        "evidence": [
+          {
+            "kind": "source",
+            "path": "repo:src/Workshop/Workflow.cs",
+            "sha256": "D44F47B36DEF676571D01261F873B842F009263568DFA84DF0B419291A143C75",
+            "lines": [
+              25,
+              26,
+              27,
+              28,
+              35,
+              36,
+              37,
+              46,
+              47,
+              48,
+              49
+            ]
+          },
+          {
+            "kind": "reference",
+            "path": "repo:docs/PLUGINS.md"
+          },
+          {
+            "kind": "acceptance_scope",
+            "path": "repo:validation/bundle-host-integration.json"
+          },
+          {
+            "kind": "acceptance_scope",
+            "path": "repo:validation/README.md"
+          },
+          {
+            "kind": "payload_identity",
+            "path": "repo:payload/chooks/Workshop2027/Workshop2027.dll",
+            "assemblyVersion": "2.8.0.0",
+            "sha256": "4E9B1E0836D46A69068FD3D5429A37551CA631CF3449E886D3CDE1C6F196E384",
+            "manifestMatch": true
+          }
+        ]
+      },
+      {
+        "id": "workshop.route_bee",
+        "title": "小蜜蜂工序编辑路由",
+        "when": "使用已选工序编辑、复制、命名或跟随开关。",
+        "inputs": {
+          "p": "int，宿主入口参数",
+          "routes": [
+            {
+              "entry": "EditOperation",
+              "target": "LittleBee2027.EditOperation"
+            },
+            {
+              "entry": "EditTool",
+              "target": "LittleBee2027.EditTool"
+            },
+            {
+              "entry": "EditGeometry",
+              "target": "LittleBee2027.EditOperationGeometry"
+            },
+            {
+              "entry": "CommonParameters",
+              "target": "LittleBee2027.EditCommonParameters"
+            },
+            {
+              "entry": "FollowPlanes",
+              "target": "LittleBee2027.ChangeView"
+            },
+            {
+              "entry": "RenameNci",
+              "target": "LittleBee2027.ChangeNci"
+            },
+            {
+              "entry": "CopyOperations",
+              "target": "LittleBee2027.CopyOperation"
+            },
+            {
+              "entry": "PasteOperations",
+              "target": "LittleBee2027.PasteOperation"
+            }
+          ]
+        },
+        "preconditions": [
+          "Mastercam 2027/API29、Windows x64、.NET 10；已安装匹配 payload 与依赖。",
+          "宿主对象须在 Mastercam UI 线程串行调用；先核文档、单位、活动机床组与选择。"
+        ],
+        "steps": [
+          "按名称打开精确目标；跟随目标模块预览、输入和确认流程。",
+          "返回后检查目标结果、ID、状态或文件；不只依赖RunFTCommand布尔值。"
+        ],
+        "outputs": [
+          "目标入口返回值/窗口；无统一类型化业务结果。"
+        ],
+        "effects": [
+          "副作用/取消/回滚以bee.edit/copy_paste/rename/follow_view为准。"
+        ],
+        "rollback": "目标模块自己的取消/回滚合同；路由层没有统一事务。",
+        "automation": "interactive",
+        "api": [
+          "Workshop2027.Main :: public MCamReturn EditOperation(int p)",
+          "Workshop2027.Main :: public MCamReturn EditTool(int p)",
+          "Workshop2027.Main :: public MCamReturn EditGeometry(int p)",
+          "Workshop2027.Main :: public MCamReturn CommonParameters(int p)",
+          "Workshop2027.Main :: public MCamReturn FollowPlanes(int p)",
+          "Workshop2027.Main :: public MCamReturn RenameNci(int p)",
+          "Workshop2027.Main :: public MCamReturn CopyOperations(int p)",
+          "Workshop2027.Main :: public MCamReturn PasteOperations(int p)"
+        ],
+        "limits": [
+          "这些是现有公开MCamReturn入口；并未实现新的MCP工具。"
+        ],
+        "evidence": [
+          {
+            "kind": "source",
+            "path": "repo:src/Workshop/Workshop.cs",
+            "sha256": "82FB62ACB5E2C626FA6B2523C32201C4CFDDA125D977938BDE8E7D49C3931ACA",
+            "lines": [
+              32,
+              33,
+              34,
+              35,
+              36,
+              37,
+              38,
+              39
+            ]
+          },
+          {
+            "kind": "reference",
+            "path": "repo:docs/PLUGINS.md"
+          },
+          {
+            "kind": "acceptance_scope",
+            "path": "repo:validation/bundle-host-integration.json"
+          },
+          {
+            "kind": "acceptance_scope",
+            "path": "repo:validation/README.md"
+          },
+          {
+            "kind": "payload_identity",
+            "path": "repo:payload/chooks/Workshop2027/Workshop2027.dll",
+            "assemblyVersion": "2.8.0.0",
+            "sha256": "4E9B1E0836D46A69068FD3D5429A37551CA631CF3449E886D3CDE1C6F196E384",
+            "manifestMatch": true
+          }
+        ]
+      },
+      {
+        "id": "workshop.route_geometry",
+        "title": "几何、夹具、链、曲面与MP路由",
+        "when": "按需进入几何生成/选择/分析或夹具工具。",
+        "inputs": {
+          "p": "int，宿主入口参数",
+          "routes": [
+            {
+              "entry": "GeometryTools",
+              "target": "GeometryTools2027.Show"
+            },
+            {
+              "entry": "NativeGeometry",
+              "target": "GeometryTools2027.NativeCommands.Show"
+            },
+            {
+              "entry": "LevelExport",
+              "target": "LevelExport2027.Show"
+            },
+            {
+              "entry": "ChainTools",
+              "target": "ChainTools2027.Show"
+            },
+            {
+              "entry": "SvgGeometry",
+              "target": "SVGGeometry2027.Show"
+            },
+            {
+              "entry": "HirthTools",
+              "target": "HirthTools2027.Show"
+            },
+            {
+              "entry": "TpSketcher",
+              "target": "TpSketcher2027.Show"
+            },
+            {
+              "entry": "HolderTools",
+              "target": "HolderTools2027.Show"
+            },
+            {
+              "entry": "SurfaceNormals",
+              "target": "MPDesignTools2027.ReverseSelectedNormals"
+            },
+            {
+              "entry": "MPEdges3D",
+              "target": "MPEdgeTools2027.ShowEdges3D"
+            },
+            {
+              "entry": "MPEdges2D",
+              "target": "MPEdgeTools2027.ShowEdges2D"
+            },
+            {
+              "entry": "AnalyticRadius",
+              "target": "MPDesignRadiusSelect2027.SelectByAnalyticRadius"
+            },
+            {
+              "entry": "SurfaceTypes",
+              "target": "MPDesignSurfaceSelect2027.SelectVisibleSurfaceTypes"
+            },
+            {
+              "entry": "MpSections",
+              "target": "MPRebuild2027.Sections"
+            },
+            {
+              "entry": "MpSliceStack",
+              "target": "MPRebuild2027.SliceStack"
+            },
+            {
+              "entry": "MpDraft",
+              "target": "MPRebuild2027.DraftAnalysis"
+            },
+            {
+              "entry": "MpParting",
+              "target": "MPRebuild2027.PartingPreparation"
+            },
+            {
+              "entry": "MpNormals",
+              "target": "MPRebuild2027.FacetNormals"
+            },
+            {
+              "entry": "Fixtures",
+              "target": "FixtureTools2027.Show"
+            }
+          ]
+        },
+        "preconditions": [
+          "Mastercam 2027/API29、Windows x64、.NET 10；已安装匹配 payload 与依赖。",
+          "宿主对象须在 Mastercam UI 线程串行调用；先核文档、单位、活动机床组与选择。"
+        ],
+        "steps": [
+          "按名称打开精确目标；跟随目标模块预览、输入和确认流程。",
+          "返回后检查目标结果、ID、状态或文件；不只依赖RunFTCommand布尔值。"
+        ],
+        "outputs": [
+          "目标入口返回值/窗口；无统一类型化业务结果。"
+        ],
+        "effects": [
+          "可能创建几何/工序、改选择/法向/平面或写文件；本文只审计Workshop转发代码，目标细节见公开目录与相应知识模块。"
+        ],
+        "rollback": "目标模块自己的取消/回滚合同；路由层没有统一事务。",
+        "automation": "interactive",
+        "api": [
+          "Workshop2027.Main :: public MCamReturn GeometryTools(int p)",
+          "Workshop2027.Main :: public MCamReturn NativeGeometry(int p)",
+          "Workshop2027.Main :: public MCamReturn LevelExport(int p)",
+          "Workshop2027.Main :: public MCamReturn ChainTools(int p)",
+          "Workshop2027.Main :: public MCamReturn SvgGeometry(int p)",
+          "Workshop2027.Main :: public MCamReturn HirthTools(int p)",
+          "Workshop2027.Main :: public MCamReturn TpSketcher(int p)",
+          "Workshop2027.Main :: public MCamReturn HolderTools(int p)",
+          "Workshop2027.Main :: public MCamReturn SurfaceNormals(int p)",
+          "Workshop2027.Main :: public MCamReturn MPEdges3D(int p)",
+          "Workshop2027.Main :: public MCamReturn MPEdges2D(int p)",
+          "Workshop2027.Main :: public MCamReturn AnalyticRadius(int p)",
+          "Workshop2027.Main :: public MCamReturn SurfaceTypes(int p)",
+          "Workshop2027.Main :: public MCamReturn MpSections(int p)",
+          "Workshop2027.Main :: public MCamReturn MpSliceStack(int p)",
+          "Workshop2027.Main :: public MCamReturn MpDraft(int p)",
+          "Workshop2027.Main :: public MCamReturn MpParting(int p)",
+          "Workshop2027.Main :: public MCamReturn MpNormals(int p)",
+          "Workshop2027.Main :: public MCamReturn Fixtures(int p)"
+        ],
+        "limits": [
+          "这些是现有公开MCamReturn入口；并未实现新的MCP工具。"
+        ],
+        "evidence": [
+          {
+            "kind": "source",
+            "path": "repo:src/Workshop/Workflow.cs",
+            "sha256": "D44F47B36DEF676571D01261F873B842F009263568DFA84DF0B419291A143C75",
+            "lines": [
+              29,
+              30,
+              31,
+              32,
+              33,
+              34,
+              38,
+              39,
+              41,
+              42,
+              43,
+              44,
+              45,
+              50,
+              51,
+              52,
+              53,
+              54,
+              71
+            ]
+          },
+          {
+            "kind": "reference",
+            "path": "repo:docs/PLUGINS.md"
+          },
+          {
+            "kind": "acceptance_scope",
+            "path": "repo:validation/bundle-host-integration.json"
+          },
+          {
+            "kind": "acceptance_scope",
+            "path": "repo:validation/README.md"
+          },
+          {
+            "kind": "payload_identity",
+            "path": "repo:payload/chooks/Workshop2027/Workshop2027.dll",
+            "assemblyVersion": "2.8.0.0",
+            "sha256": "4E9B1E0836D46A69068FD3D5429A37551CA631CF3449E886D3CDE1C6F196E384",
+            "manifestMatch": true
+          }
+        ]
+      },
+      {
+        "id": "workshop.route_reporting",
+        "title": "截图、程序单、电极报告与中键配置路由",
+        "when": "打开报告/截图/确认设置窗口。",
+        "inputs": {
+          "p": "int，宿主入口参数",
+          "routes": [
+            {
+              "entry": "SetupSheet",
+              "target": "SetupSheets2027.Show"
+            },
+            {
+              "entry": "MiddleConfirm",
+              "target": "MiddleConfirm2027.Configure"
+            },
+            {
+              "entry": "ScreenTools",
+              "target": "ScreenTools2027.Show"
+            },
+            {
+              "entry": "ElectrodeReport",
+              "target": "ElectrodeReport2027.UI.Show"
+            }
+          ]
+        },
+        "preconditions": [
+          "Mastercam 2027/API29、Windows x64、.NET 10；已安装匹配 payload 与依赖。",
+          "宿主对象须在 Mastercam UI 线程串行调用；先核文档、单位、活动机床组与选择。"
+        ],
+        "steps": [
+          "按名称打开精确目标；跟随目标模块预览、输入和确认流程。",
+          "返回后检查目标结果、ID、状态或文件；不只依赖RunFTCommand布尔值。"
+        ],
+        "outputs": [
+          "目标入口返回值/窗口；无统一类型化业务结果。"
+        ],
+        "effects": [
+          "可能写报告/图像/配置；目标实现的验证等级各不相同。"
+        ],
+        "rollback": "目标模块自己的取消/回滚合同；路由层没有统一事务。",
+        "automation": "interactive",
+        "api": [
+          "Workshop2027.Main :: public MCamReturn ScreenTools(int p)",
+          "Workshop2027.Main :: public MCamReturn ElectrodeReport(int p)",
+          "Workshop2027.Main :: public MCamReturn SetupSheet(int p)",
+          "Workshop2027.Main :: public MCamReturn MiddleConfirm(int p)"
+        ],
+        "limits": [
+          "这些是现有公开MCamReturn入口；并未实现新的MCP工具。"
+        ],
+        "evidence": [
+          {
+            "kind": "source",
+            "path": "repo:src/Workshop/Workflow.cs",
+            "sha256": "D44F47B36DEF676571D01261F873B842F009263568DFA84DF0B419291A143C75",
+            "lines": [
+              40,
+              55
+            ]
+          },
+          {
+            "kind": "source",
+            "path": "repo:src/Workshop/Workshop.cs",
+            "sha256": "82FB62ACB5E2C626FA6B2523C32201C4CFDDA125D977938BDE8E7D49C3931ACA",
+            "lines": [
+              41,
+              42
+            ]
+          },
+          {
+            "kind": "reference",
+            "path": "repo:docs/PLUGINS.md"
+          },
+          {
+            "kind": "acceptance_scope",
+            "path": "repo:validation/bundle-host-integration.json"
+          },
+          {
+            "kind": "acceptance_scope",
+            "path": "repo:validation/README.md"
+          },
+          {
+            "kind": "payload_identity",
+            "path": "repo:payload/chooks/Workshop2027/Workshop2027.dll",
+            "assemblyVersion": "2.8.0.0",
+            "sha256": "4E9B1E0836D46A69068FD3D5429A37551CA631CF3449E886D3CDE1C6F196E384",
+            "manifestMatch": true
+          }
+        ]
+      },
+      {
+        "id": "workshop.route_original",
+        "title": "15个X+原版入口路由",
+        "when": "启动已发布原版X+功能。",
+        "inputs": {
+          "p": "int，宿主入口参数",
+          "routes": [
+            {
+              "entry": "OriginalSwitchBG",
+              "target": "SwitchBG.m_main"
+            },
+            {
+              "entry": "OriginalChainIt",
+              "target": "ChainIt.m_main"
+            },
+            {
+              "entry": "OriginalHirth",
+              "target": "Hirth.m_main"
+            },
+            {
+              "entry": "OriginalSetupSheet",
+              "target": "SetupSheet.m_main"
+            },
+            {
+              "entry": "OriginalToolList",
+              "target": "ToolList.m_main"
+            },
+            {
+              "entry": "OriginalElectrodes",
+              "target": "ElectrodesReport.m_main"
+            },
+            {
+              "entry": "OriginalMergeFixture",
+              "target": "MergeFixture.m_main"
+            },
+            {
+              "entry": "OriginalFixtureSetup",
+              "target": "FixtureSetup.m_main"
+            },
+            {
+              "entry": "OriginalSketch",
+              "target": "TpSketcher.m_main"
+            },
+            {
+              "entry": "OriginalSnapshot",
+              "target": "XSnapShot.m_main"
+            },
+            {
+              "entry": "OriginalRenameNCI",
+              "target": "RenameNCI.m_main"
+            },
+            {
+              "entry": "OriginalHolder",
+              "target": "Holder_CH.m_main"
+            },
+            {
+              "entry": "OriginalSVG",
+              "target": "SVGImage.m_main"
+            },
+            {
+              "entry": "OriginalSTL",
+              "target": "Level2STL.m_main"
+            },
+            {
+              "entry": "OriginalOffset",
+              "target": "SetWorkoffset.m_main"
+            }
+          ]
+        },
+        "preconditions": [
+          "Mastercam 2027/API29、Windows x64、.NET 10；已安装匹配 payload 与依赖。",
+          "宿主对象须在 Mastercam UI 线程串行调用；先核文档、单位、活动机床组与选择。"
+        ],
+        "steps": [
+          "按名称打开精确目标；跟随目标模块预览、输入和确认流程。",
+          "返回后检查目标结果、ID、状态或文件；不只依赖RunFTCommand布尔值。"
+        ],
+        "outputs": [
+          "目标入口返回值/窗口；无统一类型化业务结果。"
+        ],
+        "effects": [
+          "原版无本轮业务源码；仅路由/原件字节一致性，不能臆造参数化API或回滚。"
+        ],
+        "rollback": "目标模块自己的取消/回滚合同；路由层没有统一事务。",
+        "automation": "interactive",
+        "api": [
+          "Workshop2027.Main :: public MCamReturn OriginalSwitchBG(int p)",
+          "Workshop2027.Main :: public MCamReturn OriginalChainIt(int p)",
+          "Workshop2027.Main :: public MCamReturn OriginalHirth(int p)",
+          "Workshop2027.Main :: public MCamReturn OriginalSetupSheet(int p)",
+          "Workshop2027.Main :: public MCamReturn OriginalToolList(int p)",
+          "Workshop2027.Main :: public MCamReturn OriginalElectrodes(int p)",
+          "Workshop2027.Main :: public MCamReturn OriginalMergeFixture(int p)",
+          "Workshop2027.Main :: public MCamReturn OriginalFixtureSetup(int p)",
+          "Workshop2027.Main :: public MCamReturn OriginalSketch(int p)",
+          "Workshop2027.Main :: public MCamReturn OriginalSnapshot(int p)",
+          "Workshop2027.Main :: public MCamReturn OriginalRenameNCI(int p)",
+          "Workshop2027.Main :: public MCamReturn OriginalHolder(int p)",
+          "Workshop2027.Main :: public MCamReturn OriginalSVG(int p)",
+          "Workshop2027.Main :: public MCamReturn OriginalSTL(int p)",
+          "Workshop2027.Main :: public MCamReturn OriginalOffset(int p)"
+        ],
+        "limits": [
+          "这些是现有公开MCamReturn入口；并未实现新的MCP工具。",
+          "原版15路大多数仅加载/打开证据；不得宣称完整业务验收。"
+        ],
+        "evidence": [
+          {
+            "kind": "source",
+            "path": "repo:src/Workshop/Workflow.cs",
+            "sha256": "D44F47B36DEF676571D01261F873B842F009263568DFA84DF0B419291A143C75",
+            "lines": [
+              56,
+              57,
+              58,
+              59,
+              60,
+              61,
+              62,
+              63,
+              64,
+              65,
+              66,
+              67,
+              68,
+              69,
+              70
+            ]
+          },
+          {
+            "kind": "reference",
+            "path": "repo:docs/PLUGINS.md"
+          },
+          {
+            "kind": "reference",
+            "path": "repo:validation/xplus-provenance.json"
+          },
+          {
+            "kind": "acceptance_scope",
+            "path": "repo:validation/bundle-host-integration.json"
+          },
+          {
+            "kind": "acceptance_scope",
+            "path": "repo:validation/README.md"
+          },
+          {
+            "kind": "payload_identity",
+            "path": "repo:payload/chooks/Workshop2027/Workshop2027.dll",
+            "assemblyVersion": "2.8.0.0",
+            "sha256": "4E9B1E0836D46A69068FD3D5429A37551CA631CF3449E886D3CDE1C6F196E384",
+            "manifestMatch": true
+          }
+        ]
+      },
+      {
+        "id": "workshop.registration",
+        "title": "页签注册与低层转发辅助（不做加工工具）",
+        "when": "识别安装/生命周期能力，不当成加工结果。",
+        "inputs": {
+          "p": "int",
+          "type": "string",
+          "method": "string"
+        },
+        "preconditions": [
+          "由安装/启动流程维护；非普通加工MCP操作。"
+        ],
+        "steps": [
+          "InstallRibbon/Ribbon.Install注册功能区；ExistingModule反射转发给LittleBee。"
+        ],
+        "outputs": [
+          "注册状态/目标窗口。"
+        ],
+        "effects": [
+          "改变本次界面注册状态；任意反射入口不适合作为公开服务。"
+        ],
+        "rollback": "遵循安装器/宿主生命周期；不定义加工Rollback。",
+        "automation": "not_exposed",
+        "api": [
+          "Workshop2027.Main :: public MCamReturn InstallRibbon(int p)",
+          "Workshop2027.Ribbon :: public static bool Install()",
+          "Workshop2027.Workflow :: public static void ExistingModule(string type,string method)"
+        ],
+        "limits": [
+          "固定白名单业务入口可以交互使用，不能把type/method原样对外开放。"
+        ],
+        "evidence": [
+          {
+            "kind": "source",
+            "path": "repo:src/Workshop/Workshop.cs",
+            "sha256": "82FB62ACB5E2C626FA6B2523C32201C4CFDDA125D977938BDE8E7D49C3931ACA",
+            "lines": [
+              26,
+              181
+            ]
+          },
+          {
+            "kind": "source",
+            "path": "repo:src/Workshop/Workflow.cs",
+            "sha256": "D44F47B36DEF676571D01261F873B842F009263568DFA84DF0B419291A143C75",
+            "lines": [
+              81
+            ]
+          },
+          {
+            "kind": "acceptance_scope",
+            "path": "repo:validation/bundle-host-integration.json"
+          },
+          {
+            "kind": "acceptance_scope",
+            "path": "repo:validation/README.md"
+          },
+          {
+            "kind": "payload_identity",
+            "path": "repo:payload/chooks/Workshop2027/Workshop2027.dll",
+            "assemblyVersion": "2.8.0.0",
+            "sha256": "4E9B1E0836D46A69068FD3D5429A37551CA631CF3449E886D3CDE1C6F196E384",
+            "manifestMatch": true
+          }
+        ]
+      }
+    ]
+  }
+]

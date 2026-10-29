@@ -4,3 +4,10 @@ __pycache__/
 *.user
 *.log
 .DS_Store
+ai/bridge/bin/MastercamPluginAI.dll
+ai/bridge/bin/MastercamPluginAI101.dll
+.ai-venv/
+**/plugin-ai-config.json
+**/codex-before-plugin-ai.toml
+**/plugin-ai/
+ai/**/connection.json
