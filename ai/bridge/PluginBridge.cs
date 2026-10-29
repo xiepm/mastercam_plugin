@@ -19,7 +19,7 @@ using Ops = OperationTools2027;
 using Hsm = HSMRebuild2027;
 using Mp = MPRebuild2027;
 
-[assembly:System.Reflection.AssemblyVersion("1.0.2.0")]
+[assembly:System.Reflection.AssemblyVersion("1.1.0.0")]
 [assembly:System.Runtime.Versioning.TargetFramework(".NETCoreApp,Version=v10.0")]
 namespace MastercamPluginAI;
 
@@ -66,6 +66,9 @@ public static class Bridge
         geometry_count=Geometry().Length,geometry=Geometry().Take(250).Select(g=>new{id=g.GetEntityID(),type=g.GetType().Name,g.Level,g.Color,g.Selected,g.Blanked,g.TimeStamp}),
         operations=SearchManager.GetOperations().Select(o=>new{id=o.GetOperationID(),o.Name,type=o.GetType().Name,o.Dirty,o.Posting,tool_slot=o.OperationTool?.Slot,tool_plane=Frame(o.ToolPlane)}),
         selected_operation_ids=SearchManager.GetOperationIDs(false),
+        views=SearchManager.GetViews().Select(v=>new{v.ViewID,v.ViewNumber,v.ViewName,frame=Frame(v)}),
+        visible_occupied_levels=Geometry().Select(g=>g.Level).Distinct().Where(LevelsManager.IsLevelVisible).OrderBy(x=>x),
+        selected_solid_ids=Geometry().Where(g=>g is SolidGeometry&&g.Selected).Select(g=>g.GetEntityID()),
         tools=SearchManager.GetTools().Select(t=>new{slot=t.Slot,number=t.Number,name=t.Name,type=t.GetType().Name,diameter=t.Diameter,t.TipAngle,t.PilotDia,t.Length,t.FluteLength,t.ShoulderLength,t.ShankDia,t.Flutes,t.LengthOffset,t.DiameterOffset,t.IsMetric})
     };
     static object View(Plan p)=>new {plan_id=p.Id,session_id=Session,action=p.Action,status=p.State,document=p.Document,preview_sha256=p.Hash,prepared_at_utc=p.PreparedAt,error=p.Error,preview=p.Preview,result=p.Readback?.Invoke()};
@@ -77,6 +80,10 @@ public static class Bridge
     {
         var q=p.Request;var c=q.GetProperty("parameters");
         switch(p.Action) {
+        case "porsche.project_boundary":case "porsche.contour":case "porsche.heal_holes":case "porsche.holes": {
+            var binding=PorscheBindings.Prepare(q,directory);
+            p.Preview=binding.Preview;p.Apply=binding.Apply;p.Rollback=binding.Rollback;p.Readback=binding.Readback;break;
+        }
         case "operation.depth": case "operation.finish": case "operation.chamfer": {
             int[] ids=Ids(q,"operation_ids");
             Ops.PreparedChange change=p.Action switch {

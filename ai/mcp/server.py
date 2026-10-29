@@ -32,7 +32,7 @@ def mc_capability(capability_id:str)->dict:
 
 @mcp.tool(annotations=READ)
 async def mc_inspect()->dict:
-    """Read active saved path, units, native operation/tool IDs, tool frames and up to 250 geometry records. Does not open/save a document."""
+    """Read active saved path, units, native operation/tool IDs, ViewID frames, visible occupied levels, selected solids and up to 250 geometry records. Does not open/save a document."""
     return await runtime.call('inspect')
 
 @mcp.tool(annotations=READ)
@@ -48,12 +48,12 @@ async def mc_operation_information(expected_document:str,operation_ids:Ids,obsta
 
 @mcp.tool(annotations=ToolAnnotations(readOnlyHint=False,destructiveHint=False,openWorldHint=False))
 async def mc_prepare_change(request:ChangeRequest)->dict:
-    """Prepare six typed workflows without applying database edits. Returns exact preview, plan_id and preview_sha256. MP analysis writes STL/JSON/CSV artifacts and restores source selection. Values must come from user/engineering context, not examples. Plans expire after 15 minutes and are invalidated by changed document/objects/selection/context."""
+    """Prepare ten typed workflows, including Porsche projection, contour machining, healed copies and complex holes, without applying database edits. Returns preview, plan_id and preview_sha256. Geometry analysis may write STL/JSON artifacts and restores source selection. Values must come from user/engineering context. Plans expire after 15 minutes and reject changed document/objects/selection/context."""
     return await runtime.call('prepare',request.model_dump())
 
 @mcp.tool(annotations=WRITE)
 async def mc_apply_plan(plan_id:str,preview_sha256:str,expected_document:str,request_id:str)->dict:
-    """Apply a prepared preview after authorization for that change. Use a unique request_id; repeats return the original result. Changes are read back and native failures are explicit. This does not regenerate, post, save or certify toolpaths."""
+    """Apply an authorized preview once; repeat request_id returns its immutable receipt. Porsche contour/holes regenerate only when their explicit Regenerate parameter is true. Other actions do not regenerate. No posting, saving or collision certification. Read ok/status and actual native results."""
     return await runtime.call('apply',dict(plan_id=plan_id,preview_sha256=preview_sha256,expected_document=expected_document),request_id)
 
 @mcp.tool(annotations=WRITE)

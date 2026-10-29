@@ -7,6 +7,8 @@ Use this skill when the user asks what these plugins do, how to use them, or ask
 
 Find the intended workflow with `mc_catalog`, then read its exact contract with `mc_capability`. Search Chinese names as well as module names. For a UI command not found by name, inspect `module.<moduleName>` and its `routes`. Do not infer behavior from an FT function name alone. See [concepts](references/concepts.md) for common terminology.
 
+For Porsche/V++ automatic contours, hole healing or complex-hole operations, read [Porsche direct workflows](references/porsche.md). Four typed actions distinguish projection-only curves, three-stage contour machining, independent healed copies, and hole machining. Native `ViewID`, hole radius versus diameter, missing-tool creation, and explicit regeneration are material input distinctions.
+
 For execution:
 
 1. Call `mc_inspect`; use the returned saved document path, units, actual operation/entity IDs and internal tool slots. Native database IDs differ from tree order and displayed tool numbers.
@@ -17,7 +19,7 @@ For execution:
 6. Apply once with the returned plan ID/hash and a unique request ID. Success requires `ok=true`, the expected plan status, and successful actual readbacks. `mc_request_status` is the first action after a timeout. Never infer success from an IPC acknowledgment or resubmit an unknown mutation.
 7. Offer or perform `mc_rollback_plan` when the authorized task requires rollback. It acts only on that plan's recorded changes and rejects conflicts. Saving/reopening/restarting invalidates its use; parameter rollback does not restore calculated toolpaths.
 
-HSM regeneration is a separate `mc_regenerate_hsm_plan` step. Other regeneration/posting workflows use the existing Mastercam bridge only when actually needed and authorized. Keep raw returns and fresh readbacks. Creating operations, regenerating, simulating and postprocessing are distinct outcomes.
+HSM regeneration is a separate `mc_regenerate_hsm_plan` step. Porsche contour and hole workflows regenerate during apply only when their explicit `Regenerate` parameter is true. Other regeneration/posting workflows use the existing Mastercam bridge only when actually needed and authorized. Keep raw returns and fresh readbacks. Creating operations, regenerating, simulating and postprocessing are distinct outcomes.
 
 Interactive routes must be operated with the installed UI tools or by the user. Opening a window is not evidence that its machining/geometric operation completed. The original X+ functions and CIMCO simulation do not gain headless APIs merely by appearing in the catalog. Do not replace their absent interfaces with guessed DLL exports.
 

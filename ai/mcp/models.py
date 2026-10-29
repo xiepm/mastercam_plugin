@@ -162,4 +162,105 @@ class DraftRequest(Request):
     output_level:Annotated[int,Field(strict=True,ge=1,le=2000000000)]
     parameters:Draft
 
-ChangeRequest=Annotated[Union[DepthRequest,FinishRequest,ChamferRequest,PocketRequest,SectionsRequest,DraftRequest],Field(discriminator='action')]
+class PorscheBoundary(Contract):
+    tolerance:Positive
+    output_level:Id
+    height:float|None=Field(description='Null uses projection maximum Z; otherwise explicit local plane Z.')
+
+class PorscheContour(Contract):
+    Tolerance:Positive
+    OutputLevel:Id
+    IncludeInnerLoops:bool
+    RoughDiameter:Positive
+    FinishDiameter:Positive
+    ChamferDiameter:Positive
+    WallStock:Nonnegative
+    FloorStock:Nonnegative
+    RadialPasses:Annotated[int,Field(ge=1,le=32767)]
+    RadialSpacing:Positive
+    StepDown:Positive
+    ChamferWidth:Positive
+    ChamferTipOffset:Nonnegative
+    Feed:Positive
+    Plunge:Positive
+    Rpm:Id
+    ClearanceAbove:Positive
+    RetractAbove:Positive
+    FeedAbove:Positive
+    UseModelBottom:bool
+    Bottom:float
+    ToolLength:Positive
+    FluteLength:Positive
+    FeedModeReviewed:Literal[True]
+    Regenerate:bool=Field(description='Explicitly request native regeneration during apply; false creates dirty operations.')
+    @model_validator(mode='after')
+    def machining_limits(self):
+        if self.FluteLength>self.ToolLength or not self.ClearanceAbove>=self.RetractAbove>=self.FeedAbove:raise ValueError('Invalid tool length or clearance/retract/feed ordering')
+        if self.ChamferWidth+self.ChamferTipOffset>=self.ChamferDiameter/2:raise ValueError('Chamfer width plus tip offset must be below cutter radius')
+        return self
+
+class PorscheHealing(Contract):
+    minimum_radius:Nonnegative
+    maximum_radius:Positive
+    @model_validator(mode='after')
+    def range(self):
+        if self.maximum_radius<=self.minimum_radius:raise ValueError('maximum_radius must exceed minimum_radius')
+        return self
+
+class PorscheHoles(Contract):
+    MinimumDiameter:Nonnegative
+    MaximumDiameter:Positive
+    CenterDiameter:Positive
+    CenterDepth:Positive
+    ThroughExtraDepth:Nonnegative
+    DrillTipAngle:Annotated[float,Field(gt=0,lt=180)]
+    Feed:Positive
+    Plunge:Positive
+    RetractFeed:Positive
+    Rpm:Id
+    Clearance:Positive
+    Retract:Positive
+    FeedPlane:Positive
+    ToolLength:Positive
+    FluteLength:Positive
+    ShoulderLength:Positive
+    CreateMissingTools:bool
+    FeedModeReviewed:Literal[True]
+    Regenerate:bool
+    @model_validator(mode='after')
+    def machining_limits(self):
+        if self.MaximumDiameter<=self.MinimumDiameter:raise ValueError('Invalid diameter interval')
+        if not self.FluteLength<=self.ShoulderLength<=self.ToolLength:raise ValueError('Invalid tool length ordering')
+        if not self.Clearance>=self.Retract>=self.FeedPlane:raise ValueError('Invalid clearance/retract/feed ordering')
+        return self
+
+class UnitVector(Vector):
+    @model_validator(mode='after')
+    def unit(self):
+        if abs(self.x*self.x+self.y*self.y+self.z*self.z-1)>1e-8:raise ValueError('Explicit world unit vector required')
+        return self
+
+class PorscheBoundaryRequest(Request):
+    action:Literal['porsche.project_boundary']
+    solid_ids:Ids
+    plane_id:Id=Field(description='Native ViewID from mc_inspect.views, not ViewNumber.')
+    parameters:PorscheBoundary
+class PorscheContourRequest(Request):
+    action:Literal['porsche.contour']
+    solid_ids:Ids
+    plane_id:Id
+    reference_id:Id
+    allow_create_tools:Literal[True]=Field(description='This native workflow can create missing tools; explicitly authorize that behavior.')
+    parameters:PorscheContour
+class PorscheHealingRequest(Request):
+    action:Literal['porsche.heal_holes']
+    solid_ids:Ids
+    parameters:PorscheHealing
+class PorscheHolesRequest(Request):
+    action:Literal['porsche.holes']
+    solid_ids:Ids
+    reference_id:Id
+    alignment:UnitVector
+    parameters:PorscheHoles
+
+ChangeRequest=Annotated[Union[DepthRequest,FinishRequest,ChamferRequest,PocketRequest,SectionsRequest,DraftRequest,PorscheBoundaryRequest,PorscheContourRequest,PorscheHealingRequest,PorscheHolesRequest],Field(discriminator='action')]

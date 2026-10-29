@@ -1,8 +1,8 @@
 {
-  "version": "1.0.0",
+  "version": "1.1.0",
   "plugin_release": "2027.10.28.2",
   "module_count": 27,
-  "capability_count": 138,
+  "capability_count": 142,
   "ft_route_count": 170,
   "typed_actions": [
     "operation.depth",
@@ -10,7 +10,11 @@
     "operation.chamfer",
     "hsm.pocket",
     "mp.sections",
-    "mp.draft"
+    "mp.draft",
+    "porsche.project_boundary",
+    "porsche.contour",
+    "porsche.heal_holes",
+    "porsche.holes"
   ],
   "capabilities": [
     {
@@ -15451,6 +15455,158 @@
         "读取 preview 和 result.analysis_path；生成报告文件但不建图素",
         "仅分析意图到此结束；可 discard 未执行计划"
       ]
+    },
+    {
+      "id": "typed.porsche.project_boundary",
+      "module": "PorscheAdvanced2027",
+      "title": "保时捷实体自动轮廓/投影边界",
+      "summary": "按已有 ViewID 投影可见实体，保留凹形、内孔和分离区域；只生成闭合边界线。",
+      "automation": "typed",
+      "action": "porsche.project_boundary",
+      "tool": "mc_prepare_change",
+      "preconditions": [
+        "先 mc_inspect，核对已保存文档与单位、真实 ID。",
+        "只使用用户或工艺依据提供的参数。",
+        "填写完整类型化请求；先检查具体预览，再按授权执行。"
+      ],
+      "steps": [
+        "mc_prepare_change",
+        "检查 preview 与源对象",
+        "mc_apply_plan",
+        "核对 ok、status、result",
+        "需要时 mc_rollback_plan"
+      ],
+      "limits": [
+        "不自动保存、后处理或机床仿真。",
+        "原生计划仅当前宿主会话，预览 15 分钟有效。",
+        "参数回滚不恢复原刀路计算状态。",
+        "原生私有几何接口只接受已验证 API29/MCCORE/MCGeomSld/PSKERNEL 构建。",
+        "副本补面不覆盖原实体；完整孔筛选不是任意面删除。",
+        "轮廓是二维边界三阶段，不是完整三维清料；不推断螺纹或倒扣加工。",
+        "回滚要求应用后数据库对象/刀具/平面未改变，选择改变不单独构成冲突。"
+      ],
+      "schema": "mc_prepare_change inputSchema request discriminator action",
+      "evidence": [
+        "validation/bundle-host-integration.json",
+        "validation/README.md"
+      ],
+      "adapter_validation": "ai/validation/porsche-native-acceptance.json",
+      "business_contract": "PorscheAdvanced2027.porsche.project",
+      "workflow_contract": "ai/workflows/porsche.json"
+    },
+    {
+      "id": "typed.porsche.contour",
+      "module": "PorscheAdvanced2027",
+      "title": "保时捷自动轮廓粗/精/倒角",
+      "summary": "实体投影后生成三道真实工序；可创建缺少刀具，并按显式 Regenerate 计算刀路。",
+      "automation": "typed",
+      "action": "porsche.contour",
+      "tool": "mc_prepare_change",
+      "preconditions": [
+        "先 mc_inspect，核对已保存文档与单位、真实 ID。",
+        "只使用用户或工艺依据提供的参数。",
+        "填写完整类型化请求；先检查具体预览，再按授权执行。"
+      ],
+      "steps": [
+        "mc_prepare_change",
+        "检查 preview 与源对象",
+        "mc_apply_plan",
+        "核对 ok、status、result",
+        "需要时 mc_rollback_plan"
+      ],
+      "limits": [
+        "不自动保存、后处理或机床仿真。",
+        "原生计划仅当前宿主会话，预览 15 分钟有效。",
+        "参数回滚不恢复原刀路计算状态。",
+        "原生私有几何接口只接受已验证 API29/MCCORE/MCGeomSld/PSKERNEL 构建。",
+        "副本补面不覆盖原实体；完整孔筛选不是任意面删除。",
+        "轮廓是二维边界三阶段，不是完整三维清料；不推断螺纹或倒扣加工。",
+        "回滚要求应用后数据库对象/刀具/平面未改变，选择改变不单独构成冲突。"
+      ],
+      "schema": "mc_prepare_change inputSchema request discriminator action",
+      "evidence": [
+        "validation/bundle-host-integration.json",
+        "validation/README.md"
+      ],
+      "adapter_validation": "ai/validation/porsche-native-acceptance.json",
+      "business_contract": "PorscheAdvanced2027.porsche.boundary_sequence",
+      "workflow_contract": "ai/workflows/porsche.json"
+    },
+    {
+      "id": "typed.porsche.heal_holes",
+      "module": "PorscheAdvanced2027",
+      "title": "保时捷自动删孔补面",
+      "summary": "按主孔半径闭区间选择完整孔，在独立实体副本上原生删面补面；保留原实体。",
+      "automation": "typed",
+      "action": "porsche.heal_holes",
+      "tool": "mc_prepare_change",
+      "preconditions": [
+        "先 mc_inspect，核对已保存文档与单位、真实 ID。",
+        "只使用用户或工艺依据提供的参数。",
+        "填写完整类型化请求；先检查具体预览，再按授权执行。"
+      ],
+      "steps": [
+        "mc_prepare_change",
+        "检查 preview 与源对象",
+        "mc_apply_plan",
+        "核对 ok、status、result",
+        "需要时 mc_rollback_plan"
+      ],
+      "limits": [
+        "不自动保存、后处理或机床仿真。",
+        "原生计划仅当前宿主会话，预览 15 分钟有效。",
+        "参数回滚不恢复原刀路计算状态。",
+        "原生私有几何接口只接受已验证 API29/MCCORE/MCGeomSld/PSKERNEL 构建。",
+        "副本补面不覆盖原实体；完整孔筛选不是任意面删除。",
+        "轮廓是二维边界三阶段，不是完整三维清料；不推断螺纹或倒扣加工。",
+        "回滚要求应用后数据库对象/刀具/平面未改变，选择改变不单独构成冲突。"
+      ],
+      "schema": "mc_prepare_change inputSchema request discriminator action",
+      "evidence": [
+        "validation/bundle-host-integration.json",
+        "validation/README.md"
+      ],
+      "adapter_validation": "ai/validation/porsche-native-acceptance.json",
+      "business_contract": "PorscheAdvanced2027.porsche.heal",
+      "workflow_contract": "ai/workflows/porsche.json"
+    },
+    {
+      "id": "typed.porsche.holes",
+      "module": "PorscheAdvanced2027",
+      "title": "保时捷复杂孔自动建工序",
+      "summary": "识别实际孔段，创建中心钻/钻孔/沉孔/沉头工序及缺少刀具、孔轴平面。",
+      "automation": "typed",
+      "action": "porsche.holes",
+      "tool": "mc_prepare_change",
+      "preconditions": [
+        "先 mc_inspect，核对已保存文档与单位、真实 ID。",
+        "只使用用户或工艺依据提供的参数。",
+        "填写完整类型化请求；先检查具体预览，再按授权执行。"
+      ],
+      "steps": [
+        "mc_prepare_change",
+        "检查 preview 与源对象",
+        "mc_apply_plan",
+        "核对 ok、status、result",
+        "需要时 mc_rollback_plan"
+      ],
+      "limits": [
+        "不自动保存、后处理或机床仿真。",
+        "原生计划仅当前宿主会话，预览 15 分钟有效。",
+        "参数回滚不恢复原刀路计算状态。",
+        "原生私有几何接口只接受已验证 API29/MCCORE/MCGeomSld/PSKERNEL 构建。",
+        "副本补面不覆盖原实体；完整孔筛选不是任意面删除。",
+        "轮廓是二维边界三阶段，不是完整三维清料；不推断螺纹或倒扣加工。",
+        "回滚要求应用后数据库对象/刀具/平面未改变，选择改变不单独构成冲突。"
+      ],
+      "schema": "mc_prepare_change inputSchema request discriminator action",
+      "evidence": [
+        "validation/bundle-host-integration.json",
+        "validation/README.md"
+      ],
+      "adapter_validation": "ai/validation/porsche-native-acceptance.json",
+      "business_contract": "PorscheAdvanced2027.porsche.holes",
+      "workflow_contract": "ai/workflows/porsche.json"
     },
     {
       "id": "module.CIMCO",

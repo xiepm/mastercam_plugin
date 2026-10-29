@@ -1,0 +1,15 @@
+{
+  "version": "1.1.0",
+  "execution": ["discover", "inspect", "prepare", "review_authorized_preview", "apply_once", "verify_native_readback", "rollback_if_requested"],
+  "transport": "Existing Mastercam MCP main-thread bridge",
+  "actions": {
+    "porsche.project_boundary": {"result": "closed projected boundary curves", "coordinate_system": "existing ViewID frame with origin", "creates_operations": false, "analysis_only": "Stop after prepare; no curves created."},
+    "porsche.contour": {"result": "rough, finish, chamfer operations and complete native chains", "tool_creation": "requires allow_create_tools=true", "regeneration": "explicit parameters.Regenerate", "scope": "2D projected boundary machining, not 3D volume clearing"},
+    "porsche.heal_holes": {"result": "independent healed solid copies", "filter": "inclusive principal cylinder radius interval", "source": "original remains intact", "preparation": "native hole facts only; actual healing occurs on apply"},
+    "porsche.holes": {"result": "center/drill/counterbore/countersink stages from detected segments", "direction": "explicit world unit alignment", "tool_creation": "parameters.CreateMissingTools", "regeneration": "explicit parameters.Regenerate", "unsupported": ["inferred thread specification", "reverse enlargement/undercut", "unknown or inconsistent segment transitions"]}
+  },
+  "combined_workflow": "Keep original solid IDs for hole machining. Healed copies have had holes removed; do not silently replace the hole-recognition sources with those copies.",
+  "plan_lifecycle": ["Prepared", "Applying", "Applied", "RolledBack", "Invalidated", "Discarded", "Failed", "RollbackFailed"],
+  "recovery": {"unknown_or_running": "query original request_id; never replay", "not_found": "verify request ID and workspace, not evidence of nonexecution", "not_submitted": "terminal local failure before native submission", "rollback_conflict": "preserve objects; inspect changes rather than force deletion"},
+  "verification": "ai/validation/porsche-native-acceptance.json"
+}

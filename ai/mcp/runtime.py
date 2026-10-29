@@ -7,7 +7,7 @@ from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
 
 ROOT=Path(__file__).resolve().parents[2]
-DEPS=['PorscheAdvanced2027/PorscheAdvanced2027.dll','OperationTools2027/OperationTools2027.dll','HSMRebuild2027/HSMRebuild2027.dll','MPRebuild2027/MPRebuild2027.Core.dll','MPRebuild2027/MPRebuild2027.dll']
+DEPS=['AdvancedDrill2027/AdvancedDrill2027.dll','OperationTools2027/OperationTools2027.dll','PorscheAdvanced2027/PorscheAdvanced2027.dll','HSMRebuild2027/HSMRebuild2027.dll','MPRebuild2027/MPRebuild2027.Core.dll','MPRebuild2027/MPRebuild2027.dll']
 def dump(value):return json.dumps(value,ensure_ascii=False,sort_keys=True,allow_nan=False)
 def sha(path):return hashlib.sha256(path.read_bytes()).hexdigest().upper()
 def load(path):return json.loads(Path(path).read_text('utf-8-sig'))

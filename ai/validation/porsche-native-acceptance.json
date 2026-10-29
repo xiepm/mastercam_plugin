@@ -1,0 +1,293 @@
+{
+  "date": "2026-10-29",
+  "passed": true,
+  "adapter": {
+    "version": "1.1.0.0",
+    "file": "MastercamPluginAI110.dll",
+    "sha256": "5B0CD47F8F454E3EA4A7852A2C1C0B8B9D7E0A62CEADC459062FA29DAC709652"
+  },
+  "transport": "actual stdio MCP through Mastercam IPC/API29",
+  "mcpCalls": 30,
+  "distinctNativeRequestReceipts": 25,
+  "assertions": 54,
+  "actions": [
+    {
+      "action": "porsche.project_boundary",
+      "regenerate": null,
+      "prepared": true
+    },
+    {
+      "action": "porsche.contour",
+      "regenerate": true,
+      "prepared": true
+    },
+    {
+      "action": "porsche.holes",
+      "regenerate": true,
+      "prepared": true
+    },
+    {
+      "action": "porsche.heal_holes",
+      "regenerate": null,
+      "prepared": true
+    },
+    {
+      "action": "porsche.holes",
+      "regenerate": false,
+      "prepared": true
+    }
+  ],
+  "checks": [
+    {
+      "name": "prepare preserves source porsche.project_boundary",
+      "ok": true
+    },
+    {
+      "name": "apply porsche.project_boundary",
+      "ok": true
+    },
+    {
+      "name": "ring outer/inner real projection",
+      "ok": true
+    },
+    {
+      "name": "same-ID replay porsche.project_boundary",
+      "ok": true
+    },
+    {
+      "name": "rollback porsche.project_boundary",
+      "ok": true
+    },
+    {
+      "name": "prepare preserves source porsche.contour",
+      "ok": true
+    },
+    {
+      "name": "apply porsche.contour",
+      "ok": true
+    },
+    {
+      "name": "rough finish chamfer count",
+      "ok": true
+    },
+    {
+      "name": "contour regenerated 0",
+      "ok": true
+    },
+    {
+      "name": "complete single outer chain 0",
+      "ok": true
+    },
+    {
+      "name": "contour intended depth 0",
+      "ok": true
+    },
+    {
+      "name": "contour regenerated 1",
+      "ok": true
+    },
+    {
+      "name": "complete single outer chain 1",
+      "ok": true
+    },
+    {
+      "name": "contour intended depth 1",
+      "ok": true
+    },
+    {
+      "name": "contour regenerated 2",
+      "ok": true
+    },
+    {
+      "name": "complete single outer chain 2",
+      "ok": true
+    },
+    {
+      "name": "contour intended depth 2",
+      "ok": true
+    },
+    {
+      "name": "actual toolpath endpoint porsche.contour/0",
+      "ok": true
+    },
+    {
+      "name": "actual toolpath endpoint porsche.contour/1",
+      "ok": true
+    },
+    {
+      "name": "actual toolpath endpoint porsche.contour/2",
+      "ok": true
+    },
+    {
+      "name": "same-ID replay porsche.contour",
+      "ok": true
+    },
+    {
+      "name": "rollback porsche.contour",
+      "ok": true
+    },
+    {
+      "name": "prepare preserves source porsche.holes",
+      "ok": true
+    },
+    {
+      "name": "apply porsche.holes",
+      "ok": true
+    },
+    {
+      "name": "three kinds yield eight stages",
+      "ok": true
+    },
+    {
+      "name": "literal drill depth 0",
+      "ok": true
+    },
+    {
+      "name": "literal drill depth 1",
+      "ok": true
+    },
+    {
+      "name": "literal drill depth 2",
+      "ok": true
+    },
+    {
+      "name": "literal drill depth 3",
+      "ok": true
+    },
+    {
+      "name": "literal drill depth 4",
+      "ok": true
+    },
+    {
+      "name": "literal drill depth 5",
+      "ok": true
+    },
+    {
+      "name": "literal drill depth 6",
+      "ok": true
+    },
+    {
+      "name": "literal drill depth 7",
+      "ok": true
+    },
+    {
+      "name": "new tools and axis planes actually created",
+      "ok": true
+    },
+    {
+      "name": "actual toolpath endpoint porsche.holes/0",
+      "ok": true
+    },
+    {
+      "name": "actual toolpath endpoint porsche.holes/1",
+      "ok": true
+    },
+    {
+      "name": "actual toolpath endpoint porsche.holes/2",
+      "ok": true
+    },
+    {
+      "name": "actual toolpath endpoint porsche.holes/3",
+      "ok": true
+    },
+    {
+      "name": "actual toolpath endpoint porsche.holes/4",
+      "ok": true
+    },
+    {
+      "name": "actual toolpath endpoint porsche.holes/5",
+      "ok": true
+    },
+    {
+      "name": "actual toolpath endpoint porsche.holes/6",
+      "ok": true
+    },
+    {
+      "name": "actual toolpath endpoint porsche.holes/7",
+      "ok": true
+    },
+    {
+      "name": "same-ID replay porsche.holes",
+      "ok": true
+    },
+    {
+      "name": "rollback porsche.holes",
+      "ok": true
+    },
+    {
+      "name": "prepare preserves source porsche.heal_holes",
+      "ok": true
+    },
+    {
+      "name": "apply porsche.heal_holes",
+      "ok": true
+    },
+    {
+      "name": "all three healed copies six faces",
+      "ok": true
+    },
+    {
+      "name": "same-ID replay porsche.heal_holes",
+      "ok": true
+    },
+    {
+      "name": "rollback porsche.heal_holes",
+      "ok": true
+    },
+    {
+      "name": "prepare preserves source porsche.holes",
+      "ok": true
+    },
+    {
+      "name": "apply porsche.holes",
+      "ok": true
+    },
+    {
+      "name": "Regenerate false preserves dirty uncalculated operations",
+      "ok": true
+    },
+    {
+      "name": "same-ID replay porsche.holes",
+      "ok": true
+    },
+    {
+      "name": "rollback porsche.holes",
+      "ok": true
+    }
+  ],
+  "cleanup": {
+    "ok": true,
+    "originalGeometry": 57,
+    "originalOperations": 13,
+    "originalTools": 11,
+    "originalViews": 12,
+    "originalGeometryAttributesTimestampsFacesAndSelectionsPreserved": true,
+    "operationSelectionPreserved": true
+  },
+  "evidenceSha256": {
+    "porsche-mcp-results.json": "8A12B11657BFE5B0BF543B233E19AE3BFB2CC8EFBA8B973CFBAB7F1FDFC9CDC7",
+    "fixture.json": "7EA86E5CFDD9F4AE035B806B13E92550BCC03648D6744742C7E000E32BB90415",
+    "cleanup.json": "B309FDE8C550E3BF137A0ADC342989319030873D3027283AD8ED619C9CBBE362",
+    "run_porsche_tests.py": "F70E6B07C5E8A5683630BB601E4EEABA499BB5A4C5D42737DA1137FC323F2508"
+  },
+  "sourceSha256": {
+    "ai/bridge/PluginBridge.cs": "2215249899B721C8E3F7B9D01FB83954D5E60AA22DCF4FDE0A027B8A302E849B",
+    "ai/bridge/PorscheBindings.cs": "B5C4518BC8D26C7698BA966D971BCBC9FFDF5DC709A3BAC11C5AA9AF6E543090",
+    "ai/bridge/PreviewGuard.cs": "877EB7537F3DD3589370E6C0FD2AF96EFEE7F02EFCED9398631B13BFDBE365FC",
+    "ai/mcp/runtime.py": "308E8B7103658F7BFD7A758B2CE7DC4CB3755C1C3C8D8BBE5068766CC265925F",
+    "ai/mcp/models.py": "410AA22E1502A65EF7B4C16FE68E8B35CE893311AE7703EE138CDD81BB057432",
+    "ai/mcp/server.py": "E43F3BA864F1170637FD30570AEF7557C1B986CD10BDDEA5042EF5625D1A55BB"
+  },
+  "offline": {
+    "pythonUnitTests": 26,
+    "previewGuardChecks": 5,
+    "skillValidatorPassed": true
+  },
+  "scope": [
+    "One local API29 build; straight world-Z hole axes with nonzero entry origins.",
+    "Three owned solids: stepped counterbore, conical countersink, flat blind hole.",
+    "One complete outer contour for three-stage machining; outer/inner projection curves preserved.",
+    "Native toolpath minimum Z checked against independent literal expectations.",
+    "No machine collision, postprocessor or production NC certification."
+  ]
+}

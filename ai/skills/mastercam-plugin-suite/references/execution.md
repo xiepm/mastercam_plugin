@@ -7,16 +7,18 @@
 | 工具 | 效果 |
 |---|---|
 | mc_catalog / mc_capability | 离线知识检索，可在 Mastercam 未启动时使用。 |
-| mc_inspect | 读文档、单位、工序、刀具、前 250 个几何记录及选择。 |
+| mc_inspect | 读文档、单位、工序、刀具、ViewID/平面、可见且有几何的层、已选实体及前 250 个几何记录。 |
 | mc_operation_information | 范围/时间/装刀轴向下界；查询后恢复工序选择。dirty 或无效刀路不能当成有效时间。 |
 | mc_prepare_change | 类型化预检，返回原值/目标值或几何分析。MP 会导出独立 STL、JSON/CSV 分析文件；恢复源选择，不创建结果图素。 |
-| mc_apply_plan | 创建或修改计划中的数据库对象；严验参数，返回原生批次回读。无自动保存/后处理。 |
+| mc_apply_plan | 创建或修改计划中的数据库对象；返回原生批次回读。Porsche 工序按显式 Regenerate 决定是否计算；无自动保存/后处理。 |
 | mc_regenerate_hsm_plan | 只计算该 HSM 批次的新工序，记录原始 bool 与 fresh 状态。 |
 | mc_rollback_plan | 本会话精确恢复；有后续编辑、文件变化等冲突会拒绝。 |
 | mc_plan_status / mc_request_status | 前者查询宿主内计划，后者读磁盘请求结果，后者超时后仍可用。 |
 | mc_discard_plan | 丢弃未执行计划，不修改数据库，不删除分析文件。 |
 
 六种写入动作：`operation.depth`、`operation.finish`、`operation.chamfer`、`hsm.pocket`、`mp.sections`、`mp.draft`。参数 schema 是 MCP `mc_prepare_change` 的输入定义，使用 action 区分。精光/倒角当前只绑定已有刀具；底层插件虽然支持建刀，此适配器不因此暗含建刀行为。
+
+新增四种 Porsche 动作：`porsche.project_boundary`、`porsche.contour`、`porsche.heal_holes`、`porsche.holes`；合计十种。具体建刀、平面、副本和重算语义见 [保时捷合同](porsche.md)。
 
 计划保存文档、文件戳、几何/工序/刀具/选择/坐标上下文指纹。预览 15 分钟有效；Apply 前重新建立 native 包装对象并比对预览。不要在预览后切换文档、改选择、改刀具或编辑参数。若已变化就丢弃旧计划，再预览。
 
@@ -34,4 +36,4 @@
 
 所有调用在一个配置工作区内串行化；不要同时通过旧 bridge 或界面修改同一工程。文件日志保存在配置 workspace 的 `plugin-ai/<request_id>/`。
 
-`mc_inspect` 当前只列前 250 个几何对象，不列可见层和关联深度字段。不要据此猜测遗漏的 ID 或层；层可见性及禁止解除关联由 prepare 的原生预检再次检查。只有分析意图时，MP 流程停在 prepare 并返回报告，不调用 apply；分析仍会写独立报告文件。
+`mc_inspect` 当前只列前 250 个几何对象，可见层清单仅包含已有几何的层，未列关联深度字段。不要猜测遗漏 ID；层可见性及禁止解除关联由 prepare 的原生预检再次检查。只有分析意图时，MP/Porsche 投影流程停在 prepare 并返回报告，不调用 apply；分析仍会写独立文件。
