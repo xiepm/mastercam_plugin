@@ -31,9 +31,12 @@ typed += [('porsche.project_boundary','PorscheAdvanced2027','保时捷实体自�
 geometry_actions=read(ROOT/'ai/workflows/geometry-actions.json')
 typed += [row[:4] for row in geometry_actions]
 geometry_sources={row[0]:row[4] for row in geometry_actions}
+panel_actions=read(ROOT/'ai/workflows/panel-actions.json')
+typed += [row[:4] for row in panel_actions]
+panel_sources={row[0]:row[4] for row in panel_actions}
 for action,module,title,summary in typed:
     caps.append({'id':'typed.'+action,'module':module,'title':title,'summary':summary,'automation':'typed','action':action,'tool':'mc_prepare_change','preconditions':['先 mc_inspect，核对已保存文档与单位、真实 ID。','只使用用户或工艺依据提供的参数。','填写完整类型化请求；先检查具体预览，再按授权执行。'],'steps':['mc_prepare_change','检查 preview 与源对象','mc_apply_plan','核对 ok、status、result','需要时 mc_rollback_plan'],'limits':['不自动保存、后处理或机床仿真。','原生计划仅当前宿主会话，预览 15 分钟有效。','参数回滚不恢复原刀路计算状态。'],'schema':'mc_prepare_change inputSchema request discriminator action','evidence':['validation/bundle-host-integration.json','validation/README.md'],'adapter_validation':'See ai/validation; existing plugin evidence alone does not validate this adapter.'})
-    source={**geometry_sources,'operation.depth':'op.depth','operation.finish':'op.finish','operation.chamfer':'op.chamfer','hsm.pocket':'hsm.create','mp.sections':'mp_section','mp.draft':'mp_draft','porsche.project_boundary':'porsche.project','porsche.contour':'porsche.boundary_sequence','porsche.heal_holes':'porsche.heal','porsche.holes':'porsche.holes'}[action]
+    source={**panel_sources,**geometry_sources,'operation.depth':'op.depth','operation.finish':'op.finish','operation.chamfer':'op.chamfer','hsm.pocket':'hsm.create','mp.sections':'mp_section','mp.draft':'mp_draft','porsche.project_boundary':'porsche.project','porsche.contour':'porsche.boundary_sequence','porsche.heal_holes':'porsche.heal','porsche.holes':'porsche.holes'}[action]
     caps[-1]['business_contract']=module+'.'+source
     if action in ('mp.sections','mp.draft'):
         caps[-1]['analysis_only_steps']=['mc_prepare_change','读取 preview 和 result.analysis_path；生成报告文件但不建图素','仅分析意图到此结束；可 discard 未执行计划']
@@ -46,6 +49,10 @@ for action,module,title,summary in typed:
         caps[-1]['workflow_contract']='ai/skills/mastercam-plugin-suite/references/geometry-xplus.md'
         caps[-1]['adapter_validation']='ai/validation/geometry-native-acceptance.json'
         caps[-1]['limits']+=['报告、截图及STL的回滚保留导出文件；刀柄回滚删除新增刀柄但保留空库。','几何副本编辑保留源对象；不提供任意实体倒角或自动修改原件。','工序链选择基于已有工序，不替代交互式任意链拾取。']
+    if action in panel_sources:
+        caps[-1]['workflow_contract']='ai/skills/mastercam-plugin-suite/references/panel-workflows.md'
+        caps[-1]['adapter_validation']='ai/validation/panel-native-acceptance.json'
+        caps[-1]['limits']+=['带几何工序库导入禁用；参数导入后须明确关联几何，不能直接视为可加工刀路。','库IO可能重新分配临时面/边标签，后续必须重新查询；持久面ID和几何/工序/刀具仍验证。','未覆盖原版插件全部高级功能；逐项范围见工作流对照表。']
 panels=read(ROOT/'ai/workflows/interactive-panels.json')['panels']
 for panel,(app,function) in panels.items():
     found=[r for r in routes if r['application']==app and r['function']==function]
@@ -54,7 +61,7 @@ for panel,(app,function) in panels.items():
 external=by_module.get('CIMCO',by_module.get('CIMCOVerify',{}))
 caps.append({'id':'module.CIMCO','module':'CIMCO','title':'CIMCO Verify','summary':external.get('summary','官方 Mastercam 仿真插件；本合集提供联网安装，未提供其材料去除/碰撞的结构化调用 API。'),'automation':'interactive','usage':external.get('workflows',[]),'limits':['界面打开或安装验证不能声称仿真通过。','结果需读取真实仿真报告或明确界面证据。'],'routes':[{'application':'CIMCO','function':'UI','completion':'Use installed CIMCO Verify ribbon; no guessed FT command.'}]})
 out=ROOT/'ai/catalog';out.mkdir(parents=True,exist_ok=True)
-data={'version':'1.2.0','plugin_release':manifest['version'],'module_count':len(modules),'capability_count':len(caps),'ft_route_count':len(routes),'typed_actions':[r[0] for r in typed],'capabilities':caps,'routes':routes}
+data={'version':'1.4.0','plugin_release':manifest['version'],'module_count':len(modules),'capability_count':len(caps),'ft_route_count':len(routes),'typed_actions':[r[0] for r in typed],'capabilities':caps,'routes':routes}
 (out/'capabilities.json').write_text(json.dumps(data,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
 identity=read(ROOT/'ai/bridge/identity.json')
 assert identity['sha256']==hashlib.sha256((ROOT/'ai/bridge/bin'/identity['file']).read_bytes()).hexdigest().upper()

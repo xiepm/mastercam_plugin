@@ -11,6 +11,7 @@ DEPS=['AdvancedDrill2027/AdvancedDrill2027.dll','OperationTools2027/OperationToo
 DEPS += ['MPEdgeTools2027/MPEdgeTools2027.dll', 'MPDesignTools2027/MPDesignTools2027.Core.dll', 'MPDesignTools2027/MPDesignTools2027.dll', 'MPDesignSurfaceSelect2027/MPDesignSurfaceSelect2027.Core.dll', 'MPDesignSurfaceSelect2027/MPDesignSurfaceSelect2027.dll', 'MPDesignRadiusSelect2027/MPDesignRadiusSelect2027.Core.dll', 'MPDesignRadiusSelect2027/MPDesignRadiusSelect2027.dll', 'GeometryTools2027/GeometryTools2027.dll', 'SVGGeometry2027/SVGGeometry2027.dll', 'TpSketcher2027/TpSketcher2027.Core.dll', 'TpSketcher2027/TpSketcher2027.dll', 'FixtureTools2027/FixtureTools2027.Core.dll', 'FixtureTools2027/FixtureTools2027.dll', 'HirthTools2027/HirthTools2027.Core.dll', 'HirthTools2027/HirthTools2027.dll', 'SetupSheets2027/SetupSheets2027.dll', 'LevelExport2027/LevelExport2027.Core.dll', 'LevelExport2027/LevelExport2027.dll', 'ScreenTools2027/ScreenTools2027.dll', 'ElectrodeReport2027/ElectrodeReport2027.Core.dll', 'ElectrodeReport2027/ElectrodeReport2027.dll']
 
 DEPS += ['HolderTools2027/HolderTools2027.dll']
+DEPS += ['AdvancedDrillTap2027/AdvancedDrillTap2027.dll','SolidBoundary2027/SolidBoundary2027.dll','MiddleConfirm2027/MiddleConfirm2027.dll','Workshop2027/Workshop2027.dll','LittleBee2027/LittleBee2027.dll']
 
 def dump(value):return json.dumps(value,ensure_ascii=False,sort_keys=True,allow_nan=False)
 def sha(path):return hashlib.sha256(path.read_bytes()).hexdigest().upper()

@@ -2,7 +2,7 @@
 from pathlib import Path
 import hashlib,json,zipfile
 ROOT=Path(__file__).resolve().parents[1]
-NAME='Mastercam2027-PluginSuite-AI-2027.10.29.3'
+NAME='Mastercam2027-PluginSuite-AI-2027.10.29.4'
 TOP={'README.md','CHANGELOG.md','Manage.ps1','Install.cmd','Uninstall.cmd','Verify.cmd'}
 DIRS={'payload','catalog','docs','scripts','src','tools','tests','validation','ai'}
 identity=json.loads((ROOT/'ai/bridge/identity.json').read_text('utf-8-sig'))

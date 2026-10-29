@@ -1,0 +1,86 @@
+[
+  {
+    "adapter": "ai/bridge/BoundaryAdapter/BoundaryKernel.cs",
+    "source_sha256": "988E99627AE4C481B40B2F1AC1066781886BBFB07855064B4660C63CDA1913C3",
+    "source": "SolidBoundary2027/candidates/ExistingOutput105/src/BoundaryKernel.cs",
+    "changes": "Namespace isolation; NativeState uses attribute-only selection restoration and retains strict inventory checks.",
+    "adapted_sha256": "0422D399A248F382332BB4763F6D6BAD75DEACC0117E2C3A2975AC437A3F2655"
+  },
+  {
+    "adapter": "ai/bridge/BoundaryAdapter/ContextContract.cs",
+    "source_sha256": "105755E99697E0E7BBA0E74C22F4CE9D4A40E4B801DC3CCAE0BD1C5C231DC44F",
+    "source": "SolidBoundary2027/candidates/ExistingOutput105/src/ContextContract.cs",
+    "changes": "Namespace isolation; NativeState uses attribute-only selection restoration and retains strict inventory checks.",
+    "adapted_sha256": "AA82EF16EC74DDF03BF237BA872E7E233072052756EB23FB75319B7B5BE6F007"
+  },
+  {
+    "adapter": "ai/bridge/BoundaryAdapter/ExtractionDiagnostics.cs",
+    "source_sha256": "2B87A6EE0179EED0F3C14BAF9BCA4A45E9A495F215AA73C36010366139E7D794",
+    "source": "SolidBoundary2027/candidates/ExistingOutput105/src/ExtractionDiagnostics.cs",
+    "changes": "Namespace isolation; NativeState uses attribute-only selection restoration and retains strict inventory checks.",
+    "adapted_sha256": "794FDE650413EEEE4DD8393A950BB596895E6B1A65ECBD7B6D137D84D43A7A6F"
+  },
+  {
+    "adapter": "ai/bridge/BoundaryAdapter/LevelGroupContract.cs",
+    "source_sha256": "3CBBA5A01B32055951C2BECB5B0720ACB0A22A77CF0FB7443C24B249661DCD57",
+    "source": "SolidBoundary2027/candidates/ExistingOutput105/src/LevelGroupContract.cs",
+    "changes": "Namespace isolation; NativeState uses attribute-only selection restoration and retains strict inventory checks.",
+    "adapted_sha256": "27FBC64B88CDEF2A63E088F6AACA14C7461915654A04240151C29AA00F2DC7E1"
+  },
+  {
+    "adapter": "ai/bridge/BoundaryAdapter/NativeBoundary.cs",
+    "source_sha256": "84242473C057B883347490F4C82ACB7AB9927AE7219A585BE77DAC2E33AC564F",
+    "source": "SolidBoundary2027/candidates/ExistingOutput105/src/NativeBoundary.cs",
+    "changes": "Namespace isolation; NativeState uses attribute-only selection restoration and retains strict inventory checks.",
+    "adapted_sha256": "0D4130B13C4BFF61391F703D01AFBED1AB9F6CD7F20591A43AEB39641AB5A52F"
+  },
+  {
+    "adapter": "ai/bridge/BoundaryAdapter/NativeDocumentInventory.cs",
+    "source_sha256": "CE68D2EF6C19D7DFA25943AC4CB30AFEA713FE4EFA30192E66C2DFA982AA5B1B",
+    "source": "SolidBoundary2027/candidates/ExistingOutput105/src/NativeDocumentInventory.cs",
+    "changes": "Namespace isolation; NativeState uses attribute-only selection restoration and retains strict inventory checks.",
+    "adapted_sha256": "9963B917CF6EE5B28DC230E38755418DA311EC053E632F36DAF82F0C67DE7163"
+  },
+  {
+    "adapter": "ai/bridge/BoundaryAdapter/NativeLevelGroups.cs",
+    "source_sha256": "C2E6DE84423A168CD1951E6BFEFDED6F2E68CE482A50BD07AAD14B340E69127A",
+    "source": "SolidBoundary2027/candidates/ExistingOutput105/src/NativeLevelGroups.cs",
+    "changes": "Namespace isolation; NativeState uses attribute-only selection restoration and retains strict inventory checks.",
+    "adapted_sha256": "3B59CB59256B7779B0F62FDB4E1F192F97302486743DB8FF777BFAA53ADBF029"
+  },
+  {
+    "adapter": "ai/bridge/BoundaryAdapter/NativeOutputLevelLease.cs",
+    "source_sha256": "259F3A5CC58B90496FB7A7779A214DB6A7BA132FB3769E9A5FB226C720BB09BC",
+    "source": "SolidBoundary2027/candidates/ExistingOutput105/src/NativeOutputLevelLease.cs",
+    "changes": "Namespace isolation; NativeState uses attribute-only selection restoration and retains strict inventory checks.",
+    "adapted_sha256": "23D3DB9A712B3132D186E0D1188A5A1D6EE6E02D5EE04DC5257E053CFF93386C"
+  },
+  {
+    "adapter": "ai/bridge/BoundaryAdapter/NativeSolidEdges.cs",
+    "source_sha256": "920B5C5950CFE6F17538201350E92252B8541A18A1715150E044C6D5D0246C74",
+    "source": "SolidBoundary2027/candidates/ExistingOutput105/src/NativeSolidEdges.cs",
+    "changes": "Namespace isolation; NativeState uses attribute-only selection restoration and retains strict inventory checks.",
+    "adapted_sha256": "FC4FCD153B585C14B0A5997EE43B27F2DEC6159F0466CE8C6E2B1654DFFAC9F2"
+  },
+  {
+    "adapter": "ai/bridge/BoundaryAdapter/NativeState.cs",
+    "source_sha256": "42A5389B6DA18FEB22C7E91B0301F87C46A927F009D9FBEE8BD645288CB7E3B4",
+    "source": "SolidBoundary2027/candidates/ExistingOutput105/src/NativeState.cs",
+    "changes": "Namespace isolation; NativeState uses attribute-only selection restoration and retains strict inventory checks.",
+    "adapted_sha256": "592EFDFF1299952DCE135795CE9027C7781FB4DEAACBFB4EC143A8B6B24A4CA7"
+  },
+  {
+    "adapter": "ai/bridge/BoundaryAdapter/OutputLevelAdmission.cs",
+    "source_sha256": "253DEDF69E026D5F06908C12C382F6564420C1A259888478B04A80EDEAF53090",
+    "source": "SolidBoundary2027/candidates/ExistingOutput105/src/OutputLevelAdmission.cs",
+    "changes": "Namespace isolation; NativeState uses attribute-only selection restoration and retains strict inventory checks.",
+    "adapted_sha256": "92063C5B390F5C6181A1CA90AFEC36A01C5E88C95B9EE4D3F99EE687BC74D47F"
+  },
+  {
+    "adapter": "ai/bridge/BoundaryAdapter/SolidEdgeContract.cs",
+    "source_sha256": "A5C554B5E21431076DF089110A76B9942B7D968A1E21D69D4105DC71C16D0503",
+    "source": "SolidBoundary2027/candidates/ExistingOutput105/src/SolidEdgeContract.cs",
+    "changes": "Namespace isolation; NativeState uses attribute-only selection restoration and retains strict inventory checks.",
+    "adapted_sha256": "E9FF8EBE805578D244E8A6A0260BF50C954B47F9F0A56434BE4385E3C5FD17C4"
+  }
+]

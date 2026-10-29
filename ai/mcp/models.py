@@ -264,5 +264,6 @@ class PorscheHolesRequest(Request):
     parameters:PorscheHoles
 
 from geometry_models import GEOMETRY_REQUESTS
+from panel_models import PANEL_REQUESTS
 
-ChangeRequest=Annotated[Union[(*GEOMETRY_REQUESTS,DepthRequest,FinishRequest,ChamferRequest,PocketRequest,SectionsRequest,DraftRequest,PorscheBoundaryRequest,PorscheContourRequest,PorscheHealingRequest,PorscheHolesRequest)],Field(discriminator='action')]
+ChangeRequest=Annotated[Union[(*PANEL_REQUESTS,*GEOMETRY_REQUESTS,DepthRequest,FinishRequest,ChamferRequest,PocketRequest,SectionsRequest,DraftRequest,PorscheBoundaryRequest,PorscheContourRequest,PorscheHealingRequest,PorscheHolesRequest)],Field(discriminator='action')]

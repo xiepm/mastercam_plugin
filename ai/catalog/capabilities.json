@@ -1,8 +1,8 @@
 {
-  "version": "1.2.0",
+  "version": "1.4.0",
   "plugin_release": "2027.10.28.2",
   "module_count": 27,
-  "capability_count": 168,
+  "capability_count": 184,
   "ft_route_count": 170,
   "typed_actions": [
     "operation.depth",
@@ -32,7 +32,23 @@
     "xplus.holder_library",
     "xplus.select_operation_chains",
     "xplus.work_offset",
-    "xplus.rename_nci"
+    "xplus.rename_nci",
+    "drilling.stages",
+    "drilling.tap",
+    "geometry.convex_boundary",
+    "interface.middle_confirm",
+    "operation.parameters",
+    "operation.planes",
+    "operation.copy",
+    "groups.create",
+    "groups.rename",
+    "stock.rectangle",
+    "view.planes",
+    "selection.chains",
+    "geometry.chamfer_edges",
+    "materials.estimate",
+    "operations.export",
+    "operations.import"
   ],
   "capabilities": [
     {
@@ -16291,6 +16307,598 @@
       "adapter_validation": "ai/validation/geometry-native-acceptance.json",
       "business_contract": "LittleBee2027.bee.rename",
       "workflow_contract": "ai/skills/mastercam-plugin-suite/references/geometry-xplus.md"
+    },
+    {
+      "id": "typed.drilling.stages",
+      "module": "AdvancedDrill2027",
+      "title": "分阶段钻孔",
+      "summary": "按参考工序完整仿射平面、明确局部点、已有刀具和各阶段循环创建工序。",
+      "automation": "typed",
+      "action": "drilling.stages",
+      "tool": "mc_prepare_change",
+      "preconditions": [
+        "先 mc_inspect，核对已保存文档与单位、真实 ID。",
+        "只使用用户或工艺依据提供的参数。",
+        "填写完整类型化请求；先检查具体预览，再按授权执行。"
+      ],
+      "steps": [
+        "mc_prepare_change",
+        "检查 preview 与源对象",
+        "mc_apply_plan",
+        "核对 ok、status、result",
+        "需要时 mc_rollback_plan"
+      ],
+      "limits": [
+        "不自动保存、后处理或机床仿真。",
+        "原生计划仅当前宿主会话，预览 15 分钟有效。",
+        "参数回滚不恢复原刀路计算状态。",
+        "带几何工序库导入禁用；参数导入后须明确关联几何，不能直接视为可加工刀路。",
+        "库IO可能重新分配临时面/边标签，后续必须重新查询；持久面ID和几何/工序/刀具仍验证。",
+        "未覆盖原版插件全部高级功能；逐项范围见工作流对照表。"
+      ],
+      "schema": "mc_prepare_change inputSchema request discriminator action",
+      "evidence": [
+        "validation/bundle-host-integration.json",
+        "validation/README.md"
+      ],
+      "adapter_validation": "ai/validation/panel-native-acceptance.json",
+      "business_contract": "AdvancedDrill2027.ad012.prepare_create",
+      "workflow_contract": "ai/skills/mastercam-plugin-suite/references/panel-workflows.md"
+    },
+    {
+      "id": "typed.drilling.tap",
+      "module": "AdvancedDrillTap2027",
+      "title": "中心钻/预钻/公制右旋攻丝",
+      "summary": "显式节距、真实机床/后处理目标和原始进给值；不推断进给模式。",
+      "automation": "typed",
+      "action": "drilling.tap",
+      "tool": "mc_prepare_change",
+      "preconditions": [
+        "先 mc_inspect，核对已保存文档与单位、真实 ID。",
+        "只使用用户或工艺依据提供的参数。",
+        "填写完整类型化请求；先检查具体预览，再按授权执行。"
+      ],
+      "steps": [
+        "mc_prepare_change",
+        "检查 preview 与源对象",
+        "mc_apply_plan",
+        "核对 ok、status、result",
+        "需要时 mc_rollback_plan"
+      ],
+      "limits": [
+        "不自动保存、后处理或机床仿真。",
+        "原生计划仅当前宿主会话，预览 15 分钟有效。",
+        "参数回滚不恢复原刀路计算状态。",
+        "带几何工序库导入禁用；参数导入后须明确关联几何，不能直接视为可加工刀路。",
+        "库IO可能重新分配临时面/边标签，后续必须重新查询；持久面ID和几何/工序/刀具仍验证。",
+        "未覆盖原版插件全部高级功能；逐项范围见工作流对照表。"
+      ],
+      "schema": "mc_prepare_change inputSchema request discriminator action",
+      "evidence": [
+        "validation/bundle-host-integration.json",
+        "validation/README.md"
+      ],
+      "adapter_validation": "ai/validation/panel-native-acceptance.json",
+      "business_contract": "AdvancedDrillTap2027.ad013.prepare_create",
+      "workflow_contract": "ai/skills/mastercam-plugin-suite/references/panel-workflows.md"
+    },
+    {
+      "id": "typed.geometry.convex_boundary",
+      "module": "SolidBoundary2027",
+      "title": "凸多面体边界",
+      "summary": "一个平面凸多面体，在世界XY构图平面生成指定高度的单闭合边界。",
+      "automation": "typed",
+      "action": "geometry.convex_boundary",
+      "tool": "mc_prepare_change",
+      "preconditions": [
+        "先 mc_inspect，核对已保存文档与单位、真实 ID。",
+        "只使用用户或工艺依据提供的参数。",
+        "填写完整类型化请求；先检查具体预览，再按授权执行。"
+      ],
+      "steps": [
+        "mc_prepare_change",
+        "检查 preview 与源对象",
+        "mc_apply_plan",
+        "核对 ok、status、result",
+        "需要时 mc_rollback_plan"
+      ],
+      "limits": [
+        "不自动保存、后处理或机床仿真。",
+        "原生计划仅当前宿主会话，预览 15 分钟有效。",
+        "参数回滚不恢复原刀路计算状态。",
+        "带几何工序库导入禁用；参数导入后须明确关联几何，不能直接视为可加工刀路。",
+        "库IO可能重新分配临时面/边标签，后续必须重新查询；持久面ID和几何/工序/刀具仍验证。",
+        "未覆盖原版插件全部高级功能；逐项范围见工作流对照表。"
+      ],
+      "schema": "mc_prepare_change inputSchema request discriminator action",
+      "evidence": [
+        "validation/bundle-host-integration.json",
+        "validation/README.md"
+      ],
+      "adapter_validation": "ai/validation/panel-native-acceptance.json",
+      "business_contract": "SolidBoundary2027.solid_boundary.preview_create",
+      "workflow_contract": "ai/skills/mastercam-plugin-suite/references/panel-workflows.md"
+    },
+    {
+      "id": "typed.interface.middle_confirm",
+      "module": "MiddleConfirm2027",
+      "title": "中键确认配置",
+      "summary": "配置本插件观察器开关与点击时长；不执行确认点击。",
+      "automation": "typed",
+      "action": "interface.middle_confirm",
+      "tool": "mc_prepare_change",
+      "preconditions": [
+        "先 mc_inspect，核对已保存文档与单位、真实 ID。",
+        "只使用用户或工艺依据提供的参数。",
+        "填写完整类型化请求；先检查具体预览，再按授权执行。"
+      ],
+      "steps": [
+        "mc_prepare_change",
+        "检查 preview 与源对象",
+        "mc_apply_plan",
+        "核对 ok、status、result",
+        "需要时 mc_rollback_plan"
+      ],
+      "limits": [
+        "不自动保存、后处理或机床仿真。",
+        "原生计划仅当前宿主会话，预览 15 分钟有效。",
+        "参数回滚不恢复原刀路计算状态。",
+        "带几何工序库导入禁用；参数导入后须明确关联几何，不能直接视为可加工刀路。",
+        "库IO可能重新分配临时面/边标签，后续必须重新查询；持久面ID和几何/工序/刀具仍验证。",
+        "未覆盖原版插件全部高级功能；逐项范围见工作流对照表。"
+      ],
+      "schema": "mc_prepare_change inputSchema request discriminator action",
+      "evidence": [
+        "validation/bundle-host-integration.json",
+        "validation/README.md"
+      ],
+      "adapter_validation": "ai/validation/panel-native-acceptance.json",
+      "business_contract": "MiddleConfirm2027.middle_confirm",
+      "workflow_contract": "ai/skills/mastercam-plugin-suite/references/panel-workflows.md"
+    },
+    {
+      "id": "typed.operation.parameters",
+      "module": "Workshop2027",
+      "title": "工序共同参数",
+      "summary": "修改支持的2D工序进给、转速、壁余量和底余量，回读并可恢复原值。",
+      "automation": "typed",
+      "action": "operation.parameters",
+      "tool": "mc_prepare_change",
+      "preconditions": [
+        "先 mc_inspect，核对已保存文档与单位、真实 ID。",
+        "只使用用户或工艺依据提供的参数。",
+        "填写完整类型化请求；先检查具体预览，再按授权执行。"
+      ],
+      "steps": [
+        "mc_prepare_change",
+        "检查 preview 与源对象",
+        "mc_apply_plan",
+        "核对 ok、status、result",
+        "需要时 mc_rollback_plan"
+      ],
+      "limits": [
+        "不自动保存、后处理或机床仿真。",
+        "原生计划仅当前宿主会话，预览 15 分钟有效。",
+        "参数回滚不恢复原刀路计算状态。",
+        "带几何工序库导入禁用；参数导入后须明确关联几何，不能直接视为可加工刀路。",
+        "库IO可能重新分配临时面/边标签，后续必须重新查询；持久面ID和几何/工序/刀具仍验证。",
+        "未覆盖原版插件全部高级功能；逐项范围见工作流对照表。"
+      ],
+      "schema": "mc_prepare_change inputSchema request discriminator action",
+      "evidence": [
+        "validation/bundle-host-integration.json",
+        "validation/README.md"
+      ],
+      "adapter_validation": "ai/validation/panel-native-acceptance.json",
+      "business_contract": "Workshop2027.workshop.parameters",
+      "workflow_contract": "ai/skills/mastercam-plugin-suite/references/panel-workflows.md"
+    },
+    {
+      "id": "typed.operation.planes",
+      "module": "Workshop2027",
+      "title": "工序三面统一",
+      "summary": "将支持的2D工序WCS、构图面、刀具面设置为已有ViewID。",
+      "automation": "typed",
+      "action": "operation.planes",
+      "tool": "mc_prepare_change",
+      "preconditions": [
+        "先 mc_inspect，核对已保存文档与单位、真实 ID。",
+        "只使用用户或工艺依据提供的参数。",
+        "填写完整类型化请求；先检查具体预览，再按授权执行。"
+      ],
+      "steps": [
+        "mc_prepare_change",
+        "检查 preview 与源对象",
+        "mc_apply_plan",
+        "核对 ok、status、result",
+        "需要时 mc_rollback_plan"
+      ],
+      "limits": [
+        "不自动保存、后处理或机床仿真。",
+        "原生计划仅当前宿主会话，预览 15 分钟有效。",
+        "参数回滚不恢复原刀路计算状态。",
+        "带几何工序库导入禁用；参数导入后须明确关联几何，不能直接视为可加工刀路。",
+        "库IO可能重新分配临时面/边标签，后续必须重新查询；持久面ID和几何/工序/刀具仍验证。",
+        "未覆盖原版插件全部高级功能；逐项范围见工作流对照表。"
+      ],
+      "schema": "mc_prepare_change inputSchema request discriminator action",
+      "evidence": [
+        "validation/bundle-host-integration.json",
+        "validation/README.md"
+      ],
+      "adapter_validation": "ai/validation/panel-native-acceptance.json",
+      "business_contract": "Workshop2027.workshop.planes",
+      "workflow_contract": "ai/skills/mastercam-plugin-suite/references/panel-workflows.md"
+    },
+    {
+      "id": "typed.operation.copy",
+      "module": "LittleBee2027",
+      "title": "复制工序",
+      "summary": "在当前机床内复制轮廓/钻孔工序到明确群组，副本关闭输出并标记待重算。",
+      "automation": "typed",
+      "action": "operation.copy",
+      "tool": "mc_prepare_change",
+      "preconditions": [
+        "先 mc_inspect，核对已保存文档与单位、真实 ID。",
+        "只使用用户或工艺依据提供的参数。",
+        "填写完整类型化请求；先检查具体预览，再按授权执行。"
+      ],
+      "steps": [
+        "mc_prepare_change",
+        "检查 preview 与源对象",
+        "mc_apply_plan",
+        "核对 ok、status、result",
+        "需要时 mc_rollback_plan"
+      ],
+      "limits": [
+        "不自动保存、后处理或机床仿真。",
+        "原生计划仅当前宿主会话，预览 15 分钟有效。",
+        "参数回滚不恢复原刀路计算状态。",
+        "带几何工序库导入禁用；参数导入后须明确关联几何，不能直接视为可加工刀路。",
+        "库IO可能重新分配临时面/边标签，后续必须重新查询；持久面ID和几何/工序/刀具仍验证。",
+        "未覆盖原版插件全部高级功能；逐项范围见工作流对照表。"
+      ],
+      "schema": "mc_prepare_change inputSchema request discriminator action",
+      "evidence": [
+        "validation/bundle-host-integration.json",
+        "validation/README.md"
+      ],
+      "adapter_validation": "ai/validation/panel-native-acceptance.json",
+      "business_contract": "LittleBee2027.bee.copy_paste",
+      "workflow_contract": "ai/skills/mastercam-plugin-suite/references/panel-workflows.md"
+    },
+    {
+      "id": "typed.groups.create",
+      "module": "Workshop2027",
+      "title": "批量创建刀路群组",
+      "summary": "当前活动父群组、前缀和序号，拒绝名称冲突；创建可能激活新组，回滚仅删除未改动空群组。",
+      "automation": "typed",
+      "action": "groups.create",
+      "tool": "mc_prepare_change",
+      "preconditions": [
+        "先 mc_inspect，核对已保存文档与单位、真实 ID。",
+        "只使用用户或工艺依据提供的参数。",
+        "填写完整类型化请求；先检查具体预览，再按授权执行。"
+      ],
+      "steps": [
+        "mc_prepare_change",
+        "检查 preview 与源对象",
+        "mc_apply_plan",
+        "核对 ok、status、result",
+        "需要时 mc_rollback_plan"
+      ],
+      "limits": [
+        "不自动保存、后处理或机床仿真。",
+        "原生计划仅当前宿主会话，预览 15 分钟有效。",
+        "参数回滚不恢复原刀路计算状态。",
+        "带几何工序库导入禁用；参数导入后须明确关联几何，不能直接视为可加工刀路。",
+        "库IO可能重新分配临时面/边标签，后续必须重新查询；持久面ID和几何/工序/刀具仍验证。",
+        "未覆盖原版插件全部高级功能；逐项范围见工作流对照表。"
+      ],
+      "schema": "mc_prepare_change inputSchema request discriminator action",
+      "evidence": [
+        "validation/bundle-host-integration.json",
+        "validation/README.md"
+      ],
+      "adapter_validation": "ai/validation/panel-native-acceptance.json",
+      "business_contract": "Workshop2027.workshop.groups",
+      "workflow_contract": "ai/skills/mastercam-plugin-suite/references/panel-workflows.md"
+    },
+    {
+      "id": "typed.groups.rename",
+      "module": "LittleBee2027",
+      "title": "群组批量改名",
+      "summary": "明确ID和名称，可预览及恢复；拒绝重复与占用名称。",
+      "automation": "typed",
+      "action": "groups.rename",
+      "tool": "mc_prepare_change",
+      "preconditions": [
+        "先 mc_inspect，核对已保存文档与单位、真实 ID。",
+        "只使用用户或工艺依据提供的参数。",
+        "填写完整类型化请求；先检查具体预览，再按授权执行。"
+      ],
+      "steps": [
+        "mc_prepare_change",
+        "检查 preview 与源对象",
+        "mc_apply_plan",
+        "核对 ok、status、result",
+        "需要时 mc_rollback_plan"
+      ],
+      "limits": [
+        "不自动保存、后处理或机床仿真。",
+        "原生计划仅当前宿主会话，预览 15 分钟有效。",
+        "参数回滚不恢复原刀路计算状态。",
+        "带几何工序库导入禁用；参数导入后须明确关联几何，不能直接视为可加工刀路。",
+        "库IO可能重新分配临时面/边标签，后续必须重新查询；持久面ID和几何/工序/刀具仍验证。",
+        "未覆盖原版插件全部高级功能；逐项范围见工作流对照表。"
+      ],
+      "schema": "mc_prepare_change inputSchema request discriminator action",
+      "evidence": [
+        "validation/bundle-host-integration.json",
+        "validation/README.md"
+      ],
+      "adapter_validation": "ai/validation/panel-native-acceptance.json",
+      "business_contract": "LittleBee2027.bee.rename",
+      "workflow_contract": "ai/skills/mastercam-plugin-suite/references/panel-workflows.md"
+    },
+    {
+      "id": "typed.stock.rectangle",
+      "module": "Workshop2027",
+      "title": "矩形毛坯设置",
+      "summary": "指定机床组、尺寸、原点、锚点与平面，保存完整旧毛坯设置。",
+      "automation": "typed",
+      "action": "stock.rectangle",
+      "tool": "mc_prepare_change",
+      "preconditions": [
+        "先 mc_inspect，核对已保存文档与单位、真实 ID。",
+        "只使用用户或工艺依据提供的参数。",
+        "填写完整类型化请求；先检查具体预览，再按授权执行。"
+      ],
+      "steps": [
+        "mc_prepare_change",
+        "检查 preview 与源对象",
+        "mc_apply_plan",
+        "核对 ok、status、result",
+        "需要时 mc_rollback_plan"
+      ],
+      "limits": [
+        "不自动保存、后处理或机床仿真。",
+        "原生计划仅当前宿主会话，预览 15 分钟有效。",
+        "参数回滚不恢复原刀路计算状态。",
+        "带几何工序库导入禁用；参数导入后须明确关联几何，不能直接视为可加工刀路。",
+        "库IO可能重新分配临时面/边标签，后续必须重新查询；持久面ID和几何/工序/刀具仍验证。",
+        "未覆盖原版插件全部高级功能；逐项范围见工作流对照表。"
+      ],
+      "schema": "mc_prepare_change inputSchema request discriminator action",
+      "evidence": [
+        "validation/bundle-host-integration.json",
+        "validation/README.md"
+      ],
+      "adapter_validation": "ai/validation/panel-native-acceptance.json",
+      "business_contract": "Workshop2027.workshop.stock",
+      "workflow_contract": "ai/skills/mastercam-plugin-suite/references/panel-workflows.md"
+    },
+    {
+      "id": "typed.view.planes",
+      "module": "Workshop2027",
+      "title": "视图与坐标系设置",
+      "summary": "设置已有WCS/构图/刀具/图形平面与三个明确跟随选项。",
+      "automation": "typed",
+      "action": "view.planes",
+      "tool": "mc_prepare_change",
+      "preconditions": [
+        "先 mc_inspect，核对已保存文档与单位、真实 ID。",
+        "只使用用户或工艺依据提供的参数。",
+        "填写完整类型化请求；先检查具体预览，再按授权执行。"
+      ],
+      "steps": [
+        "mc_prepare_change",
+        "检查 preview 与源对象",
+        "mc_apply_plan",
+        "核对 ok、status、result",
+        "需要时 mc_rollback_plan"
+      ],
+      "limits": [
+        "不自动保存、后处理或机床仿真。",
+        "原生计划仅当前宿主会话，预览 15 分钟有效。",
+        "参数回滚不恢复原刀路计算状态。",
+        "带几何工序库导入禁用；参数导入后须明确关联几何，不能直接视为可加工刀路。",
+        "库IO可能重新分配临时面/边标签，后续必须重新查询；持久面ID和几何/工序/刀具仍验证。",
+        "未覆盖原版插件全部高级功能；逐项范围见工作流对照表。"
+      ],
+      "schema": "mc_prepare_change inputSchema request discriminator action",
+      "evidence": [
+        "validation/bundle-host-integration.json",
+        "validation/README.md"
+      ],
+      "adapter_validation": "ai/validation/panel-native-acceptance.json",
+      "business_contract": "Workshop2027.workshop.views",
+      "workflow_contract": "ai/skills/mastercam-plugin-suite/references/panel-workflows.md"
+    },
+    {
+      "id": "typed.selection.chains",
+      "module": "ChainTools2027",
+      "title": "按图素ID串链选择",
+      "summary": "在独立临时曲线副本上验证链数量、闭合与完整成员，应用时选择原图素。",
+      "automation": "typed",
+      "action": "selection.chains",
+      "tool": "mc_prepare_change",
+      "preconditions": [
+        "先 mc_inspect，核对已保存文档与单位、真实 ID。",
+        "只使用用户或工艺依据提供的参数。",
+        "填写完整类型化请求；先检查具体预览，再按授权执行。"
+      ],
+      "steps": [
+        "mc_prepare_change",
+        "检查 preview 与源对象",
+        "mc_apply_plan",
+        "核对 ok、status、result",
+        "需要时 mc_rollback_plan"
+      ],
+      "limits": [
+        "不自动保存、后处理或机床仿真。",
+        "原生计划仅当前宿主会话，预览 15 分钟有效。",
+        "参数回滚不恢复原刀路计算状态。",
+        "带几何工序库导入禁用；参数导入后须明确关联几何，不能直接视为可加工刀路。",
+        "库IO可能重新分配临时面/边标签，后续必须重新查询；持久面ID和几何/工序/刀具仍验证。",
+        "未覆盖原版插件全部高级功能；逐项范围见工作流对照表。"
+      ],
+      "schema": "mc_prepare_change inputSchema request discriminator action",
+      "evidence": [
+        "validation/bundle-host-integration.json",
+        "validation/README.md"
+      ],
+      "adapter_validation": "ai/validation/panel-native-acceptance.json",
+      "business_contract": "ChainTools2027.chain_select",
+      "workflow_contract": "ai/skills/mastercam-plugin-suite/references/panel-workflows.md"
+    },
+    {
+      "id": "typed.geometry.chamfer_edges",
+      "module": "GeometryTools2027",
+      "title": "实体指定边倒角",
+      "summary": "通过实时边标签及持久面身份映射，在独立副本上原生等距倒角。",
+      "automation": "typed",
+      "action": "geometry.chamfer_edges",
+      "tool": "mc_prepare_change",
+      "preconditions": [
+        "先 mc_inspect，核对已保存文档与单位、真实 ID。",
+        "只使用用户或工艺依据提供的参数。",
+        "填写完整类型化请求；先检查具体预览，再按授权执行。"
+      ],
+      "steps": [
+        "mc_prepare_change",
+        "检查 preview 与源对象",
+        "mc_apply_plan",
+        "核对 ok、status、result",
+        "需要时 mc_rollback_plan"
+      ],
+      "limits": [
+        "不自动保存、后处理或机床仿真。",
+        "原生计划仅当前宿主会话，预览 15 分钟有效。",
+        "参数回滚不恢复原刀路计算状态。",
+        "带几何工序库导入禁用；参数导入后须明确关联几何，不能直接视为可加工刀路。",
+        "库IO可能重新分配临时面/边标签，后续必须重新查询；持久面ID和几何/工序/刀具仍验证。",
+        "未覆盖原版插件全部高级功能；逐项范围见工作流对照表。"
+      ],
+      "schema": "mc_prepare_change inputSchema request discriminator action",
+      "evidence": [
+        "validation/bundle-host-integration.json",
+        "validation/README.md"
+      ],
+      "adapter_validation": "ai/validation/panel-native-acceptance.json",
+      "business_contract": "GeometryTools2027.geometry_chamfer_edges",
+      "workflow_contract": "ai/skills/mastercam-plugin-suite/references/panel-workflows.md"
+    },
+    {
+      "id": "typed.materials.estimate",
+      "module": "LittleBee2027",
+      "title": "毛坯重量和成本估算",
+      "summary": "按明确密度/单价/尺寸/单位/余量/数量计算并导出JSON。",
+      "automation": "typed",
+      "action": "materials.estimate",
+      "tool": "mc_prepare_change",
+      "preconditions": [
+        "先 mc_inspect，核对已保存文档与单位、真实 ID。",
+        "只使用用户或工艺依据提供的参数。",
+        "填写完整类型化请求；先检查具体预览，再按授权执行。"
+      ],
+      "steps": [
+        "mc_prepare_change",
+        "检查 preview 与源对象",
+        "mc_apply_plan",
+        "核对 ok、status、result",
+        "需要时 mc_rollback_plan"
+      ],
+      "limits": [
+        "不自动保存、后处理或机床仿真。",
+        "原生计划仅当前宿主会话，预览 15 分钟有效。",
+        "参数回滚不恢复原刀路计算状态。",
+        "带几何工序库导入禁用；参数导入后须明确关联几何，不能直接视为可加工刀路。",
+        "库IO可能重新分配临时面/边标签，后续必须重新查询；持久面ID和几何/工序/刀具仍验证。",
+        "未覆盖原版插件全部高级功能；逐项范围见工作流对照表。"
+      ],
+      "schema": "mc_prepare_change inputSchema request discriminator action",
+      "evidence": [
+        "validation/bundle-host-integration.json",
+        "validation/README.md"
+      ],
+      "adapter_validation": "ai/validation/panel-native-acceptance.json",
+      "business_contract": "LittleBee2027.bee.materials_calc",
+      "workflow_contract": "ai/skills/mastercam-plugin-suite/references/panel-workflows.md"
+    },
+    {
+      "id": "typed.operations.export",
+      "module": "LittleBee2027",
+      "title": "导出工序库",
+      "summary": "显式工序ID及是否带几何，导出后原生回读数量并检查源数据。",
+      "automation": "typed",
+      "action": "operations.export",
+      "tool": "mc_prepare_change",
+      "preconditions": [
+        "先 mc_inspect，核对已保存文档与单位、真实 ID。",
+        "只使用用户或工艺依据提供的参数。",
+        "填写完整类型化请求；先检查具体预览，再按授权执行。"
+      ],
+      "steps": [
+        "mc_prepare_change",
+        "检查 preview 与源对象",
+        "mc_apply_plan",
+        "核对 ok、status、result",
+        "需要时 mc_rollback_plan"
+      ],
+      "limits": [
+        "不自动保存、后处理或机床仿真。",
+        "原生计划仅当前宿主会话，预览 15 分钟有效。",
+        "参数回滚不恢复原刀路计算状态。",
+        "带几何工序库导入禁用；参数导入后须明确关联几何，不能直接视为可加工刀路。",
+        "库IO可能重新分配临时面/边标签，后续必须重新查询；持久面ID和几何/工序/刀具仍验证。",
+        "未覆盖原版插件全部高级功能；逐项范围见工作流对照表。"
+      ],
+      "schema": "mc_prepare_change inputSchema request discriminator action",
+      "evidence": [
+        "validation/bundle-host-integration.json",
+        "validation/README.md"
+      ],
+      "adapter_validation": "ai/validation/panel-native-acceptance.json",
+      "business_contract": "LittleBee2027.bee.exchange",
+      "workflow_contract": "ai/skills/mastercam-plugin-suite/references/panel-workflows.md"
+    },
+    {
+      "id": "typed.operations.import",
+      "module": "LittleBee2027",
+      "title": "导入工序参数库",
+      "summary": "校验文件SHA256与库内ID，只导入参数和刀具；带几何导入因原生故障禁用。",
+      "automation": "typed",
+      "action": "operations.import",
+      "tool": "mc_prepare_change",
+      "preconditions": [
+        "先 mc_inspect，核对已保存文档与单位、真实 ID。",
+        "只使用用户或工艺依据提供的参数。",
+        "填写完整类型化请求；先检查具体预览，再按授权执行。"
+      ],
+      "steps": [
+        "mc_prepare_change",
+        "检查 preview 与源对象",
+        "mc_apply_plan",
+        "核对 ok、status、result",
+        "需要时 mc_rollback_plan"
+      ],
+      "limits": [
+        "不自动保存、后处理或机床仿真。",
+        "原生计划仅当前宿主会话，预览 15 分钟有效。",
+        "参数回滚不恢复原刀路计算状态。",
+        "带几何工序库导入禁用；参数导入后须明确关联几何，不能直接视为可加工刀路。",
+        "库IO可能重新分配临时面/边标签，后续必须重新查询；持久面ID和几何/工序/刀具仍验证。",
+        "未覆盖原版插件全部高级功能；逐项范围见工作流对照表。"
+      ],
+      "schema": "mc_prepare_change inputSchema request discriminator action",
+      "evidence": [
+        "validation/bundle-host-integration.json",
+        "validation/README.md"
+      ],
+      "adapter_validation": "ai/validation/panel-native-acceptance.json",
+      "business_contract": "LittleBee2027.bee.exchange",
+      "workflow_contract": "ai/skills/mastercam-plugin-suite/references/panel-workflows.md"
     },
     {
       "id": "panel.advanced_drilling",

@@ -19,7 +19,7 @@ using Ops = OperationTools2027;
 using Hsm = HSMRebuild2027;
 using Mp = MPRebuild2027;
 
-[assembly:System.Reflection.AssemblyVersion("1.3.0.0")]
+[assembly:System.Reflection.AssemblyVersion("1.5.0.0")]
 [assembly:System.Runtime.Versioning.TargetFramework(".NETCoreApp,Version=v10.0")]
 namespace MastercamPluginAI;
 
@@ -62,10 +62,10 @@ public static class Bridge
         tools=SearchManager.GetTools().OrderBy(t=>t.Slot).Select(t=>new{t.Slot,t.Number,t.Name,t.Diameter,t.Length,t.FluteLength,t.TipAngle,t.LengthOffset,t.DiameterOffset})
     }));
     static object Inspect()=>new {
-        session_id=Session,process_id=Environment.ProcessId,document=FileManager.CurrentFileName,metric=SettingsManager.Metric,api=typeof(Geometry).Assembly.FullName,
+        session_id=Session,process_id=Environment.ProcessId,document=FileManager.CurrentFileName,metric=SettingsManager.Metric,api=typeof(Geometry).Assembly.FullName,workflow_context=PanelBindings.Context(),
         geometry_count=Geometry().Length,geometry=Geometry().Take(250).Select(g=>new{id=g.GetEntityID(),type=g.GetType().Name,g.Level,g.Color,g.Selected,g.Blanked,g.TimeStamp}),
         operations=SearchManager.GetOperations().Select(o=>new{id=o.GetOperationID(),o.Name,type=o.GetType().Name,o.Dirty,o.Posting,tool_slot=o.OperationTool?.Slot,tool_plane=Frame(o.ToolPlane)}),
-        selected_operation_ids=SearchManager.GetOperationIDs(false),
+        selected_operation_ids=SearchManager.GetOperationIDs(false),workshop_context=WorkshopBindings.Context(),
         views=SearchManager.GetViews().Select(v=>new{v.ViewID,v.ViewNumber,v.ViewName,frame=Frame(v)}),
         visible_occupied_levels=Geometry().Select(g=>g.Level).Distinct().Where(LevelsManager.IsLevelVisible).OrderBy(x=>x),
         selected_solid_ids=Geometry().Where(g=>g is SolidGeometry&&g.Selected).Select(g=>g.GetEntityID()),
@@ -80,6 +80,18 @@ public static class Bridge
     {
         var q=p.Request;var c=q.GetProperty("parameters");
         switch(p.Action) {
+        case "operations.import": {
+            var binding=LibraryImportBinding.Prepare(q,directory);p.Preview=binding.Preview;p.Apply=binding.Apply;p.Rollback=binding.Rollback;p.Readback=binding.Readback;break;
+        }
+        case "selection.chains":case "geometry.chamfer_edges":case "materials.estimate":case "operations.export": {
+            var binding=RemainingBindings.Prepare(q,directory);p.Preview=binding.Preview;p.Apply=binding.Apply;p.Rollback=binding.Rollback;p.Readback=binding.Readback;break;
+        }
+        case "operation.parameters":case "operation.planes":case "operation.copy":case "groups.create":case "groups.rename":case "stock.rectangle":case "view.planes": {
+            var binding=WorkshopBindings.Prepare(q,directory);p.Preview=binding.Preview;p.Apply=binding.Apply;p.Rollback=binding.Rollback;p.Readback=binding.Readback;break;
+        }
+        case "drilling.stages":case "drilling.tap":case "geometry.convex_boundary":case "interface.middle_confirm": {
+            var binding=PanelBindings.Prepare(q,directory);p.Preview=binding.Preview;p.Apply=binding.Apply;p.Rollback=binding.Rollback;p.Readback=binding.Readback;break;
+        }
         case "porsche.project_boundary":case "porsche.contour":case "porsche.heal_holes":case "porsche.holes": {
             var binding=PorscheBindings.Prepare(q,directory);
             p.Preview=binding.Preview;p.Apply=binding.Apply;p.Rollback=binding.Rollback;p.Readback=binding.Readback;break;
@@ -130,6 +142,8 @@ public static class Bridge
             if(PanelLauncher.Busy&&command!="inspect")throw new InvalidOperationException("Plugin panel is queued/open. Observe and close it before another native command.");
             object data;
             if(command=="inspect") data=Inspect();
+            else if(command=="entity_information") {Document(q);data=RemainingBindings.EntityInfo(Ids(q,"entity_ids"));}
+            else if(command=="library_information") {Document(q);data=RemainingBindings.LibraryInfo(q.GetProperty("path").GetString());}
             else if(command=="open_panel") {
                 Document(q);
                 var panels=new Dictionary<string,(string App,string Function)> {

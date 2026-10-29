@@ -21,7 +21,7 @@ class Catalog(unittest.TestCase):
   actual=set(schema['discriminator']['mapping'])
   c=load(ROOT/'ai/catalog/capabilities.json')
   typed={r['action'] for r in c['capabilities'] if r['automation']=='typed'}
-  self.assertEqual(actual,typed);self.assertEqual(len(typed),28)
+  self.assertEqual(actual,typed);self.assertEqual(len(typed),44)
   ids={r['id'] for r in c['capabilities']}
   for r in c['capabilities']:
    if r['automation']=='typed':self.assertIn(r['business_contract'],ids)

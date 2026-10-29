@@ -35,6 +35,17 @@ async def mc_inspect()->dict:
     """Read active saved path, units, native operation/tool IDs, ViewID frames, visible occupied levels, selected solids and up to 250 geometry records. Does not open/save a document."""
     return await runtime.call('inspect')
 
+@mcp.tool(annotations=READ)
+async def mc_entity_information(expected_document:str,entity_ids:list[int])->dict:
+    """Read actual entity types and solid edge tags with incident persistent face IDs. Preserves entity selection. Tags are session-specific; prepare immediately and never guess IDs."""
+    if not 1<=len(entity_ids)<=100 or len(set(entity_ids))!=len(entity_ids) or any(type(x) is not int or x<=0 for x in entity_ids):raise ValueError('1-100 unique positive entity IDs required')
+    return await runtime.call('entity_information',dict(expected_document=expected_document,entity_ids=entity_ids))
+
+@mcp.tool(annotations=READ)
+async def mc_operation_library(expected_document:str,path:str)->dict:
+    """Read an existing local .mcam-operations library's actual operation/group IDs, tool summaries and SHA256 without importing it."""
+    return await runtime.call('library_information',dict(expected_document=expected_document,path=path))
+
 @mcp.tool(annotations=WRITE)
 async def mc_open_panel(panel_id:Literal['advanced_drilling','tapping','solid_boundary','chain_picker','bee_hub','geometry_native','middle_confirm','geometry_editor'],expected_document:str,request_id:str)->dict:
     """Queue one allowlisted interactive plugin panel. This is UI-assisted execution, NOT a headless business API. Observe/control the actual panel with UI tools, then inspect actual output. A queued receipt does not prove a window opened or any operation completed. Does not touch CIMCO. Do not repeat after timeout; query mc_request_status."""

@@ -1,0 +1,394 @@
+{
+  "date": "2026-10-29",
+  "release": "2027.10.29.4",
+  "passed": true,
+  "adapter": {
+    "version": "1.5.0.0",
+    "file": "MastercamPluginAI150.dll",
+    "sha256": "2F68A414F50FB1EDB97920E848C09AA20158114591C7EC9628DDCB17610EB8B1"
+  },
+  "transport": "Actual stdio MCP through installed Mastercam IPC/API29",
+  "typedActionsTotal": 44,
+  "newTypedActions": 16,
+  "mcpTools": 14,
+  "allowlistedUiPanels": 8,
+  "finalBuildMcpCalls": 81,
+  "finalBuildAssertions": 104,
+  "businessCases": [
+    {
+      "name": "export",
+      "passed": true
+    },
+    {
+      "name": "drilling.stages1",
+      "passed": true
+    },
+    {
+      "name": "drilling.stages6",
+      "passed": true
+    },
+    {
+      "name": "drilling.tap1",
+      "passed": true
+    },
+    {
+      "name": "drilling.tap6",
+      "passed": true
+    },
+    {
+      "name": "convex",
+      "passed": true
+    },
+    {
+      "name": "middle",
+      "passed": true
+    },
+    {
+      "name": "parameters",
+      "passed": true
+    },
+    {
+      "name": "planes",
+      "passed": true
+    },
+    {
+      "name": "copy",
+      "passed": true
+    },
+    {
+      "name": "groups",
+      "passed": true
+    },
+    {
+      "name": "rename",
+      "passed": true
+    },
+    {
+      "name": "stock",
+      "passed": true
+    },
+    {
+      "name": "view",
+      "passed": true
+    },
+    {
+      "name": "chain",
+      "passed": true
+    },
+    {
+      "name": "chamfer_edges",
+      "passed": true
+    },
+    {
+      "name": "materials",
+      "passed": true
+    },
+    {
+      "name": "import",
+      "passed": true
+    },
+    {
+      "name": "import-current-views",
+      "passed": true
+    }
+  ],
+  "rejectionChecks": [
+    {
+      "name": "wrong chain count rejected after temporary copies cleaned",
+      "ok": true
+    },
+    {
+      "name": "nonactive nested parent rejected before group creation",
+      "ok": true
+    },
+    {
+      "name": "activity preserved after rejected request",
+      "ok": true
+    },
+    {
+      "name": "only owned parent exists",
+      "ok": true
+    },
+    {
+      "name": "owned parent rollback succeeds",
+      "ok": true
+    },
+    {
+      "name": "geometry unchanged after rejected operations and cleanup",
+      "ok": true
+    },
+    {
+      "name": "operations unchanged after rejected operations and cleanup",
+      "ok": true
+    },
+    {
+      "name": "tools unchanged after rejected operations and cleanup",
+      "ok": true
+    },
+    {
+      "name": "views unchanged after rejected operations and cleanup",
+      "ok": true
+    },
+    {
+      "name": "workshop_context unchanged after rejected operations and cleanup",
+      "ok": true
+    },
+    {
+      "name": "selected_operation_ids unchanged after rejected operations and cleanup",
+      "ok": true
+    }
+  ],
+  "finalBuildCoveredActions": [
+    "drilling.stages",
+    "drilling.tap",
+    "geometry.convex_boundary",
+    "interface.middle_confirm",
+    "operation.parameters",
+    "operation.planes",
+    "operation.copy",
+    "groups.create",
+    "groups.rename",
+    "stock.rectangle",
+    "view.planes",
+    "selection.chains",
+    "geometry.chamfer_edges",
+    "materials.estimate",
+    "operations.export",
+    "operations.import"
+  ],
+  "cleanup": {
+    "passed": true,
+    "error": null,
+    "steps": [
+      "owned operation deleted",
+      "five owned geometries deleted",
+      "three owned tools deleted",
+      "original geometry/time stamps, operation/tool/view IDs, groups and selection match"
+    ],
+    "geometry_count": 57,
+    "operation_ids": [
+      1,
+      2,
+      3,
+      4,
+      6,
+      7,
+      9,
+      10,
+      11,
+      12,
+      14,
+      15,
+      16
+    ],
+    "tool_slots": [
+      5,
+      1,
+      3,
+      4,
+      8,
+      10,
+      11,
+      6,
+      9,
+      2,
+      7
+    ],
+    "view_ids": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      9,
+      10,
+      52,
+      53,
+      54
+    ],
+    "selected_operation_ids": [
+      6
+    ],
+    "active_group": 2
+  },
+  "originalObjectReadbacks": {
+    "operations": true,
+    "tools": true,
+    "geometry": true,
+    "groups": true,
+    "selection": true
+  },
+  "offline": {
+    "pythonTests": 40,
+    "libraryStateRegressionChecks": 9,
+    "previewGuardRegressionChecks": 5,
+    "packageChecks": 2278,
+    "skillValidated": true,
+    "installedVerification": "296 files and startup OK; 295 payload files unchanged"
+  },
+  "businessPayloadUnchanged": true,
+  "cimcoModified": false,
+  "receipts": [
+    {
+      "name": "fresh-session/results-87772f60.json",
+      "sha256": "992D1A54A061080FE37B4579AFA5E1090CE802477107DCDDCAEF72E4079E8937"
+    },
+    {
+      "name": "fresh-session/results-ae420983.json",
+      "sha256": "D059A92429385D8D475361E437DB33CB571EEDF56FA98A127AB8BE3C95CAC96A"
+    },
+    {
+      "name": "fresh-session/negative150b.json",
+      "sha256": "30F218E12F001014CBACB16C6B39E3EA0F8D0A91218C2C30270EE666D930A330"
+    },
+    {
+      "name": "fresh-session/cleanup-final.json",
+      "sha256": "1226A412F9E66EFCCD5A3ADAB832AF2E3737F878514A09C8DB14079C617F90EF"
+    },
+    {
+      "name": "fresh-session/final-original-checks.json",
+      "sha256": "D400E8A2FD56E4ACADB7A53B8FF39496B2A217E1F4F6B2DE37801FBE51F18C28"
+    },
+    {
+      "name": "fresh-session/fixture.json",
+      "sha256": "1929646CB5D81F9977CAEB779A3BC733C8CA6A0E09A6FFCB2ACA7BAAE8D0E5AA"
+    },
+    {
+      "name": "fresh-session/run_tests.py",
+      "sha256": "18DC1EFA92906E7A1909FAE5AFC8D773DCB135F62188E0EFBA4CAE5F3622E06D"
+    },
+    {
+      "name": "fresh-session/run_import_current_views.py",
+      "sha256": "ECDCC0E7B9D02A0AE22488BDE8A3268A0009BE50F16E9E4DEBD67D11D14BFA8C"
+    },
+    {
+      "name": "fresh-session/negative_tests150b.py",
+      "sha256": "9E84327C0B4D93EB760EF375DF91F46C5BC85F6CC3F242D728C60D2E96D30A44"
+    },
+    {
+      "name": "fresh-session/CleanupFixtureV2.csx",
+      "sha256": "244203ABD5135238D1CF4350A85BE55DC02EC0739A62A87A4684387D03C6F2C6"
+    },
+    {
+      "name": "python-tests-final.txt",
+      "sha256": "54B714E353C2D8FAB7FF5432F5B81CC2B77E26F3743A2A52E81C931C29A644DB"
+    },
+    {
+      "name": "library-state-tests.txt",
+      "sha256": "03312DC836D13EFD1E289004654562C3175A759BCD846534932C5AE35391B030"
+    },
+    {
+      "name": "installed-verify.txt",
+      "sha256": "C303F75A4E388756D50AD8C4D7F7A19102B9148CE14985C33709D9B72CDD901B"
+    },
+    {
+      "name": "group-api-rea.json",
+      "sha256": "856037CBAB39E8D9A7E3E05E06CB2CCEEC34EF31C422CE740EB635631987888E"
+    },
+    {
+      "name": "native-import-crash145.json",
+      "sha256": "9843ACD30792BAEB4399950FA380ABFB70AD764995F824AB20B108EFE045379D"
+    },
+    {
+      "name": "fresh-session/roundtrip150.json",
+      "sha256": "0CC8448D9CE68EF91E29DFBDF0C77B8868F6CB6693F994CE71B4721F8311753B"
+    },
+    {
+      "name": "fresh-session/roundtrip-readback.json",
+      "sha256": "304B6B7AD0EFC67811E75135A27F8EF9BC1A743FC5C4CDC98EE674ADAE2D8738"
+    },
+    {
+      "name": "fresh-session/ReadLibraryRoundtrip.csx",
+      "sha256": "8BD34D4B665F9F39006F070EF8B3B42C659244E600AC2804066471BD2ED8EFBB"
+    },
+    {
+      "name": "fresh-session/library_roundtrip.py",
+      "sha256": "8F207FD9F1B250027FBA234298205DE1E448BD6B6BDCEFA23D8587B77A33F8BD"
+    }
+  ],
+  "limitations": [
+    "Only the listed scoped actions are accepted; original X+ and MP are not claimed fully reconstructed or entirely headless.",
+    "ImportOperation with geometry caused a native access violation in GeometrySelection.All/fill_in_ent_idn after import. Both public schema and native binding reject include_geometry=true. Parameter-only import was tested repeatedly and with current-view mapping.",
+    "Library IO can reallocate transient face tags. Persistent face IDs, readable B-rep face type/normal/color/edge counts, geometry attributes/timestamps, operation/tool/group state remain checked; only dimensionless view-matrix components admit 1e-12 absolute roundoff.",
+    "Group creation requires the currently active parent; native creation can activate a new group. MakeGroupCurrent is not used to reposition the insert arrow. A failed rollback is terminal; owned group cleanup was separately verified.",
+    "No regeneration, postprocessing, collision simulation or production NC acceptance is implied by this batch. Tapping uses explicit raw feed and target identity.",
+    "Native test fixture uses a single machine group, contour/drilling operations, rectangular curves/convex block and explicit synthetic tools; not an arbitrary model stress test.",
+    "Original saved test document was reopened after the native crash; pre-crash receipts remain historical and are not relabeled as final-build results."
+  ],
+  "historicalCorrections": [
+    "AI140 convex selection restoration changed only the owned fixture timestamp; adapted attribute-only restoration passed later builds.",
+    "AI142 temporary chain selection and material artifact-directory failures corrected before final full regression.",
+    "AI143/146 export strict stamp failures identified as runtime face-tag reallocation; AI144 import cleanup numeric mismatch identified as <=1e-17 view-matrix roundoff. Restricted comparison has independent positive/negative tests.",
+    "AI145 geometry-import crash preserved in Windows event evidence; unsafe geometry import is disabled, not called a pass.",
+    "AI148 negative harness initially assumed a RollbackFailed plan could be retried; it cannot. Child/owned parent and the MakeGroupCurrent-generated empty group were cleaned explicitly. REA ev_622534e647e0524bb31dc4ffa48b191530ef330479668c2baa5b636b64be3660 maps child-group MakeGroupCurrent to SetDefaultOperationGroup.",
+    "Standalone cleanup scripts initially missed a namespace/reference, causing NET-Script compilation dialogs; corrected SDK-only cleanup was compiled and executed, with exact inventory verification.",
+    "First AI150 negative harness used the newly active parent as its supposedly inactive target; corrected 150b uses the previous parent and passes before/after checks."
+  ],
+  "additionalReadOnlySdkProbe": 1,
+  "parameterLibraryRoundtrip": {
+    "passed": true,
+    "nativeFields": [
+      {
+        "field": "Name",
+        "matches": true
+      },
+      {
+        "field": "FeedRate",
+        "matches": true
+      },
+      {
+        "field": "PlungeRate",
+        "matches": true
+      },
+      {
+        "field": "RetractRate",
+        "matches": true
+      },
+      {
+        "field": "SpindleSpeed",
+        "matches": true
+      },
+      {
+        "field": "LengthOffset",
+        "matches": true
+      },
+      {
+        "field": "DiameterOffset",
+        "matches": true
+      },
+      {
+        "field": "cut",
+        "matches": true
+      },
+      {
+        "field": "link",
+        "matches": true
+      },
+      {
+        "field": "tool",
+        "matches": true
+      },
+      {
+        "field": "wcs",
+        "matches": true
+      },
+      {
+        "field": "cp",
+        "matches": true
+      },
+      {
+        "field": "tp",
+        "matches": true
+      }
+    ],
+    "preservation": {
+      "geometry": true,
+      "operations": true,
+      "tools": true,
+      "workshop_context": true,
+      "selected_operation_ids": true
+    }
+  }
+}

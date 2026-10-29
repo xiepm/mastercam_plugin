@@ -3,13 +3,15 @@ name: mastercam-plugin-suite
 description: Explain, select and operate the installed Mastercam 2027 plugin suite, including Porsche/V++, LittleBee, operation tools, HSM, MP and X+, through its verified capability catalog and typed MCP workflows.
 ---
 
-Use this skill when the user asks what these plugins do, how to use them, or asks AI to perform a supported plugin operation in Mastercam 2027. The capability catalog reflects release 2027.10.28.2; it distinguishes original plugins, independent rebuilds, typed automation, interactive routes and unsupported behavior.
+Use this skill when the user asks what these plugins do, how to use them, or asks AI to perform a supported plugin operation in Mastercam 2027. The capability catalog reflects AI release 2027.10.29.4 with the existing 2027.10.28.2 business payload; it distinguishes original plugins, independent rebuilds, typed automation, interactive routes and unsupported behavior.
 
 Find the intended workflow with `mc_catalog`, then read its exact contract with `mc_capability`. Search Chinese names as well as module names. For a UI command not found by name, inspect `module.<moduleName>` and its `routes`. Do not infer behavior from an FT function name alone. See [concepts](references/concepts.md) for common terminology.
 
 For Porsche/V++ automatic contours, hole healing or complex-hole operations, read [Porsche direct workflows](references/porsche.md). Four typed actions distinguish projection-only curves, three-stage contour machining, independent healed copies, and hole machining. Native `ViewID`, hole radius versus diameter, missing-tool creation, and explicit regeneration are material input distinctions.
 
-For MP/X+ geometry, selection, SVG, sketching, fixtures, Hirth planes, holders, reports, screenshots, NCI names or work offsets, read [MP and X+ workflows](references/geometry-xplus.md). The catalog exposes 28 typed actions and eight allowlisted UI panels. `geometry.copy_edit` preserves the originals; selection actions intentionally change selection only at apply. Report rollback retains artifacts; holder rollback retains its new library file.
+For MP/X+ geometry, selection, SVG, sketching, fixtures, Hirth planes, holders, reports, screenshots, NCI names or work offsets, read [MP and X+ workflows](references/geometry-xplus.md). The catalog exposes 44 typed actions and eight allowlisted UI panels. `geometry.copy_edit` preserves the originals; selection actions intentionally change selection only at apply. Report rollback retains artifacts; holder rollback retains its new library file.
+
+For staged drilling/tapping, convex boundaries, explicit curve-chain selection, solid edge chamfers, operation parameters/planes/copies, groups, stock, views, materials or library IO, read [panel replacements](references/panel-workflows.md). These actions replace bounded panel workflows with direct calls. Use `mc_entity_information` for current edge tags and `mc_operation_library` for file hashes and actual library IDs. Geometry import is disabled after a native crash; do not bypass that contract.
 
 For execution:
 

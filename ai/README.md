@@ -6,7 +6,7 @@
 
 - **功能目录**：`catalog/capabilities.json`，覆盖发布包的 27 组模块及 CIMCO；含真实 FT 入口索引、前置条件、参数含义、副作用、回滚与验收边界。
 - **Skill**：`skills/mastercam-plugin-suite`，指导 AI 选择功能、核对坐标/刀具/单位、读取预览及处理失败。
-- **MCP**：`mcp/server.py`，12 个工具，28 类结构化动作及 8 个受限交互面板入口；复用已经工作的 Mastercam MCP 进入宿主主线程。
+- **MCP**：`mcp/server.py`，14 个工具，44 类结构化动作及 8 个受限交互面板入口；复用已经工作的 Mastercam MCP 进入宿主主线程。
 - **原生适配层**：`bridge/bin`，仅引用安装的 API29 和已发布业务 DLL，不分发 Mastercam SDK，不修改现有业务 DLL。边线、几何、夹具、半径选择和草绘适配源码保留于 bridge，来源哈希及调用副作用修正见 adapter-provenance.json。独立实体复制绑定已验证的几何内核构建，不匹配时拒绝执行。
 
 目录中 `typed` 表示已有参数化 MCP，`interactive` 表示需通过界面完成，`reference` 表示功能知识/源 API 合同。`typed_candidate` 仅表示底层有可封装的接口。不要把这几种状态混为一谈。
@@ -29,6 +29,8 @@
 保时捷接口合同见 [保时捷工作流](skills/mastercam-plugin-suite/references/porsche.md)。本次新增 MP/X+ 的 18 类直接动作，见 [完整功能对应表](skills/mastercam-plugin-suite/references/geometry-xplus.md)；包括边线、法向、选择、SVG、草绘及工序、夹具、分度平面、刀柄库、报告、STL、截图、工作偏置与 NCI 名称。
 
 本实现采用 Skill、结构化知识、MCP、状态化 Workflow、运行时预览/回滚守卫及 Evaluation 测试。现有目录检索足够支撑这些功能，未额外引入向量数据库、定时触发或后台代理。
+
+本轮另新增 16 类直接动作，覆盖分阶段钻孔/攻丝、凸边界、串链、实体边倒角、工序/群组/毛坯/视图设置、材料计算与工序库 IO，见 [面板功能直接调用表](skills/mastercam-plugin-suite/references/panel-workflows.md)。带几何导入发生原生崩溃，当前接口拒绝该参数；参数库导入与导出分别验证，不把这项限制藏在成功统计中。
 
 ## 本机 Codex
 
