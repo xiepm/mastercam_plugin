@@ -4,7 +4,7 @@ import hashlib, json, os, re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-VERSION = '2027.11.01.1'
+VERSION = '2027.11.01.2'
 
 def load(path):
     return json.loads(Path(path).read_text(encoding='utf-8-sig'))

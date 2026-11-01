@@ -33,6 +33,7 @@ def main():
     assert records['F0012']['centroid'][2] == 6.4
     for n in (14, 16, 18, 20):
         assert records[f'F{n:04}']['analytic']['radius'] == 1.025
+    write(out/'cad-summary.json',cad.summary())
     triangles = triangulate(cad.body, .002, 200000)
     facets=[]
     zero_area=0

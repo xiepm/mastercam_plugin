@@ -30,21 +30,21 @@ def export(source):
     for package,project in packages.items():add(f'projects/{project}/src/{package}/__init__.py')
     for name in ('core','constructive_templates','faceted_material_difference'):
         add(f'projects/01_cad_core/src/cad_core/{name}.py')
-    for name in ('contour_smoke','plan_simulation','plan_multi','configuration_audit','cimco_setup'):
+    for name in ('contour_smoke','plan_simulation','plan_multi','configuration_audit','cimco_setup','stand_replay'):
         add(f'projects/08_mastercam_bridge/src/mastercam_bridge/{name}.py')
     for name in ('prepare_stand_trial.py','run_bound_stand_2027.py','verify_bound_stand_2027.py',
                  'create_multi_plan_fixture.py','create_plan_simulation_fixture.py',
                  'prepare_stand_local_preview_post.py','prepare_stand_zfirst_post.py',
-                 'verify_stand_local_preview_nc.py','verify_stand_zfirst_nc.py','verify_stand_setups_2027.py'):
+                 'verify_stand_local_preview_nc.py','verify_stand_zfirst_nc.py','verify_stand_setups_2027.py','compare_simulation_stls.py'):
         add('projects/08_mastercam_bridge/tools/'+name)
     for p in (source/'projects/08_mastercam_bridge/src/mastercam').glob('aicnc*.csx'):add(p.relative_to(source))
     for name in ('SimulationDomainBridge.cs','SimulationFrameworkEntry.cs'):
         add('projects/08_mastercam_bridge/src/mastercam/'+name)
     for name in ('features','feature_taxonomy','manufacturing_context','cam_plan','mastercam_contour_smoke',
                  'mastercam_plan_simulation','mastercam_plan_multi','mastercam_bound_stand_trial',
-                 'mastercam_setup_readback','mastercam_configuration_audit','nx_native_ipw_polygons'):
+                 'mastercam_setup_readback','mastercam_configuration_audit','nx_native_ipw_polygons','mastercam_setup_replay'):
         add('schemas/'+name+'.schema.json')
-    for name in ('features','manufacturing_context','cam_plan'):
+    for name in ('features','manufacturing_context','cam_plan','mastercam_setup_replay','mastercam_setup_readback'):
         add('schemas/examples/'+name+'.example.json')
     files=[]
     base=subprocess.check_output(['git','rev-parse','HEAD'],cwd=source,text=True).strip()

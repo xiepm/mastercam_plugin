@@ -2,15 +2,17 @@
 
 **新电脑复制 Codex 加工工程能力：**先运行 `Install.cmd`，再运行 **`Install-AI.cmd`**，重启 Mastercam 并重载 Codex 工具，使用 **`$mastercam-project`**。本包统一提供 Prompt、Skill、基础/插件 MCP、执行工具、知识检索和任务上下文。详见 [六项能力与新电脑安装／重放](docs/PORTABLE_AGENT.md)。首次本机验证与另一台电脑验收分别记录，不承诺任意工件成功率。
 
+**STEP 多工序重放：**[两装夹九工序、原生材料仿真与两次冷重开](docs/STEP_REPLAY.md)。该入口绑定现有支座输入，包含 P01 环境锁定和验收报告；不是任意 STEP 自动编程的成功率承诺。
+
 面向 **Windows x64 · Mastercam 2027 / API29** 的联网一键安装合集。一个 ZIP 包含 27 组插件/资源，包括重建工具与 15 个原版 X+ 入口；缺少 CIMCO Verify 时自动从官方服务器下载并安装，已有匹配安装则跳过。
 
-**[下载可移植 Agent 2027.11.01.1](https://github.com/xiepm/mastercam_plugin/archive/refs/tags/v2027.11.01.1.zip)** · [全部插件目录](docs/PLUGINS.md) · [安装说明](docs/INSTALL.md) · [兼容性与已知范围](docs/COMPATIBILITY.md)
+**[下载可移植 Agent 2027.11.01.2](https://github.com/xiepm/mastercam_plugin/archive/refs/tags/v2027.11.01.2.zip)** · [全部插件目录](docs/PLUGINS.md) · [安装说明](docs/INSTALL.md) · [兼容性与已知范围](docs/COMPATIBILITY.md)
 
 **AI 使用与调用**：[Skill + MCP 接入说明](ai/README.md)。功能目录覆盖 27 组模块及 CIMCO，包含 170 个实际 FT 入口；插件 MCP 的 19 个工具包括原有 44 类参数化动作、8 个固定交互面板入口，以及知识检索和任务上下文；基础 MCP 的 9 个工具随包提供。交互功能与未封装 API 明确标记。
 
 ## 下载与安装
 
-1. 下载当前仓库源码 ZIP，或在 Releases 下载对应版本安装包，完整解压到固定文件夹。本次可移植 Agent 包版本为 **2027.11.01.1**；不要用旧发布 ZIP 代替当前代码。
+1. 下载当前仓库源码 ZIP，或在 Releases 下载对应版本安装包，完整解压到固定文件夹。本次可移植 Agent 包版本为 **2027.11.01.2**；不要用旧发布 ZIP 代替当前代码。
 2. 确认 Mastercam 2027 已启动过一次，然后正常关闭 Mastercam。
 3. 双击 **`Install.cmd`**。自动查找安装目录；若未找到，输入包含 `Mastercam.exe` 的目录。按 Windows 提示允许写入安装目录。
 4. 重启 Mastercam，查看 **小蜜蜂、工艺助手、X+ 工具、X+ 原版、HSM 加工、MP 设计工具** 页签。CIMCO 首次安装需要联网下载约 43 MB；已有完整匹配安装时无需下载或重装。

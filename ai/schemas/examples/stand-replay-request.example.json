@@ -1,0 +1,11 @@
+{
+  "schema_version": "aicnc.mastercam-stand-replay-request/0.1",
+  "source_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+  "machine_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+  "source_manifest_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+  "p01_python": "/home/operator/p01/bin/python",
+  "wsl_distro": "Ubuntu-22.04",
+  "production_released": false,
+  "model_inference_used": false,
+  "task_id": "example-only"
+}

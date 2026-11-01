@@ -2,6 +2,22 @@
   "version": "2027.11.01.1",
   "documents": [
     {
+      "path": "docs/STEP_REPLAY.md",
+      "title": "STEP两装夹九工序完整仿真重放",
+      "tags": [
+        "STEP",
+        "P01",
+        "CAPP",
+        "9工序",
+        "冷重开",
+        "过切",
+        "刀柄",
+        "视图名称",
+        "验收"
+      ],
+      "status": "source_bound_replay_with_native_ui_checkpoint"
+    },
+    {
       "path": "ai/knowledge/project-workflow.md",
       "title": "加工工程完整工作流",
       "tags": [
