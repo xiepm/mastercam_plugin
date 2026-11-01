@@ -176,7 +176,7 @@ try {
     Must-Fail 'Corrupt download rejected before installation' { Invoke-SuiteInstall $f.root $f.config $small }
     Check 'Rejected corrupt package leaves destination unchanged' ((Snapshot $f) -eq $before)
 
-    $report=[ordered]@{suite='Portable installer';date='2026-10-28';powershell=$PSVersionTable.PSVersion.ToString();payloadFiles=$payloadCount;checks=@($script:Checks.ToArray());passed=$true;nativeHostUsed=$false}
+    $report=[ordered]@{suite='Portable installer';date=(Get-Date -Format 'yyyy-MM-dd');powershell=$PSVersionTable.PSVersion.ToString();payloadFiles=$payloadCount;checks=@($script:Checks.ToArray());passed=$true;nativeHostUsed=$false}
     [void][IO.Directory]::CreateDirectory((Join-Path $repo 'validation'))
     Write-Json (Join-Path $repo ('validation/installer-'+$PSVersionTable.PSVersion.Major+'.json')) $report
     Write-Output ("ALL PASS: {0} checks" -f $script:Checks.Count)

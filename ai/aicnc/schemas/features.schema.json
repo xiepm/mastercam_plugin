@@ -1,0 +1,960 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-cnc.local/schemas/features.schema.json",
+  "title": "AI-CNC CAPP-ready manufacturing feature output",
+  "description": "Version 2.2 instance-level contract produced by P04 after source-label mapping and OCCT geometry enrichment, including feature-local frames, oriented bounds, and explicit instance-boundary provenance.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "part_id",
+    "source",
+    "units",
+    "coordinate_system",
+    "face_id_namespace",
+    "faces",
+    "features",
+    "relations",
+    "pipeline_metadata",
+    "models",
+    "warnings"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "2.2.0"
+    },
+    "part_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "source": {
+      "$ref": "#/$defs/source"
+    },
+    "units": {
+      "$ref": "#/$defs/units"
+    },
+    "coordinate_system": {
+      "$ref": "#/$defs/coordinateSystem"
+    },
+    "face_id_namespace": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Identifies the exact import/preprocessing run that owns all face_id values."
+    },
+    "faces": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/face"
+      }
+    },
+    "features": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/feature"
+      }
+    },
+    "relations": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/relation"
+      }
+    },
+    "pipeline_metadata": {
+      "$ref": "#/$defs/pipelineMetadata"
+    },
+    "models": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/modelMetadata"
+      }
+    },
+    "warnings": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  },
+  "$defs": {
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["step_file", "step_sha256", "occt_version", "preprocess_version"],
+      "properties": {
+        "step_file": {
+          "type": "string",
+          "minLength": 1
+        },
+        "step_sha256": {
+          "type": "string",
+          "pattern": "^[A-Fa-f0-9]{64}$"
+        },
+        "occt_version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "preprocess_version": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "units": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["length", "angle"],
+      "properties": {
+        "length": {
+          "enum": ["mm", "inch"]
+        },
+        "angle": {
+          "enum": ["deg", "rad"]
+        }
+      }
+    },
+    "vector3": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "items": {
+        "type": "number"
+      }
+    },
+    "nullableVector3": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/vector3"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "probability": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "nullableProbability": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/probability"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "coordinateSystem": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "origin", "x_axis", "y_axis", "z_axis"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "origin": {
+          "$ref": "#/$defs/vector3"
+        },
+        "x_axis": {
+          "$ref": "#/$defs/vector3"
+        },
+        "y_axis": {
+          "$ref": "#/$defs/vector3"
+        },
+        "z_axis": {
+          "$ref": "#/$defs/vector3"
+        }
+      }
+    },
+    "faceIdArray": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "face": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["face_id", "surface_type", "area"],
+      "properties": {
+        "face_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "surface_type": {
+          "enum": [
+            "plane",
+            "cylinder",
+            "cone",
+            "sphere",
+            "torus",
+            "bspline",
+            "bezier",
+            "revolution",
+            "extrusion",
+            "offset",
+            "other"
+          ]
+        },
+        "area": {
+          "type": "number",
+          "minimum": 0
+        },
+        "centroid": {
+          "$ref": "#/$defs/vector3"
+        },
+        "orientation": {
+          "enum": ["forward", "reversed", "internal", "external", "unknown"]
+        }
+      }
+    },
+    "topology": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "face_ids",
+        "side_face_ids",
+        "bottom_face_ids",
+        "transition_face_ids",
+        "opening_edge_ids",
+        "roles_complete"
+      ],
+      "properties": {
+        "face_ids": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/faceIdArray"
+            },
+            {
+              "minItems": 1
+            }
+          ]
+        },
+        "side_face_ids": {
+          "$ref": "#/$defs/faceIdArray"
+        },
+        "bottom_face_ids": {
+          "$ref": "#/$defs/faceIdArray"
+        },
+        "transition_face_ids": {
+          "$ref": "#/$defs/faceIdArray"
+        },
+        "opening_edge_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "roles_complete": {
+          "type": "boolean"
+        }
+      }
+    },
+    "placement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "coordinate_system",
+        "origin",
+        "origin_role",
+        "axis",
+        "local_frame",
+        "access_directions",
+        "source"
+      ],
+      "properties": {
+        "coordinate_system": {
+          "type": "string",
+          "minLength": 1
+        },
+        "origin": {
+          "$ref": "#/$defs/nullableVector3"
+        },
+        "origin_role": {
+          "enum": [
+            "opening_center",
+            "bottom_center",
+            "feature_center",
+            "edge_chain_midpoint",
+            "reference_corner",
+            "unknown"
+          ]
+        },
+        "axis": {
+          "$ref": "#/$defs/nullableVector3"
+        },
+        "local_frame": {
+          "oneOf": [
+            {"$ref": "#/$defs/localFrame"},
+            {"type": "null"}
+          ]
+        },
+        "access_directions": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/vector3"
+          }
+        },
+        "source": {
+          "enum": ["occt", "model", "manual", "derived", "unknown"]
+        }
+      }
+    },
+    "localFrame": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "x_axis",
+        "y_axis",
+        "z_axis",
+        "definition_method",
+        "orientation_state"
+      ],
+      "properties": {
+        "x_axis": {"$ref": "#/$defs/vector3"},
+        "y_axis": {"$ref": "#/$defs/vector3"},
+        "z_axis": {"$ref": "#/$defs/vector3"},
+        "definition_method": {"type": "string", "minLength": 1},
+        "orientation_state": {
+          "enum": [
+            "complete",
+            "axial_rotation_underdetermined",
+            "ambiguous",
+            "unavailable"
+          ]
+        }
+      }
+    },
+    "referencePoint": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "point",
+        "coordinate_system",
+        "source",
+        "method",
+        "face_ids"
+      ],
+      "properties": {
+        "name": {"type": "string", "minLength": 1},
+        "point": {"$ref": "#/$defs/vector3"},
+        "coordinate_system": {"type": "string", "minLength": 1},
+        "source": {"enum": ["occt", "model", "manual", "derived"]},
+        "method": {"type": "string", "minLength": 1},
+        "face_ids": {"$ref": "#/$defs/faceIdArray"}
+      }
+    },
+    "measurement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "value", "unit", "source"],
+      "properties": {
+        "name": {
+          "enum": [
+            "diameter",
+            "inner_diameter",
+            "outer_diameter",
+            "centerline_diameter",
+            "radius",
+            "depth",
+            "through_length",
+            "length",
+            "width",
+            "height",
+            "corner_radius",
+            "chamfer_width",
+            "chamfer_angle",
+            "entry_diameter",
+            "exit_diameter",
+            "cross_section_area",
+            "floor_area",
+            "other"
+          ]
+        },
+        "value": {
+          "type": "number"
+        },
+        "unit": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source": {
+          "enum": ["occt", "model", "manual", "derived", "pmi"]
+        },
+        "method": {
+          "type": "string",
+          "minLength": 1
+        },
+        "face_ids": {
+          "$ref": "#/$defs/faceIdArray"
+        }
+      }
+    },
+    "boundingBox": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["min", "max"],
+      "properties": {
+        "min": {
+          "$ref": "#/$defs/vector3"
+        },
+        "max": {
+          "$ref": "#/$defs/vector3"
+        }
+      }
+    },
+    "orientedBoundingBox": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "center",
+        "x_axis",
+        "y_axis",
+        "z_axis",
+        "half_sizes",
+        "coordinate_system",
+        "source",
+        "method"
+      ],
+      "properties": {
+        "center": {"$ref": "#/$defs/vector3"},
+        "x_axis": {"$ref": "#/$defs/vector3"},
+        "y_axis": {"$ref": "#/$defs/vector3"},
+        "z_axis": {"$ref": "#/$defs/vector3"},
+        "half_sizes": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 3,
+          "items": {"type": "number", "minimum": 0}
+        },
+        "coordinate_system": {"type": "string", "minLength": 1},
+        "source": {"enum": ["occt", "model", "manual", "derived"]},
+        "method": {"type": "string", "minLength": 1}
+      }
+    },
+    "geometry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["measurements", "reference_points", "complete"],
+      "properties": {
+        "measurements": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/measurement"
+          }
+        },
+        "reference_points": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/referencePoint"}
+        },
+        "bounding_box": {
+          "$ref": "#/$defs/boundingBox"
+        },
+        "oriented_bounding_box": {
+          "$ref": "#/$defs/orientedBoundingBox"
+        },
+        "complete": {
+          "type": "boolean"
+        }
+      }
+    },
+    "requirementSource": {
+      "enum": ["pmi", "drawing", "manual", "imported"]
+    },
+    "dimensionalRequirement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "requirement_id",
+        "characteristic",
+        "unit",
+        "applies_to_face_ids",
+        "source"
+      ],
+      "properties": {
+        "requirement_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "characteristic": {
+          "enum": ["diameter", "depth", "width", "length", "radius", "angle", "position", "other"]
+        },
+        "nominal": {
+          "type": "number"
+        },
+        "lower_limit": {
+          "type": "number"
+        },
+        "upper_limit": {
+          "type": "number"
+        },
+        "unit": {
+          "type": "string",
+          "minLength": 1
+        },
+        "applies_to_face_ids": {
+          "$ref": "#/$defs/faceIdArray"
+        },
+        "source": {
+          "$ref": "#/$defs/requirementSource"
+        }
+      }
+    },
+    "geometricRequirement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "requirement_id",
+        "characteristic",
+        "tolerance_value",
+        "unit",
+        "applies_to_face_ids",
+        "datum_refs",
+        "source"
+      ],
+      "properties": {
+        "requirement_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "characteristic": {
+          "enum": [
+            "position",
+            "flatness",
+            "perpendicularity",
+            "parallelism",
+            "concentricity",
+            "cylindricity",
+            "profile",
+            "runout",
+            "other"
+          ]
+        },
+        "tolerance_value": {
+          "type": "number",
+          "minimum": 0
+        },
+        "unit": {
+          "type": "string",
+          "minLength": 1
+        },
+        "applies_to_face_ids": {
+          "$ref": "#/$defs/faceIdArray"
+        },
+        "datum_refs": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "source": {
+          "$ref": "#/$defs/requirementSource"
+        }
+      }
+    },
+    "surfaceRequirement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "requirement_id",
+        "parameter",
+        "maximum",
+        "unit",
+        "applies_to_face_ids",
+        "source"
+      ],
+      "properties": {
+        "requirement_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "parameter": {
+          "enum": ["Ra", "Rz", "other"]
+        },
+        "maximum": {
+          "type": "number",
+          "minimum": 0
+        },
+        "unit": {
+          "type": "string",
+          "minLength": 1
+        },
+        "applies_to_face_ids": {
+          "$ref": "#/$defs/faceIdArray"
+        },
+        "source": {
+          "$ref": "#/$defs/requirementSource"
+        }
+      }
+    },
+    "requirements": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "dimensional", "geometric", "surface"],
+      "properties": {
+        "status": {
+          "enum": ["not_provided", "partial", "complete"]
+        },
+        "dimensional": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/dimensionalRequirement"
+          }
+        },
+        "geometric": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/geometricRequirement"
+          }
+        },
+        "surface": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/surfaceRequirement"
+          }
+        }
+      }
+    },
+    "prediction": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "confidence",
+        "instance_confidence",
+        "bottom_confidence",
+        "status",
+        "label_source",
+        "review_reasons"
+      ],
+      "properties": {
+        "confidence": {
+          "$ref": "#/$defs/probability"
+        },
+        "instance_confidence": {
+          "$ref": "#/$defs/nullableProbability"
+        },
+        "bottom_confidence": {
+          "$ref": "#/$defs/nullableProbability"
+        },
+        "status": {
+          "enum": ["recognized", "unknown", "needs_review", "confirmed"]
+        },
+        "label_source": {
+          "enum": ["model", "manual", "weak_cam", "hybrid"]
+        },
+        "review_reasons": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "sourceLabel": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["taxonomy_id", "class_id", "class_name"],
+      "properties": {
+        "taxonomy_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "class_id": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "class_name": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "taxonomyMapping": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mapping_id", "mapping_quality"],
+      "properties": {
+        "mapping_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "mapping_quality": {
+          "enum": ["exact", "broader", "partial", "unmapped"]
+        }
+      }
+    },
+    "instanceBoundary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source",
+        "split_from_raw_instance",
+        "partition_id",
+        "method"
+      ],
+      "properties": {
+        "source": {
+          "enum": ["model", "occt_partition", "manual", "hybrid"]
+        },
+        "split_from_raw_instance": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "partition_id": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "method": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "prediction_schema",
+        "raw_instance_id",
+        "source_label",
+        "taxonomy_mapping",
+        "evidence_source",
+        "instance_boundary"
+      ],
+      "properties": {
+        "prediction_schema": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "raw_instance_id": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "source_label": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/sourceLabel"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "taxonomy_mapping": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/taxonomyMapping"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "evidence_source": {
+          "enum": ["model", "manual", "weak_cam", "hybrid"]
+        },
+        "instance_boundary": {
+          "$ref": "#/$defs/instanceBoundary"
+        }
+      }
+    },
+    "feature": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "instance_id",
+        "canonical_label",
+        "topology",
+        "placement",
+        "geometry",
+        "requirements",
+        "prediction",
+        "provenance"
+      ],
+      "properties": {
+        "instance_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "canonical_label": {
+          "$ref": "feature_taxonomy.schema.json"
+        },
+        "topology": {
+          "$ref": "#/$defs/topology"
+        },
+        "placement": {
+          "$ref": "#/$defs/placement"
+        },
+        "geometry": {
+          "$ref": "#/$defs/geometry"
+        },
+        "requirements": {
+          "$ref": "#/$defs/requirements"
+        },
+        "prediction": {
+          "$ref": "#/$defs/prediction"
+        },
+        "provenance": {
+          "$ref": "#/$defs/provenance"
+        }
+      }
+    },
+    "relation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_instance_id",
+        "target_instance_id",
+        "relation_type",
+        "confidence",
+        "source"
+      ],
+      "properties": {
+        "source_instance_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "target_instance_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "relation_type": {
+          "enum": [
+            "intersects",
+            "contains",
+            "inside",
+            "adjacent",
+            "opens_to",
+            "coaxial",
+            "parent_of",
+            "other"
+          ]
+        },
+        "confidence": {
+          "$ref": "#/$defs/probability"
+        },
+        "source": {
+          "enum": ["occt", "model", "manual", "derived"]
+        }
+      }
+    },
+    "pipelineMetadata": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "producer",
+        "producer_version",
+        "code_commit",
+        "input_prediction_schema",
+        "geometry_adapter_version"
+      ],
+      "properties": {
+        "producer": {
+          "const": "P04 Feature Postprocess"
+        },
+        "producer_version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "code_commit": {
+          "type": "string",
+          "minLength": 1
+        },
+        "input_prediction_schema": {
+          "type": "string",
+          "minLength": 1
+        },
+        "geometry_adapter_version": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "modelMetadata": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "architecture",
+        "checkpoint_sha256",
+        "code_commit",
+        "source_taxonomy",
+        "inference_schema",
+        "confidence_threshold"
+      ],
+      "properties": {
+        "architecture": {
+          "type": "string",
+          "minLength": 1
+        },
+        "checkpoint_sha256": {
+          "type": "string",
+          "pattern": "^[A-Fa-f0-9]{64}$"
+        },
+        "code_commit": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source_taxonomy": {
+          "type": "string",
+          "minLength": 1
+        },
+        "inference_schema": {
+          "type": "string",
+          "minLength": 1
+        },
+        "confidence_threshold": {
+          "$ref": "#/$defs/probability"
+        }
+      }
+    }
+  }
+}

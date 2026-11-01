@@ -7,3 +7,4 @@
 *.mcam binary
 *.zip binary
 payload/** -text -diff
+ai/aicnc/** -text

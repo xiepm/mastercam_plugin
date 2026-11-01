@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "units",
+    "geometry_frame",
+    "polygons",
+    "approximation"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "aicnc.native-ipw-polygons/1.0"
+    },
+    "units": {
+      "const": "mm"
+    },
+    "geometry_frame": {
+      "const": "PCS"
+    },
+    "approximation": {
+      "enum": [
+        "NX_native_faceted_IPW_not_exact_STEP",
+        "Mastercam_native_faceted_IPW_not_exact_STEP"
+      ]
+    },
+    "polygons": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 20000,
+      "items": {
+        "type": "array",
+        "minItems": 3,
+        "items": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 3,
+          "items": {
+            "type": "number"
+          }
+        }
+      }
+    },
+    "source_stl_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    }
+  },
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "approximation": {
+            "const": "Mastercam_native_faceted_IPW_not_exact_STEP"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "source_stl_sha256"
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,3 @@
+# Preserve the exact source-manifest bytes through Git clones.
+* -text whitespace=cr-at-eol
+*.csx whitespace=cr-at-eol,-blank-at-eof

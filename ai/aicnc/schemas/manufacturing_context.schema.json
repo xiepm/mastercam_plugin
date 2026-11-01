@@ -1,0 +1,229 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-cnc.local/schemas/manufacturing_context.schema.json",
+  "title": "AI-CNC versioned manufacturing context for CAPP",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "context_id",
+    "status",
+    "units",
+    "material",
+    "stock",
+    "machine",
+    "fixture",
+    "tools",
+    "technology_presets",
+    "safety",
+    "postprocessing"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "context_id": {"type": "string", "minLength": 1},
+    "status": {"enum": ["prototype", "validated"]},
+    "units": {"$ref": "#/$defs/units"},
+    "material": {"$ref": "#/$defs/material"},
+    "stock": {"$ref": "#/$defs/stock"},
+    "machine": {"$ref": "#/$defs/machine"},
+    "fixture": {"$ref": "#/$defs/fixture"},
+    "tools": {"type": "array", "items": {"$ref": "#/$defs/tool"}},
+    "technology_presets": {"type": "array", "items": {"$ref": "#/$defs/technologyPreset"}},
+    "safety": {"$ref": "#/$defs/safety"},
+    "postprocessing": {"$ref": "#/$defs/postprocessing"}
+  },
+  "$defs": {
+    "vector3": {
+      "type": "array",
+      "items": {"type": "number"},
+      "minItems": 3,
+      "maxItems": 3
+    },
+    "units": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["length", "angle", "feed_rate"],
+      "properties": {
+        "length": {"enum": ["mm", "inch"]},
+        "angle": {"enum": ["deg", "rad"]},
+        "feed_rate": {"enum": ["mm/min", "inch/min"]}
+      }
+    },
+    "material": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["material_id", "designation", "condition", "source"],
+      "properties": {
+        "material_id": {"type": "string", "minLength": 1},
+        "designation": {"type": "string", "minLength": 1},
+        "condition": {"type": "string", "minLength": 1},
+        "hardness": {"type": "string", "minLength": 1},
+        "source": {"type": "string", "minLength": 1}
+      }
+    },
+    "stock": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "dimensions", "source"],
+      "properties": {
+        "type": {"enum": ["box", "cylinder", "mesh", "from_model", "other"]},
+        "dimensions": {
+          "type": "array",
+          "items": {"type": "number", "exclusiveMinimum": 0},
+          "minItems": 1
+        },
+        "source": {"type": "string", "minLength": 1}
+      }
+    },
+    "machine": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["machine_id", "controller", "supported_operation_types", "source"],
+      "properties": {
+        "machine_id": {"type": "string", "minLength": 1},
+        "controller": {"type": "string", "minLength": 1},
+        "supported_operation_types": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/operationType"}
+        },
+        "source": {"type": "string", "minLength": 1}
+      }
+    },
+    "coordinateSystem": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "origin", "x_axis", "y_axis", "z_axis"],
+      "properties": {
+        "name": {"type": "string", "minLength": 1},
+        "origin": {"$ref": "#/$defs/vector3"},
+        "x_axis": {"$ref": "#/$defs/vector3"},
+        "y_axis": {"$ref": "#/$defs/vector3"},
+        "z_axis": {"$ref": "#/$defs/vector3"}
+      }
+    },
+    "fixture": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["fixture_id", "work_coordinate_system", "direction_policy", "allowed_machining_directions", "source"],
+      "properties": {
+        "fixture_id": {"type": "string", "minLength": 1},
+        "work_coordinate_system": {"$ref": "#/$defs/coordinateSystem"},
+        "direction_policy": {"enum": ["listed_only", "any_normalized"]},
+        "allowed_machining_directions": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/vector3"},
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "source": {"type": "string", "minLength": 1}
+      }
+    },
+    "toolType": {
+      "enum": [
+        "flat_end_mill",
+        "ball_end_mill",
+        "bull_nose_end_mill",
+        "drill",
+        "reamer",
+        "tap",
+        "chamfer_mill",
+        "face_mill",
+        "boring_tool",
+        "other"
+      ]
+    },
+    "tool": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["tool_id", "tool_type", "diameter", "stickout", "status", "source"],
+      "properties": {
+        "tool_id": {"type": "string", "minLength": 1},
+        "tool_type": {"$ref": "#/$defs/toolType"},
+        "diameter": {"type": "number", "exclusiveMinimum": 0},
+        "corner_radius": {"type": "number", "minimum": 0},
+        "stickout": {"type": "number", "exclusiveMinimum": 0},
+        "status": {"enum": ["available", "unavailable"]},
+        "source": {"type": "string", "minLength": 1}
+      }
+    },
+    "operationType": {
+      "enum": [
+        "facing",
+        "roughing",
+        "finishing",
+        "contouring",
+        "pocketing",
+        "drilling",
+        "reaming",
+        "tapping",
+        "boring",
+        "chamfering",
+        "deburring",
+        "other"
+      ]
+    },
+    "cuttingParameters": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["spindle_speed_rpm", "feed_rate", "coolant"],
+      "properties": {
+        "spindle_speed_rpm": {"type": "number", "exclusiveMinimum": 0},
+        "feed_rate": {"type": "number", "exclusiveMinimum": 0},
+        "plunge_rate": {"type": "number", "exclusiveMinimum": 0},
+        "stepdown": {"type": "number", "exclusiveMinimum": 0},
+        "stepover": {"type": "number", "exclusiveMinimum": 0},
+        "coolant": {"enum": ["off", "flood", "mist", "through_tool", "air", "other"]}
+      }
+    },
+    "technologyPreset": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "preset_id",
+        "material_id",
+        "operation_type",
+        "tool_type",
+        "strategy",
+        "cutting_parameters",
+        "status",
+        "source"
+      ],
+      "properties": {
+        "preset_id": {"type": "string", "minLength": 1},
+        "material_id": {"type": "string", "minLength": 1},
+        "operation_type": {"$ref": "#/$defs/operationType"},
+        "tool_type": {"$ref": "#/$defs/toolType"},
+        "strategy": {"type": "string", "minLength": 1},
+        "cutting_parameters": {"$ref": "#/$defs/cuttingParameters"},
+        "status": {"enum": ["prototype", "validated"]},
+        "source": {"type": "string", "minLength": 1}
+      }
+    },
+    "safety": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["clearance", "retract", "stock_to_leave_radial", "stock_to_leave_axial", "source"],
+      "properties": {
+        "clearance": {"type": "number", "minimum": 0},
+        "retract": {"type": "number", "minimum": 0},
+        "stock_to_leave_radial": {"type": "number", "minimum": 0},
+        "stock_to_leave_axial": {"type": "number", "minimum": 0},
+        "source": {"type": "string", "minLength": 1}
+      }
+    },
+    "postprocessing": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["target_system", "postprocessor_name", "postprocessor_version", "postprocessor_sha256", "output_extension", "source"],
+      "properties": {
+        "target_system": {"const": "Mastercam"},
+        "postprocessor_name": {"type": "string", "minLength": 1},
+        "postprocessor_version": {"type": "string", "minLength": 1},
+        "postprocessor_sha256": {"type": "string", "pattern": "^[A-Fa-f0-9]{64}$"},
+        "output_extension": {"type": "string", "pattern": "^\\.[A-Za-z0-9]+$"},
+        "source": {"type": "string", "minLength": 1}
+      }
+    }
+  }
+}
