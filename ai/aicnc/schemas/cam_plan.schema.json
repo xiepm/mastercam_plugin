@@ -1,0 +1,486 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-cnc.local/schemas/cam_plan.schema.json",
+  "title": "AI-CNC CAPP output for Mastercam execution",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "plan_id",
+    "part_id",
+    "source_features",
+    "manufacturing_context",
+    "planner_metadata",
+    "units",
+    "status",
+    "review_reasons",
+    "setups",
+    "unplanned_features",
+    "postprocessing"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.1.0"
+    },
+    "plan_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "part_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "source_features": {
+      "$ref": "#/$defs/sourceFeatures"
+    },
+    "manufacturing_context": {
+      "$ref": "#/$defs/sourceContext"
+    },
+    "planner_metadata": {
+      "$ref": "#/$defs/plannerMetadata"
+    },
+    "units": {
+      "$ref": "#/$defs/units"
+    },
+    "status": {
+      "enum": ["draft", "needs_review", "approved", "rejected"]
+    },
+    "review_reasons": {
+      "$ref": "#/$defs/reasonCodes"
+    },
+    "setups": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/setup"
+      },
+      "minItems": 0
+    },
+    "unplanned_features": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/unplannedFeature"}
+    },
+    "postprocessing": {
+      "$ref": "#/$defs/postprocessing"
+    }
+  },
+  "$defs": {
+    "units": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["length", "angle", "feed_rate"],
+      "properties": {
+        "length": {
+          "enum": ["mm", "inch"]
+        },
+        "angle": {
+          "enum": ["deg", "rad"]
+        },
+        "feed_rate": {
+          "enum": ["mm/min", "inch/min"]
+        }
+      }
+    },
+    "vector3": {
+      "type": "array",
+      "items": {
+        "type": "number"
+      },
+      "minItems": 3,
+      "maxItems": 3
+    },
+    "sourceFeatures": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256", "schema_version", "face_id_namespace"],
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[A-Fa-f0-9]{64}$"
+        },
+        "schema_version": {
+          "type": "string",
+          "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+        },
+        "face_id_namespace": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "sourceContext": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256", "schema_version", "context_id", "status"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "sha256": {"type": "string", "pattern": "^[A-Fa-f0-9]{64}$"},
+        "schema_version": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"},
+        "context_id": {"type": "string", "minLength": 1},
+        "status": {"enum": ["prototype", "validated"]}
+      }
+    },
+    "plannerMetadata": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["producer", "producer_version", "code_commit", "planning_mode"],
+      "properties": {
+        "producer": {"const": "P07 CAPP Planner"},
+        "producer_version": {"type": "string", "minLength": 1},
+        "code_commit": {"type": "string", "minLength": 1},
+        "planning_mode": {"enum": ["review_candidates", "validated_context"]}
+      }
+    },
+    "reasonCodes": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1},
+      "uniqueItems": true
+    },
+    "unplannedFeature": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["feature_instance_id", "face_ids", "reason_codes"],
+      "properties": {
+        "feature_instance_id": {"type": "string", "minLength": 1},
+        "face_ids": {"type": "array", "items": {"type": "string", "minLength": 1}, "minItems": 1, "uniqueItems": true},
+        "reason_codes": {"$ref": "#/$defs/reasonCodes"},
+        "notes": {"type": "string"}
+      }
+    },
+    "decisionTrace": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["rule_id", "strategy_source", "tool_source", "parameter_source", "recognition_status"],
+      "properties": {
+        "rule_id": {"type": "string", "minLength": 1},
+        "strategy_source": {"type": "string", "minLength": 1},
+        "tool_source": {"type": "string", "minLength": 1},
+        "parameter_source": {"type": "string", "minLength": 1},
+        "recognition_status": {"enum": ["recognized", "confirmed"]}
+      }
+    },
+    "coordinateSystem": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "origin", "x_axis", "y_axis", "z_axis"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "origin": {
+          "$ref": "#/$defs/vector3"
+        },
+        "x_axis": {
+          "$ref": "#/$defs/vector3"
+        },
+        "y_axis": {
+          "$ref": "#/$defs/vector3"
+        },
+        "z_axis": {
+          "$ref": "#/$defs/vector3"
+        }
+      }
+    },
+    "stock": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "dimensions"],
+      "properties": {
+        "type": {
+          "enum": ["box", "cylinder", "mesh", "from_model", "other"]
+        },
+        "dimensions": {
+          "type": "array",
+          "items": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "minItems": 1
+        },
+        "material": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "tool": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["tool_id", "tool_type", "diameter"],
+      "properties": {
+        "tool_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "tool_type": {
+          "enum": [
+            "flat_end_mill",
+            "ball_end_mill",
+            "bull_nose_end_mill",
+            "drill",
+            "reamer",
+            "tap",
+            "chamfer_mill",
+            "face_mill",
+            "boring_tool",
+            "other"
+          ]
+        },
+        "diameter": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "corner_radius": {
+          "type": "number",
+          "minimum": 0
+        },
+        "stickout": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        }
+      }
+    },
+    "cuttingParameters": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["spindle_speed_rpm", "feed_rate", "coolant"],
+      "properties": {
+        "spindle_speed_rpm": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "feed_rate": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "plunge_rate": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "stepdown": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "stepover": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "coolant": {
+          "enum": ["off", "flood", "mist", "through_tool", "air", "other"]
+        }
+      }
+    },
+    "safety": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["clearance", "retract"],
+      "properties": {
+        "clearance": {
+          "type": "number",
+          "minimum": 0
+        },
+        "retract": {
+          "type": "number",
+          "minimum": 0
+        },
+        "stock_to_leave_radial": {
+          "type": "number",
+          "minimum": 0
+        },
+        "stock_to_leave_axial": {
+          "type": "number",
+          "minimum": 0
+        }
+      }
+    },
+    "operation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "operation_id",
+        "sequence",
+        "operation_type",
+        "feature_instance_ids",
+        "face_ids",
+        "strategy",
+        "tool",
+        "cutting_parameters",
+        "safety",
+        "confidence",
+        "status",
+        "decision_trace",
+        "review_reasons"
+      ],
+      "properties": {
+        "operation_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sequence": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "operation_type": {
+          "enum": [
+            "facing",
+            "roughing",
+            "finishing",
+            "contouring",
+            "pocketing",
+            "drilling",
+            "reaming",
+            "tapping",
+            "boring",
+            "chamfering",
+            "deburring",
+            "other"
+          ]
+        },
+        "feature_instance_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "face_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "strategy": {
+          "type": "string",
+          "minLength": 1
+        },
+        "tool": {
+          "$ref": "#/$defs/tool"
+        },
+        "cutting_parameters": {
+          "$ref": "#/$defs/cuttingParameters"
+        },
+        "safety": {
+          "$ref": "#/$defs/safety"
+        },
+        "confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "status": {
+          "enum": ["planned", "needs_review", "approved", "blocked"]
+        },
+        "decision_trace": {
+          "$ref": "#/$defs/decisionTrace"
+        },
+        "review_reasons": {
+          "$ref": "#/$defs/reasonCodes"
+        },
+        "notes": {
+          "type": "string"
+        }
+      }
+    },
+    "setup": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "setup_id",
+        "sequence",
+        "name",
+        "work_coordinate_system",
+        "machining_direction",
+        "stock",
+        "operations",
+        "review_reasons"
+      ],
+      "properties": {
+        "setup_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sequence": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "work_coordinate_system": {
+          "$ref": "#/$defs/coordinateSystem"
+        },
+        "machining_direction": {
+          "$ref": "#/$defs/vector3"
+        },
+        "stock": {
+          "$ref": "#/$defs/stock"
+        },
+        "fixture_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "operations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/operation"
+          },
+          "minItems": 1
+        },
+        "review_reasons": {
+          "$ref": "#/$defs/reasonCodes"
+        }
+      }
+    },
+    "postprocessing": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["target_system", "machine_id", "controller", "postprocessor", "output_file"],
+      "properties": {
+        "target_system": {
+          "const": "Mastercam"
+        },
+        "machine_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "controller": {
+          "type": "string",
+          "minLength": 1
+        },
+        "postprocessor": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["name", "version", "sha256"],
+          "properties": {
+            "name": {
+              "type": "string",
+              "minLength": 1
+            },
+            "version": {
+              "type": "string",
+              "minLength": 1
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[A-Fa-f0-9]{64}$"
+            }
+          }
+        },
+        "output_file": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  }
+}

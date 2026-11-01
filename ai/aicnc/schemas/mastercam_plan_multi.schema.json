@@ -1,0 +1,35 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"https://ai-cnc.local/schemas/mastercam_plan_multi.schema.json",
+  "title":"Mastercam bounded multi-operation test binding and native receipts",
+  "oneOf":[{"$ref":"#/$defs/binding"},{"$ref":"#/$defs/native_request"},{"$ref":"#/$defs/native_receipt"},{"$ref":"#/$defs/verification"}],
+  "$defs":{
+    "positive":{"type":"number","exclusiveMinimum":0},
+    "id":{"type":"string","minLength":1},
+    "sha":{"type":"string","pattern":"^[a-f0-9]{64}$"},
+    "point":{"type":"array","minItems":3,"maxItems":3,"items":{"type":"number"}},
+    "ids":{"type":"array","minItems":1,"uniqueItems":true,"items":{"$ref":"#/$defs/id"}},
+    "asset":{"type":"object","additionalProperties":false,"required":["path","sha256"],"properties":{"path":{"$ref":"#/$defs/id"},"sha256":{"$ref":"#/$defs/sha"}}},
+    "stock":{"type":"object","additionalProperties":false,"required":["min_mm","max_mm"],"properties":{"min_mm":{"$ref":"#/$defs/point"},"max_mm":{"$ref":"#/$defs/point"}}},
+    "assembly":{"type":"object","additionalProperties":false,"required":["number","length_mm","flute_length_mm","shoulder_length_mm","holder_diameter_mm","holder_length_mm","tip_angle_deg"],"properties":{
+      "number":{"type":"integer","minimum":1,"maximum":99},"length_mm":{"$ref":"#/$defs/positive"},"flute_length_mm":{"$ref":"#/$defs/positive"},"shoulder_length_mm":{"$ref":"#/$defs/positive"},"holder_diameter_mm":{"$ref":"#/$defs/positive"},"holder_length_mm":{"$ref":"#/$defs/positive"},"tip_angle_deg":{"type":"number","minimum":0,"maximum":180}
+    }},
+    "geometry":{"oneOf":[
+      {"type":"object","additionalProperties":false,"required":["shape","origin_mm","width_mm","height_mm","top_mm","depth_mm"],"properties":{"shape":{"const":"rectangle"},"origin_mm":{"$ref":"#/$defs/point"},"width_mm":{"$ref":"#/$defs/positive"},"height_mm":{"$ref":"#/$defs/positive"},"top_mm":{"const":0},"depth_mm":{"type":"number","exclusiveMaximum":0}}},
+      {"type":"object","additionalProperties":false,"required":["shape","points_mm","top_mm","depth_mm"],"properties":{"shape":{"const":"points"},"points_mm":{"type":"array","minItems":1,"maxItems":1,"items":{"$ref":"#/$defs/point"}},"top_mm":{"const":0},"depth_mm":{"type":"number","exclusiveMaximum":0}}}
+    ]},
+    "acceptance":{"type":"object","additionalProperties":false,"required":["material_difference_mm3","reopen_difference_mm3","scope"],"properties":{"material_difference_mm3":{"const":5},"reopen_difference_mm3":{"const":0.01},"scope":{"const":"software_test_faceted_volume_only_not_dimensional_conformance"}}},
+    "bound_operation":{"type":"object","additionalProperties":false,"required":["operation_id","feature_instance_ids","face_ids","geometry","tool_assembly"],"properties":{"operation_id":{"$ref":"#/$defs/id"},"feature_instance_ids":{"$ref":"#/$defs/ids"},"face_ids":{"$ref":"#/$defs/ids"},"geometry":{"$ref":"#/$defs/geometry"},"tool_assembly":{"$ref":"#/$defs/assembly"}}},
+    "binding":{"type":"object","additionalProperties":false,"required":["schema_version","scope","profile","plan","setup_id","stock","operations","target","acceptance"],"properties":{
+      "schema_version":{"const":"aicnc.mastercam-plan-simulation-binding/0.2"},"scope":{"const":"synthetic_native_validation"},"profile":{"const":"top_multi_contour_pocket_drill"},"plan":{"$ref":"#/$defs/asset"},"setup_id":{"$ref":"#/$defs/id"},"stock":{"$ref":"#/$defs/stock"},"operations":{"type":"array","minItems":2,"maxItems":64,"items":{"$ref":"#/$defs/bound_operation"}},"target":{"$ref":"#/$defs/asset"},"acceptance":{"$ref":"#/$defs/acceptance"}
+    }},
+    "native_operation":{"type":"object","additionalProperties":false,"required":["operation_id","sequence","operation_type","feature_instance_ids","face_ids","geometry","tool","cutting_parameters","safety","operation_name"],"properties":{
+      "operation_id":{"$ref":"#/$defs/id"},"sequence":{"type":"integer","minimum":1},"operation_type":{"enum":["contouring","pocketing","drilling"]},"feature_instance_ids":{"$ref":"#/$defs/ids"},"face_ids":{"$ref":"#/$defs/ids"},"geometry":{"$ref":"#/$defs/geometry"},"tool":{"type":"object","required":["tool_id","tool_type","diameter","number","length_mm","flute_length_mm","shoulder_length_mm","holder_diameter_mm","holder_length_mm","tip_angle_deg"]},"cutting_parameters":{"type":"object","required":["spindle_speed_rpm","feed_rate","plunge_rate","coolant"]},"safety":{"type":"object","required":["clearance","retract","stock_to_leave_radial","stock_to_leave_axial"]},"operation_name":{"$ref":"#/$defs/id"}
+    }},
+    "native_request":{"type":"object","additionalProperties":false,"required":["schema_version","purpose","run_id","model_path","operation_name","operations","stock","acceptance","plan_path","plan_sha256","binding_path","binding_sha256","target_path","target_sha256","step_path","step_sha256"],"properties":{
+      "schema_version":{"const":"aicnc.mastercam-plan-native-request/0.2"},"purpose":{"const":"synthetic_native_validation"},"run_id":{"$ref":"#/$defs/id"},"model_path":{"$ref":"#/$defs/id"},"operation_name":{"$ref":"#/$defs/id"},"operations":{"type":"array","minItems":2,"maxItems":64,"items":{"$ref":"#/$defs/native_operation"}},"stock":{"$ref":"#/$defs/stock"},"acceptance":{"$ref":"#/$defs/acceptance"},"plan_path":{"$ref":"#/$defs/id"},"plan_sha256":{"$ref":"#/$defs/sha"},"binding_path":{"$ref":"#/$defs/id"},"binding_sha256":{"$ref":"#/$defs/sha"},"target_path":{"$ref":"#/$defs/id"},"target_sha256":{"$ref":"#/$defs/sha"},"step_path":{"$ref":"#/$defs/id"},"step_sha256":{"$ref":"#/$defs/sha"}
+    }},
+    "native_receipt":{"type":"object","required":["schema_version","ok","mode","pid","production_released","regeneration_performed","stage"],"properties":{"schema_version":{"const":"aicnc.mastercam-plan-native-receipt/0.2"},"ok":{"type":"boolean"},"mode":{"enum":["create","reopen"]},"pid":{"type":"integer","minimum":1},"production_released":{"const":false},"regeneration_performed":{"type":"boolean"},"stage":{"$ref":"#/$defs/id"}}},
+    "verification":{"type":"object","required":["schema_version","passed","errors","model_path","model_sha256","plan_sha256","fresh_pids","operation_count","tool_count","meshes","material_differences","reopen_material_difference","acceptance","scope","production_released","postprocessing_performed","machine_simulation_verified"],"properties":{"schema_version":{"const":"aicnc.mastercam-plan-simulation-verification/0.2"},"passed":{"type":"boolean"},"errors":{"type":"array","items":{"type":"string"}},"model_sha256":{"$ref":"#/$defs/sha"},"plan_sha256":{"$ref":"#/$defs/sha"},"operation_count":{"type":"integer","minimum":2},"tool_count":{"type":"integer","minimum":1},"acceptance":{"$ref":"#/$defs/acceptance"},"production_released":{"const":false},"postprocessing_performed":{"const":false},"machine_simulation_verified":{"const":false}}}
+  }
+}

@@ -1,0 +1,574 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aicnc.local/schemas/mastercam_contour_smoke.schema.json",
+  "title": "Bounded synthetic Mastercam contour capability trial (not a CAM plan)",
+  "oneOf": [
+    {
+      "$ref": "#/$defs/request"
+    },
+    {
+      "$ref": "#/$defs/receipt"
+    },
+    {
+      "$ref": "#/$defs/verification"
+    },
+    {
+      "$ref": "#/$defs/manifest"
+    }
+  ],
+  "$defs": {
+    "request": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "aicnc.mastercam-contour-smoke-request/0.1"
+        },
+        "purpose": {
+          "const": "synthetic_native_validation"
+        },
+        "run_id": {
+          "type": "string",
+          "pattern": "^contour-[0-9a-f]{12}$"
+        },
+        "operation_name": {
+          "type": "string",
+          "pattern": "^AICNC_contour-[0-9a-f]{12}$"
+        },
+        "model_path": {
+          "type": "string",
+          "pattern": "contour\\.mcam$"
+        },
+        "width_mm": {
+          "const": 60.0
+        },
+        "height_mm": {
+          "const": 40.0
+        },
+        "depth_mm": {
+          "const": -2.0
+        },
+        "tool_diameter_mm": {
+          "const": 6.0
+        },
+        "feed_mm_min": {
+          "const": 300.0
+        },
+        "spindle_rpm": {
+          "const": 3000
+        }
+      },
+      "required": [
+        "schema_version",
+        "purpose",
+        "run_id",
+        "operation_name",
+        "model_path",
+        "width_mm",
+        "height_mm",
+        "depth_mm",
+        "tool_diameter_mm",
+        "feed_mm_min",
+        "spindle_rpm"
+      ]
+    },
+    "receipt": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "aicnc.mastercam-contour-smoke-receipt/0.1"
+        },
+        "mode": {
+          "enum": [
+            "create",
+            "reopen"
+          ]
+        },
+        "ok": {
+          "type": "boolean"
+        },
+        "pid": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "utc": {
+          "type": "string"
+        },
+        "production_released": {
+          "const": false
+        },
+        "regeneration_performed": {
+          "type": "boolean"
+        },
+        "request_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "run_id": {
+          "type": "string",
+          "pattern": "^contour-[0-9a-f]{12}$"
+        },
+        "api_version": {
+          "type": "string"
+        },
+        "api_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "host_version": {
+          "type": "string"
+        },
+        "machine_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "snapshot": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "geometry_count": {
+              "type": "integer"
+            },
+            "operation_count": {
+              "type": "integer"
+            },
+            "operation_id": {
+              "type": "integer"
+            },
+            "spindle_rpm": {
+              "type": "integer"
+            },
+            "operation_type": {
+              "type": "string"
+            },
+            "operation_name": {
+              "type": "string"
+            },
+            "machine_name": {
+              "type": "string"
+            },
+            "comp_type": {
+              "type": "string"
+            },
+            "comp_direction": {
+              "type": "string"
+            },
+            "metric": {
+              "type": "boolean"
+            },
+            "dirty": {
+              "type": "boolean"
+            },
+            "depth_incremental": {
+              "type": "boolean"
+            },
+            "lead_enabled": {
+              "type": "boolean"
+            },
+            "feed_mm_min": {
+              "type": "number"
+            },
+            "plunge_mm_min": {
+              "type": "number"
+            },
+            "retract_mm_min": {
+              "type": "number"
+            },
+            "depth_mm": {
+              "type": "number"
+            },
+            "top_stock_mm": {
+              "type": "number"
+            },
+            "clearance_mm": {
+              "type": "number"
+            },
+            "retract_mm": {
+              "type": "number"
+            },
+            "feed_plane_mm": {
+              "type": "number"
+            },
+            "tool": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "type": {
+                  "type": "string"
+                },
+                "metric": {
+                  "type": "boolean"
+                },
+                "number": {
+                  "type": "number"
+                },
+                "diameter_mm": {
+                  "type": "number"
+                },
+                "length_mm": {
+                  "type": "number"
+                },
+                "flute_length_mm": {
+                  "type": "number"
+                },
+                "holder_diameter_mm": {
+                  "type": "number"
+                },
+                "holder_length_mm": {
+                  "type": "number"
+                },
+                "length_offset": {
+                  "type": "number"
+                },
+                "diameter_offset": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "type",
+                "metric",
+                "number",
+                "diameter_mm",
+                "length_mm",
+                "flute_length_mm",
+                "holder_diameter_mm",
+                "holder_length_mm",
+                "length_offset",
+                "diameter_offset"
+              ]
+            },
+            "chain": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "count": {
+                  "type": "integer"
+                },
+                "curves_count": {
+                  "type": "integer"
+                },
+                "closed": {
+                  "type": "boolean"
+                },
+                "flat": {
+                  "type": "boolean"
+                },
+                "direction": {
+                  "type": "string"
+                },
+                "area_mm2": {
+                  "type": "number"
+                },
+                "perimeter_mm": {
+                  "type": "number"
+                },
+                "curves": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "type": {
+                        "type": "string"
+                      },
+                      "start": {
+                        "type": "array",
+                        "items": {
+                          "type": "number"
+                        },
+                        "minItems": 3,
+                        "maxItems": 3
+                      },
+                      "end": {
+                        "type": "array",
+                        "items": {
+                          "type": "number"
+                        },
+                        "minItems": 3,
+                        "maxItems": 3
+                      }
+                    },
+                    "required": [
+                      "type",
+                      "start",
+                      "end"
+                    ]
+                  }
+                }
+              },
+              "required": [
+                "count",
+                "curves_count",
+                "closed",
+                "flat",
+                "direction",
+                "area_mm2",
+                "perimeter_mm",
+                "curves"
+              ]
+            },
+            "path": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "data_valid": {
+                  "type": "boolean"
+                },
+                "travel_valid": {
+                  "type": "boolean"
+                },
+                "world_min": {
+                  "type": "array",
+                  "items": {
+                    "type": "number"
+                  },
+                  "minItems": 3,
+                  "maxItems": 3
+                },
+                "world_max": {
+                  "type": "array",
+                  "items": {
+                    "type": "number"
+                  },
+                  "minItems": 3,
+                  "maxItems": 3
+                },
+                "wcs_id": {
+                  "type": "integer"
+                },
+                "tool_plane_id": {
+                  "type": "integer"
+                },
+                "z_min_mm": {
+                  "type": "number"
+                },
+                "z_max_mm": {
+                  "type": "number"
+                },
+                "cycle_time_seconds": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "data_valid",
+                "travel_valid",
+                "world_min",
+                "world_max",
+                "wcs_id",
+                "tool_plane_id",
+                "z_min_mm",
+                "z_max_mm",
+                "cycle_time_seconds"
+              ]
+            }
+          },
+          "required": [
+            "geometry_count",
+            "operation_count",
+            "operation_id",
+            "spindle_rpm",
+            "operation_type",
+            "operation_name",
+            "machine_name",
+            "comp_type",
+            "comp_direction",
+            "metric",
+            "dirty",
+            "depth_incremental",
+            "lead_enabled",
+            "feed_mm_min",
+            "plunge_mm_min",
+            "retract_mm_min",
+            "depth_mm",
+            "top_stock_mm",
+            "clearance_mm",
+            "retract_mm",
+            "feed_plane_mm",
+            "tool",
+            "chain",
+            "path"
+          ]
+        },
+        "model_path": {
+          "type": "string"
+        },
+        "model_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "model_size_bytes": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "current_file": {
+          "type": "string"
+        },
+        "stage": {
+          "type": "string"
+        },
+        "error": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "schema_version",
+        "mode",
+        "ok",
+        "pid",
+        "utc",
+        "production_released",
+        "regeneration_performed",
+        "stage"
+      ],
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "ok": {
+                "const": true
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "request_sha256",
+              "run_id",
+              "api_version",
+              "api_sha256",
+              "host_version",
+              "machine_sha256",
+              "snapshot",
+              "model_path",
+              "model_sha256",
+              "model_size_bytes",
+              "current_file"
+            ],
+            "properties": {
+              "stage": {
+                "const": "complete"
+              }
+            }
+          },
+          "else": {
+            "required": [
+              "error"
+            ]
+          }
+        }
+      ]
+    },
+    "verification": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "aicnc.mastercam-contour-smoke-verification/0.1"
+        },
+        "run_id": {
+          "type": "string",
+          "pattern": "^contour-[0-9a-f]{12}$"
+        },
+        "passed": {
+          "type": "boolean"
+        },
+        "errors": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "model_sha256": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "verifier_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "scope": {
+          "type": "string"
+        },
+        "production_released": {
+          "const": false
+        },
+        "postprocessing_performed": {
+          "const": false
+        }
+      },
+      "required": [
+        "schema_version",
+        "run_id",
+        "passed",
+        "errors",
+        "model_sha256",
+        "verifier_sha256",
+        "scope",
+        "production_released",
+        "postprocessing_performed"
+      ]
+    },
+    "manifest": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "base_commit": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "template_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "verifier_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "request_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "scripts_sha256": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "create": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "reopen": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          },
+          "required": [
+            "create",
+            "reopen"
+          ]
+        },
+        "scope": {
+          "type": "string"
+        },
+        "cutting_parameters_source": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "base_commit",
+        "template_sha256",
+        "verifier_sha256",
+        "request_sha256",
+        "scripts_sha256",
+        "scope",
+        "cutting_parameters_source"
+      ]
+    }
+  }
+}

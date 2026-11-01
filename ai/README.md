@@ -1,12 +1,14 @@
 # Mastercam 插件 AI 接入
 
+2026-11-01：新增完整的 [可移植 Agent 安装与重放入口](../docs/PORTABLE_AGENT.md)。新电脑优先使用 `Install-AI.cmd`，它安装基础 mastercam 桥接与本页的插件 MCP；下方 local_setup.py 继续用于已有上游桥接的兼容安装。插件 MCP 现在有 19 个工具，新增知识搜索/读取和任务创建/记录/恢复；44 类加工动作未扩充验收范围。
+
 这部分把插件的功能含义、输入要求、使用步骤与已验证接口整理成 AI 可检索、可执行的能力。
 
 阅读功能用法可从 [加工与工序](knowledge/machining.md)、[几何与设计工具](knowledge/geometry.md) 开始；AI 查询使用 [结构化功能目录](catalog/capabilities.json)。
 
 - **功能目录**：`catalog/capabilities.json`，覆盖发布包的 27 组模块及 CIMCO；含真实 FT 入口索引、前置条件、参数含义、副作用、回滚与验收边界。
 - **Skill**：`skills/mastercam-plugin-suite`，指导 AI 选择功能、核对坐标/刀具/单位、读取预览及处理失败。
-- **MCP**：`mcp/server.py`，14 个工具，44 类结构化动作及 8 个受限交互面板入口；复用已经工作的 Mastercam MCP 进入宿主主线程。
+- **MCP**：`mcp/server.py`，19 个工具，44 类结构化动作及 8 个受限交互面板入口；通过包内基础 Mastercam MCP 进入宿主主线程，兼容已有上游桥接。
 - **原生适配层**：`bridge/bin`，仅引用安装的 API29 和已发布业务 DLL，不分发 Mastercam SDK，不修改现有业务 DLL。边线、几何、夹具、半径选择和草绘适配源码保留于 bridge，来源哈希及调用副作用修正见 adapter-provenance.json。独立实体复制绑定已验证的几何内核构建，不匹配时拒绝执行。
 
 目录中 `typed` 表示已有参数化 MCP，`interactive` 表示需通过界面完成，`reference` 表示功能知识/源 API 合同。`typed_candidate` 仅表示底层有可封装的接口。不要把这几种状态混为一谈。

@@ -1,0 +1,212 @@
+{
+  "schema_version": "2.2.0",
+  "part_id": "DEMO-BLIND-HOLE-001",
+  "source": {
+    "step_file": "blind-hole-demo.step",
+    "step_sha256": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+    "occt_version": "7.x",
+    "preprocess_version": "p01-demo-1.0"
+  },
+  "units": {
+    "length": "mm",
+    "angle": "deg"
+  },
+  "coordinate_system": {
+    "name": "PCS",
+    "origin": [0.0, 0.0, 0.0],
+    "x_axis": [1.0, 0.0, 0.0],
+    "y_axis": [0.0, 1.0, 0.0],
+    "z_axis": [0.0, 0.0, 1.0]
+  },
+  "face_id_namespace": "DEMO-BLIND-HOLE-001:AAAAAAAAAAAA:p01-demo-1.0",
+  "faces": [
+    {
+      "face_id": "F0000",
+      "surface_type": "cylinder",
+      "area": 314.159,
+      "centroid": [25.0, 20.0, -5.0],
+      "orientation": "forward"
+    },
+    {
+      "face_id": "F0001",
+      "surface_type": "plane",
+      "area": 78.54,
+      "centroid": [25.0, 20.0, -10.0],
+      "orientation": "forward"
+    }
+  ],
+  "features": [
+    {
+      "instance_id": "feature:0001",
+      "canonical_label": {
+        "taxonomy_id": "aicnc-manufacturing-feature/1.0",
+        "family": "hole",
+        "attributes": {
+          "profile": "circular",
+          "termination": "blind"
+        }
+      },
+      "topology": {
+        "face_ids": ["F0000", "F0001"],
+        "side_face_ids": ["F0000"],
+        "bottom_face_ids": ["F0001"],
+        "transition_face_ids": [],
+        "opening_edge_ids": ["E0000"],
+        "roles_complete": true
+      },
+      "placement": {
+        "coordinate_system": "PCS",
+        "origin": [25.0, 20.0, 0.0],
+        "origin_role": "opening_center",
+        "axis": [0.0, 0.0, -1.0],
+        "local_frame": {
+          "x_axis": [1.0, 0.0, 0.0],
+          "y_axis": [0.0, -1.0, 0.0],
+          "z_axis": [0.0, 0.0, -1.0],
+          "definition_method": "analytic_axis_with_pcs_reference_projection",
+          "orientation_state": "axial_rotation_underdetermined"
+        },
+        "access_directions": [[0.0, 0.0, -1.0]],
+        "source": "occt"
+      },
+      "geometry": {
+        "measurements": [
+          {
+            "name": "diameter",
+            "value": 10.0,
+            "unit": "mm",
+            "source": "occt",
+            "method": "cylindrical_surface_radius_x2",
+            "face_ids": ["F0000"]
+          },
+          {
+            "name": "depth",
+            "value": 10.0,
+            "unit": "mm",
+            "source": "occt",
+            "method": "axis_projection_to_bottom",
+            "face_ids": ["F0000", "F0001"]
+          }
+        ],
+        "reference_points": [
+          {
+            "name": "opening_center",
+            "point": [25.0, 20.0, 0.0],
+            "coordinate_system": "PCS",
+            "source": "occt",
+            "method": "cylinder_axis_at_opening_circle",
+            "face_ids": ["F0000"]
+          },
+          {
+            "name": "bottom_center",
+            "point": [25.0, 20.0, -10.0],
+            "coordinate_system": "PCS",
+            "source": "occt",
+            "method": "cylinder_axis_at_planar_bottom_projection",
+            "face_ids": ["F0000", "F0001"]
+          }
+        ],
+        "bounding_box": {
+          "min": [20.0, 15.0, -10.0],
+          "max": [30.0, 25.0, 0.0]
+        },
+        "oriented_bounding_box": {
+          "center": [25.0, 20.0, -5.0],
+          "x_axis": [1.0, 0.0, 0.0],
+          "y_axis": [0.0, -1.0, 0.0],
+          "z_axis": [0.0, 0.0, -1.0],
+          "half_sizes": [5.0, 5.0, 5.0],
+          "coordinate_system": "PCS",
+          "source": "occt",
+          "method": "analytic_cylinder_radius_and_axis_extent"
+        },
+        "complete": true
+      },
+      "requirements": {
+        "status": "complete",
+        "dimensional": [
+          {
+            "requirement_id": "REQ-DIA-001",
+            "characteristic": "diameter",
+            "nominal": 10.0,
+            "lower_limit": 9.98,
+            "upper_limit": 10.02,
+            "unit": "mm",
+            "applies_to_face_ids": ["F0000"],
+            "source": "drawing"
+          }
+        ],
+        "geometric": [
+          {
+            "requirement_id": "REQ-POS-001",
+            "characteristic": "position",
+            "tolerance_value": 0.05,
+            "unit": "mm",
+            "applies_to_face_ids": ["F0000"],
+            "datum_refs": ["A", "B"],
+            "source": "drawing"
+          }
+        ],
+        "surface": [
+          {
+            "requirement_id": "REQ-RA-001",
+            "parameter": "Ra",
+            "maximum": 1.6,
+            "unit": "um",
+            "applies_to_face_ids": ["F0000"],
+            "source": "drawing"
+          }
+        ]
+      },
+      "prediction": {
+        "confidence": 0.95,
+        "instance_confidence": 0.92,
+        "bottom_confidence": 0.97,
+        "status": "recognized",
+        "label_source": "model",
+        "review_reasons": []
+      },
+      "provenance": {
+        "prediction_schema": "aicnc.aagnet.web-result/1.0",
+        "raw_instance_id": "I000",
+        "source_label": {
+          "taxonomy_id": "MFInstSeg-25/1.0",
+          "class_id": 12,
+          "class_name": "blind_hole"
+        },
+        "taxonomy_mapping": {
+          "mapping_id": "MFInstSeg-25_1.0-to-aicnc-manufacturing-feature_1.0",
+          "mapping_quality": "exact"
+        },
+        "evidence_source": "model",
+        "instance_boundary": {
+          "source": "model",
+          "split_from_raw_instance": null,
+          "partition_id": null,
+          "method": null
+        }
+      }
+    }
+  ],
+  "relations": [],
+  "pipeline_metadata": {
+    "producer": "P04 Feature Postprocess",
+    "producer_version": "0.5.0",
+    "code_commit": "demo",
+    "input_prediction_schema": "aicnc.aagnet.web-result/1.0",
+    "geometry_adapter_version": "p01-p04-occt/1.3.0"
+  },
+  "models": [
+    {
+      "architecture": "AAGNet",
+      "checkpoint_sha256": "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB",
+      "code_commit": "e0e36b7a12a7f01a29d7be36efc22730d293a1bd",
+      "source_taxonomy": "MFInstSeg-25/1.0",
+      "inference_schema": "aicnc.aagnet.web-result/1.0",
+      "confidence_threshold": 0.8
+    }
+  ],
+  "warnings": [
+    "Synthetic contract example; not a production inference."
+  ]
+}

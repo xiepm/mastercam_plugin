@@ -1,0 +1,122 @@
+{
+  "schema_version": "1.1.0",
+  "plan_id": "PLAN-DEMO-BLIND-HOLE-001-R1",
+  "part_id": "DEMO-BLIND-HOLE-001",
+  "source_features": {
+    "path": "features.json",
+    "sha256": "3333333333333333333333333333333333333333333333333333333333333333",
+    "schema_version": "2.2.0",
+    "face_id_namespace": "DEMO-BLIND-HOLE-001:AAAAAAAAAAAA:p01-demo-1.0"
+  },
+  "manufacturing_context": {
+    "path": "manufacturing_context.example.json",
+    "sha256": "5555555555555555555555555555555555555555555555555555555555555555",
+    "schema_version": "1.0.0",
+    "context_id": "G8-PROTOTYPE-CONTEXT-001",
+    "status": "prototype"
+  },
+  "planner_metadata": {
+    "producer": "P07 CAPP Planner",
+    "producer_version": "0.1.0",
+    "code_commit": "demo",
+    "planning_mode": "review_candidates"
+  },
+  "units": {
+    "length": "mm",
+    "angle": "deg",
+    "feed_rate": "mm/min"
+  },
+  "status": "needs_review",
+  "review_reasons": [
+    "mastercam_simulation_not_run",
+    "prototype_manufacturing_context",
+    "operations_require_review"
+  ],
+  "setups": [
+    {
+      "setup_id": "setup:1",
+      "sequence": 1,
+      "name": "Top setup",
+      "work_coordinate_system": {
+        "name": "G54",
+        "origin": [0.0, 0.0, 20.0],
+        "x_axis": [1.0, 0.0, 0.0],
+        "y_axis": [0.0, 1.0, 0.0],
+        "z_axis": [0.0, 0.0, 1.0]
+      },
+      "machining_direction": [0.0, 0.0, -1.0],
+      "stock": {
+        "type": "box",
+        "dimensions": [100.0, 80.0, 22.0],
+        "material": "6061-T6"
+      },
+      "fixture_id": "VISE-01",
+      "operations": [
+        {
+          "operation_id": "operation:1",
+          "sequence": 1,
+          "operation_type": "drilling",
+          "feature_instance_ids": ["feature:0001"],
+          "face_ids": ["F0000", "F0001"],
+          "strategy": "peck_drill",
+          "tool": {
+            "tool_id": "T05",
+            "tool_type": "drill",
+            "diameter": 10.0,
+            "stickout": 45.0
+          },
+          "cutting_parameters": {
+            "spindle_speed_rpm": 3200,
+            "feed_rate": 280.0,
+            "plunge_rate": 200.0,
+            "stepdown": 3.0,
+            "coolant": "flood"
+          },
+          "safety": {
+            "clearance": 15.0,
+            "retract": 3.0,
+            "stock_to_leave_radial": 0.0,
+            "stock_to_leave_axial": 0.0
+          },
+          "confidence": 0.88,
+          "status": "needs_review",
+          "decision_trace": {
+            "rule_id": "G8-HOLE-DRILL-EXACT-DIAMETER-V1",
+            "strategy_source": "manufacturing_context:PT-DRILL-AL",
+            "tool_source": "manufacturing_context:PT-DRILL-10",
+            "parameter_source": "manufacturing_context:PT-DRILL-AL",
+            "recognition_status": "recognized"
+          },
+          "review_reasons": [
+            "mastercam_simulation_not_run",
+            "manufacturing_parameters_require_review",
+            "stock_geometry_not_verified",
+            "prototype_manufacturing_context",
+            "prototype_technology_preset",
+            "model_recognition_not_manually_confirmed"
+          ],
+          "notes": "示例参数，不得直接用于生产。"
+        }
+      ],
+      "review_reasons": [
+        "mastercam_simulation_not_run",
+        "manufacturing_parameters_require_review",
+        "stock_geometry_not_verified",
+        "prototype_manufacturing_context",
+        "fixture_not_validated"
+      ]
+    }
+  ],
+  "unplanned_features": [],
+  "postprocessing": {
+    "target_system": "Mastercam",
+    "machine_id": "VMC-DEMO",
+    "controller": "FANUC-DEMO",
+    "postprocessor": {
+      "name": "demo-post",
+      "version": "1.0.0",
+      "sha256": "4444444444444444444444444444444444444444444444444444444444444444"
+    },
+    "output_file": "DEMO-BLIND-HOLE-001.NC"
+  }
+}

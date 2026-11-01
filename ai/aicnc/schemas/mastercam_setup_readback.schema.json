@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "P08 bounded Mastercam manual setup diagnostic readback (not a manufacturing IR)",
+  "type": "object",
+  "required": ["ok", "machine_name", "stock", "operations", "view_sheets"],
+  "properties": {
+    "ok": {"const": true},
+    "mode": {"enum": ["apply", "read"]},
+    "pid": {"type": "integer", "minimum": 1},
+    "production_released": {"const": false},
+    "machine_name": {"type": "string"},
+    "view_label_ui_commit_required": {"type": "boolean"},
+    "stock": {"type": "object", "required": ["origin", "size"], "properties": {"origin": {"$ref": "#/$defs/vector"}, "size": {"$ref": "#/$defs/vector"}, "plane": {"$ref": "#/$defs/plane"}}},
+    "operations": {"type": "array", "minItems": 9, "maxItems": 9, "items": {"$ref": "#/$defs/operation"}},
+    "view_sheets": {"type": "array", "minItems": 2, "maxItems": 2, "items": {"type": "object", "required": ["name", "has_bookmark", "wcs_id", "tool_plane_id", "construction_plane_id", "graphics_plane_id"], "properties": {"index": {"type": "integer"}, "name": {"type": "string"}, "has_bookmark": {"type": "boolean"}, "wcs_id": {"type": "integer"}, "tool_plane_id": {"type": "integer"}, "construction_plane_id": {"type": "integer"}, "graphics_plane_id": {"type": "integer"}}}},
+    "model": {"type": "string"},
+    "model_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "original_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "before_extents": {"type": "array"},
+    "stage": {"type": "string"}
+  },
+  "$defs": {
+    "vector": {"type": "array", "minItems": 3, "maxItems": 3, "items": {"type": "number"}},
+    "plane": {"type": "object", "required": ["id", "name", "origin", "x", "y", "z", "work_offset"], "properties": {"id": {"type": "integer"}, "name": {"type": "string"}, "origin": {"$ref": "#/$defs/vector"}, "x": {"$ref": "#/$defs/vector"}, "y": {"$ref": "#/$defs/vector"}, "z": {"$ref": "#/$defs/vector"}, "work_offset": {"type": "integer"}}},
+    "operation": {"type": "object", "required": ["name", "group_id", "group_name", "wcs", "tool_plane", "construction_plane", "program", "top", "depth", "dirty"], "properties": {"id": {"type": "integer"}, "name": {"type": "string"}, "group_id": {"type": "integer"}, "group_name": {"type": "string"}, "wcs": {"$ref": "#/$defs/plane"}, "tool_plane": {"$ref": "#/$defs/plane"}, "construction_plane": {"$ref": "#/$defs/plane"}, "program": {"type": "integer"}, "top": {"type": "number"}, "depth": {"type": "number"}, "clearance": {"type": "number"}, "retract": {"type": "number"}, "feed_plane": {"type": "number"}, "dirty": {"type": "boolean"}, "world_min": {"$ref": "#/$defs/vector"}, "world_max": {"$ref": "#/$defs/vector"}, "cycle_seconds": {"type": "number"}, "tool_number": {"type": "integer"}, "tool_diameter": {"type": "number"}}}
+  }
+}

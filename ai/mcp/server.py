@@ -100,4 +100,33 @@ def mc_request_status(request_id:str)->dict:
 @mcp.resource('mastercam-plugins://capabilities')
 def capabilities_resource()->str:return json.dumps(catalog(),ensure_ascii=False)
 
+import sys
+sys.path.insert(0, str(ROOT/'ai'))
+from portable import context as task_context, knowledge
+
+@mcp.tool(annotations=READ)
+def mc_knowledge_search(query:str,limit:Annotated[int,Field(ge=1,le=20)]=8)->dict:
+    """Search indexed local machining workflows, known failures and capability boundaries. Returns exact paths/lines; retrieved examples are not user requirements."""
+    return {'results':knowledge.search(query,limit)}
+
+@mcp.tool(annotations=READ)
+def mc_knowledge_read(path:str,start_line:int=1,max_lines:int=100)->dict:
+    """Read a bounded window from an indexed knowledge source selected by mc_knowledge_search."""
+    return knowledge.read(path,start_line,max_lines)
+
+@mcp.tool(annotations=ToolAnnotations(readOnlyHint=False,destructiveHint=False,openWorldHint=False))
+def mc_task_create(task_id:str,source_path:str,goal:str,requirements:dict)->dict:
+    """Copy an explicitly selected local STEP/STP/MCAM into a new private task and record the goal/requirements. Does not modify the source or call Mastercam. No model inference or manufacturing approval is implied."""
+    return task_context.create(task_id,source_path,goal,requirements,runtime.config_path)
+
+@mcp.tool(annotations=ToolAnnotations(readOnlyHint=False,destructiveHint=False,openWorldHint=False))
+def mc_task_checkpoint(task_id:str,event_id:str,stage:str,state:str,summary:str,artifacts:list[str],bindings:dict[str,str],next_action:str='')->dict:
+    """Append a task evidence record. Pass requires actual task-local evidence files. Bind dependent plan/tool/setup files so changed inputs invalidate the record on resume. This ledger records your verified conclusion; it does not itself prove machining success or authorize production."""
+    return task_context.checkpoint(task_id,event_id,stage,state,summary,artifacts,bindings,next_action,runtime.config_path)
+
+@mcp.tool(annotations=READ)
+def mc_task_resume(task_id:str)->dict:
+    """Recover task input, requirements, evidence and next actions in a new conversation. Rehash every referenced file; stale evidence becomes unknown. Does not resume native execution automatically."""
+    return task_context.resume(task_id,runtime.config_path)
+
 if __name__=='__main__':mcp.run(transport='stdio')

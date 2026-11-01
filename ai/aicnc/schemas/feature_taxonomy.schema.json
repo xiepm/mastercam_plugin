@@ -1,0 +1,94 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-cnc.local/schemas/feature_taxonomy.schema.json",
+  "title": "AI-CNC canonical manufacturing feature label",
+  "description": "A factorized instance-level manufacturing feature label. It describes what must be manufactured, not the selected process, tool, parameters, setup, or sequence.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["taxonomy_id", "family", "attributes"],
+  "properties": {
+    "taxonomy_id": {
+      "const": "aicnc-manufacturing-feature/1.0"
+    },
+    "family": {
+      "$ref": "#/$defs/family"
+    },
+    "attributes": {
+      "$ref": "#/$defs/attributes"
+    }
+  },
+  "$defs": {
+    "family": {
+      "enum": [
+        "hole",
+        "pocket",
+        "slot",
+        "step",
+        "passage",
+        "groove",
+        "planar_region",
+        "contour",
+        "edge_transition",
+        "freeform_region",
+        "compound",
+        "unknown"
+      ]
+    },
+    "attributes": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "profile": {
+          "enum": [
+            "circular",
+            "triangular",
+            "rectangular",
+            "six_sided",
+            "annular",
+            "keyhole",
+            "u_shaped",
+            "v_shaped",
+            "freeform",
+            "other",
+            "unknown"
+          ]
+        },
+        "termination": {
+          "enum": ["blind", "through", "not_applicable", "unknown"]
+        },
+        "openness": {
+          "enum": ["open", "closed", "partially_open", "unknown"]
+        },
+        "bottom_condition": {
+          "enum": [
+            "flat",
+            "conical",
+            "spherical",
+            "radiused",
+            "freeform",
+            "none",
+            "unknown"
+          ]
+        },
+        "edge_form": {
+          "enum": ["chamfer", "round", "fillet", "other", "not_applicable", "unknown"]
+        },
+        "boundary_form": {
+          "enum": [
+            "two_sided",
+            "slanted",
+            "circular_end",
+            "vertical_circular_end",
+            "horizontal_circular_end",
+            "other",
+            "not_applicable",
+            "unknown"
+          ]
+        },
+        "thread": {
+          "enum": ["none", "internal", "external", "unknown"]
+        }
+      }
+    }
+  }
+}

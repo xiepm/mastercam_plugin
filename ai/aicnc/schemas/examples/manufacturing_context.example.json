@@ -1,0 +1,204 @@
+{
+  "schema_version": "1.0.0",
+  "context_id": "G8-PROTOTYPE-CONTEXT-001",
+  "status": "prototype",
+  "units": {
+    "length": "mm",
+    "angle": "deg",
+    "feed_rate": "mm/min"
+  },
+  "material": {
+    "material_id": "SYNTH-AL-6061-T6",
+    "designation": "6061-T6",
+    "condition": "prototype assumption only",
+    "source": "G8 synthetic context; not factory master data"
+  },
+  "stock": {
+    "type": "box",
+    "dimensions": [120.0, 100.0, 100.0],
+    "source": "G8 prototype envelope; must be replaced by actual stock"
+  },
+  "machine": {
+    "machine_id": "VMC-PROTOTYPE",
+    "controller": "FANUC-PROTOTYPE",
+    "supported_operation_types": [
+      "contouring",
+      "pocketing",
+      "drilling",
+      "chamfering"
+    ],
+    "source": "G8 capability placeholder; not a commissioned machine record"
+  },
+  "fixture": {
+    "fixture_id": "FIXTURE-PROTOTYPE",
+    "work_coordinate_system": {
+      "name": "G54",
+      "origin": [0.0, 0.0, 0.0],
+      "x_axis": [1.0, 0.0, 0.0],
+      "y_axis": [0.0, 1.0, 0.0],
+      "z_axis": [0.0, 0.0, 1.0]
+    },
+    "direction_policy": "any_normalized",
+    "allowed_machining_directions": [[0.0, 0.0, -1.0]],
+    "source": "G8 direction grouping prototype; collision and reachability are not validated"
+  },
+  "tools": [
+    {
+      "tool_id": "PT-DRILL-10",
+      "tool_type": "drill",
+      "diameter": 10.0,
+      "stickout": 45.0,
+      "status": "available",
+      "source": "G8 synthetic tool; not a factory tool assembly"
+    },
+    {
+      "tool_id": "PT-EM-01",
+      "tool_type": "flat_end_mill",
+      "diameter": 1.0,
+      "stickout": 20.0,
+      "status": "available",
+      "source": "G8 synthetic tool; not a factory tool assembly"
+    },
+    {
+      "tool_id": "PT-EM-02",
+      "tool_type": "flat_end_mill",
+      "diameter": 2.0,
+      "stickout": 25.0,
+      "status": "available",
+      "source": "G8 synthetic tool; not a factory tool assembly"
+    },
+    {
+      "tool_id": "PT-EM-04",
+      "tool_type": "flat_end_mill",
+      "diameter": 4.0,
+      "stickout": 30.0,
+      "status": "available",
+      "source": "G8 synthetic tool; not a factory tool assembly"
+    },
+    {
+      "tool_id": "PT-EM-06",
+      "tool_type": "flat_end_mill",
+      "diameter": 6.0,
+      "stickout": 35.0,
+      "status": "available",
+      "source": "G8 synthetic tool; not a factory tool assembly"
+    },
+    {
+      "tool_id": "PT-BALL-02",
+      "tool_type": "ball_end_mill",
+      "diameter": 2.0,
+      "corner_radius": 1.0,
+      "stickout": 25.0,
+      "status": "available",
+      "source": "G8 synthetic tool; not a factory tool assembly"
+    },
+    {
+      "tool_id": "PT-CHAMFER-06",
+      "tool_type": "chamfer_mill",
+      "diameter": 6.0,
+      "stickout": 30.0,
+      "status": "available",
+      "source": "G8 synthetic tool; not a factory tool assembly"
+    }
+  ],
+  "technology_presets": [
+    {
+      "preset_id": "PT-DRILL-AL",
+      "material_id": "SYNTH-AL-6061-T6",
+      "operation_type": "drilling",
+      "tool_type": "drill",
+      "strategy": "drill_cycle_review",
+      "cutting_parameters": {
+        "spindle_speed_rpm": 3000.0,
+        "feed_rate": 240.0,
+        "plunge_rate": 180.0,
+        "stepdown": 3.0,
+        "coolant": "flood"
+      },
+      "status": "prototype",
+      "source": "G8 illustrative preset; not production cutting data"
+    },
+    {
+      "preset_id": "PT-POCKET-AL",
+      "material_id": "SYNTH-AL-6061-T6",
+      "operation_type": "pocketing",
+      "tool_type": "flat_end_mill",
+      "strategy": "adaptive_pocket_review",
+      "cutting_parameters": {
+        "spindle_speed_rpm": 6000.0,
+        "feed_rate": 600.0,
+        "plunge_rate": 180.0,
+        "stepdown": 1.0,
+        "stepover": 0.4,
+        "coolant": "flood"
+      },
+      "status": "prototype",
+      "source": "G8 illustrative preset; not production cutting data"
+    },
+    {
+      "preset_id": "PT-CONTOUR-FLAT-AL",
+      "material_id": "SYNTH-AL-6061-T6",
+      "operation_type": "contouring",
+      "tool_type": "flat_end_mill",
+      "strategy": "contour_mill_review",
+      "cutting_parameters": {
+        "spindle_speed_rpm": 6000.0,
+        "feed_rate": 500.0,
+        "plunge_rate": 160.0,
+        "stepdown": 1.0,
+        "stepover": 0.3,
+        "coolant": "flood"
+      },
+      "status": "prototype",
+      "source": "G8 illustrative preset; not production cutting data"
+    },
+    {
+      "preset_id": "PT-CONTOUR-BALL-AL",
+      "material_id": "SYNTH-AL-6061-T6",
+      "operation_type": "contouring",
+      "tool_type": "ball_end_mill",
+      "strategy": "surface_contour_review",
+      "cutting_parameters": {
+        "spindle_speed_rpm": 7000.0,
+        "feed_rate": 420.0,
+        "plunge_rate": 120.0,
+        "stepdown": 0.5,
+        "stepover": 0.2,
+        "coolant": "flood"
+      },
+      "status": "prototype",
+      "source": "G8 illustrative preset; not production cutting data"
+    },
+    {
+      "preset_id": "PT-CHAMFER-AL",
+      "material_id": "SYNTH-AL-6061-T6",
+      "operation_type": "chamfering",
+      "tool_type": "chamfer_mill",
+      "strategy": "chamfer_contour_review",
+      "cutting_parameters": {
+        "spindle_speed_rpm": 5000.0,
+        "feed_rate": 300.0,
+        "plunge_rate": 100.0,
+        "stepdown": 0.2,
+        "coolant": "flood"
+      },
+      "status": "prototype",
+      "source": "G8 illustrative preset; not production cutting data"
+    }
+  ],
+  "safety": {
+    "clearance": 15.0,
+    "retract": 3.0,
+    "stock_to_leave_radial": 0.2,
+    "stock_to_leave_axial": 0.2,
+    "source": "G8 review-only values; collision simulation has not run"
+  },
+  "postprocessing": {
+    "target_system": "Mastercam",
+    "postprocessor_name": "UNCONFIGURED-PROTOTYPE",
+    "postprocessor_version": "0.0.0",
+    "postprocessor_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+    "output_extension": ".NC",
+    "source": "No commissioned postprocessor; output must not be executed"
+  }
+}

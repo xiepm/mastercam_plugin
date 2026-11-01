@@ -1,0 +1,224 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "aicnc.mastercam-bound-stand-trial/0.1",
+  "title": "Source-bound stand trial execution binding; not another planning IR",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "scope",
+    "source_sha256",
+    "plan_sha256",
+    "target_sha256",
+    "source_face_namespace",
+    "operations",
+    "stock_min",
+    "stock_max",
+    "target_volume_mm3",
+    "production_released"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "aicnc.mastercam-bound-stand-trial/0.1"
+    },
+    "scope": {
+      "const": "user_part_software_simulation"
+    },
+    "source_sha256": {
+      "const": "68fb222f6d144c1673c98f9722b76d05c2eb4d9bdf2b22a7e47bf986e36c1429"
+    },
+    "plan_sha256": {
+      "$ref": "#/$defs/hash"
+    },
+    "target_sha256": {
+      "const": "695d72d113c0ec76a46fcc85346ae8d076443cae7b39049ca54ea00593b5849d"
+    },
+    "source_face_namespace": {
+      "type": "string",
+      "minLength": 1
+    },
+    "stock_min": {
+      "const": [
+        -9,
+        -9,
+        0
+      ]
+    },
+    "stock_max": {
+      "const": [
+        9,
+        9,
+        10
+      ]
+    },
+    "target_volume_mm3": {
+      "type": "number",
+      "exclusiveMinimum": 0
+    },
+    "production_released": {
+      "const": false
+    },
+    "operations": {
+      "type": "array",
+      "minItems": 9,
+      "maxItems": 9,
+      "items": {
+        "$ref": "#/$defs/operation"
+      }
+    }
+  },
+  "$defs": {
+    "hash": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "point": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "items": {
+        "type": "number"
+      }
+    },
+    "operation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "operation_id",
+        "name",
+        "role",
+        "bottom",
+        "origin",
+        "top",
+        "depth",
+        "tool_number",
+        "tool",
+        "cutting_parameters",
+        "face_ids",
+        "feature_instance_ids"
+      ],
+      "properties": {
+        "operation_id": {
+          "type": "string",
+          "pattern": "^operation:[0-9]{4}$"
+        },
+        "name": {
+          "type": "string",
+          "pattern": "^S[12]_[a-z0-9_]+$"
+        },
+        "role": {
+          "enum": [
+            "external",
+            "through",
+            "top_chamfer",
+            "counterbore",
+            "blind_14",
+            "blind_16",
+            "blind_18",
+            "blind_20",
+            "bottom_chamfer"
+          ]
+        },
+        "bottom": {
+          "type": "boolean"
+        },
+        "origin": {
+          "$ref": "#/$defs/point"
+        },
+        "top": {
+          "type": "number"
+        },
+        "depth": {
+          "type": "number"
+        },
+        "tool_number": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 4
+        },
+        "tool": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "tool_id",
+            "tool_type",
+            "diameter",
+            "stickout"
+          ],
+          "properties": {
+            "tool_id": {
+              "enum": [
+                "EM4",
+                "DR6.2",
+                "CH6",
+                "DR2.05"
+              ]
+            },
+            "tool_type": {
+              "enum": [
+                "flat_end_mill",
+                "drill",
+                "chamfer_mill"
+              ]
+            },
+            "diameter": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            },
+            "stickout": {
+              "const": 40
+            }
+          }
+        },
+        "cutting_parameters": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "spindle_speed_rpm",
+            "feed_rate",
+            "plunge_rate",
+            "coolant"
+          ],
+          "properties": {
+            "spindle_speed_rpm": {
+              "const": 3000
+            },
+            "feed_rate": {
+              "const": 150
+            },
+            "plunge_rate": {
+              "const": 60
+            },
+            "coolant": {
+              "const": "off"
+            },
+            "stepdown": {
+              "const": 1
+            },
+            "stepover": {
+              "const": 1
+            }
+          }
+        },
+        "face_ids": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^F[0-9]{4}$"
+          }
+        },
+        "feature_instance_ids": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 1,
+          "items": {
+            "type": "string",
+            "pattern": "^feature:[0-9]{4}$"
+          }
+        }
+      }
+    }
+  }
+}

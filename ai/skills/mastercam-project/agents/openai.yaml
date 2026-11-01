@@ -1,0 +1,4 @@
+interface:
+  display_name: "Mastercam 加工工程"
+  short_description: "从本地三维工件和工艺要求建立加工工程，核验刀路并恢复任务上下文"
+  default_prompt: "使用 $mastercam-project，根据我的三维工件与工艺要求生成并验证 Mastercam 工程。"

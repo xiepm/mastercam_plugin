@@ -1,0 +1,99 @@
+{
+  "version": "2027.11.01.1",
+  "documents": [
+    {
+      "path": "ai/knowledge/project-workflow.md",
+      "title": "加工工程完整工作流",
+      "tags": [
+        "STEP",
+        "装夹",
+        "保存",
+        "重开",
+        "仿真",
+        "CAPP",
+        "刀具"
+      ],
+      "status": "bounded_native_workflow"
+    },
+    {
+      "path": "ai/knowledge/known-failures.md",
+      "title": "已验证问题与恢复",
+      "tags": [
+        "错误",
+        "碰撞",
+        "CIMCO",
+        "5mm",
+        "过切",
+        "超时",
+        "Invocation"
+      ],
+      "status": "local_evidence_not_universal_defaults"
+    },
+    {
+      "path": "ai/knowledge/machining.md",
+      "title": "插件加工知识",
+      "tags": [
+        "Porsche",
+        "HSM",
+        "钻孔",
+        "轮廓"
+      ],
+      "status": "plugin_contracts"
+    },
+    {
+      "path": "ai/knowledge/geometry.md",
+      "title": "插件几何知识",
+      "tags": [
+        "几何",
+        "投影",
+        "法向",
+        "截面"
+      ],
+      "status": "plugin_contracts"
+    },
+    {
+      "path": "ai/skills/mastercam-plugin-suite/references/porsche.md",
+      "title": "Porsche 直接调用合同",
+      "tags": [
+        "Porsche",
+        "孔",
+        "轮廓",
+        "Regenerate"
+      ],
+      "status": "typed"
+    },
+    {
+      "path": "ai/skills/mastercam-plugin-suite/references/panel-workflows.md",
+      "title": "工序群组毛坯工具合同",
+      "tags": [
+        "群组",
+        "毛坯",
+        "刀具平面",
+        "攻丝"
+      ],
+      "status": "typed"
+    },
+    {
+      "path": "ai/skills/mastercam-plugin-suite/references/execution.md",
+      "title": "执行与超时合同",
+      "tags": [
+        "恢复",
+        "MCP",
+        "apply",
+        "request"
+      ],
+      "status": "runtime_contract"
+    },
+    {
+      "path": "ai/context/README.md",
+      "title": "任务上下文恢复",
+      "tags": [
+        "Context",
+        "任务",
+        "checkpoint",
+        "恢复"
+      ],
+      "status": "task_ledger"
+    }
+  ]
+}

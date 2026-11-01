@@ -7,6 +7,10 @@ __pycache__/
 ai/bridge/bin/MastercamPluginAI.dll
 ai/bridge/bin/MastercamPluginAI101.dll
 .ai-venv/
+**/codex-before-agent.toml
+**/agent-enabled.json
+**/mastercam/requests/
+**/tasks/
 **/plugin-ai-config.json
 **/codex-before-plugin-ai.toml
 **/plugin-ai/

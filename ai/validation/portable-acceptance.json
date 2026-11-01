@@ -1,0 +1,117 @@
+{
+  "package_version": "2027.11.01.1",
+  "date": "2026-11-01",
+  "focus_components": {
+    "2": "Prompt",
+    "4": "Skill",
+    "5": "MCP",
+    "6": "Tools",
+    "8": "Knowledge",
+    "13": "Context"
+  },
+  "environment": {
+    "windows_x64": true,
+    "same_physical_pc": true,
+    "fresh_venv_workspace_and_codex_config": true,
+    "relocated_package_path_includes_chinese_and_spaces": true,
+    "host_version": "Mastercam 2027 29.0.10172.0",
+    "api_version": "NETHook3_0, Version=29.0.0.0, Culture=neutral, PublicKeyToken=null",
+    "api_sha256": "a5f87967fb5e8cfb7ea2a66cf984c9f0e468fe67b0cb0af5a7b334cf50d404ff"
+  },
+  "runtime_source_lf_sha256": {
+    "ai/upstream/server.py": "17502833e6d81f267d506e362576555383645ce58151322035542c5d17f313c5",
+    "ai/upstream/ipc_client.py": "7b036fe337227bb432121f598572cde2b0c3ce1bf5f381e23fcbd8c60aebcbee",
+    "ai/mcp/server.py": "c43bf8ccf0da000c29014668325dbc02c8357f6782b8f8466cd0121ec67cad25",
+    "ai/tools/native_smoke.py": "fecad2352a6e8078b4cb217b7afdadeccd00c167ce08c0f72e09cdd392108ab2",
+    "ai/portable/native_host.py": "643080819d196d55150d5564395a44faab406f5fcbf1cab31f55a9930a53e53c",
+    "ai/tools/install_agent.py": "d78d660de260355905d581fe7b839079eaace5e913e7359c194bc648541265da",
+    "ai/tools/doctor.py": "d21887693cb2a96ab2739800f70d9f745e7aa17881502c99b9e90373dac635bb",
+    "ai/portable/context.py": "a8ac8a12ab0779819d29117282f72ec85731a3d58412778092576c12cb18b643",
+    "ai/portable/knowledge.py": "14c181110dcdc4461f91a1b2c21c01cfd87730d68dd3beeb4baec435f3f99a22",
+    "ai/tools/compile_script.py": "2c7b8973077285a19a9d7a390192cf481151e2632b23fc38e3e0120e73dad183"
+  },
+  "startup_dll_sha256": "614b0038fab5e1d1d5757f832223d9b799f153e118f0cd879023a5c8db09f763",
+  "typed_bridge": {
+    "version": "1.5.0.0",
+    "file": "MastercamPluginAI150.dll",
+    "sha256": "2F68A414F50FB1EDB97920E848C09AA20158114591C7EC9628DDCB17610EB8B1"
+  },
+  "source_snapshot": {
+    "files": 71,
+    "manifest_sha256": "fa7cecc82257547aecbc5197bd4969ba05135ef73e0e68772f12d823ba64ce79",
+    "upstream_base_commit": "c271a0996579441d609a64029cc73a736055ffbb",
+    "base_commit_alone_is_not_snapshot_identity": true
+  },
+  "checks": {
+    "python_tests": 58,
+    "installer_checks": 37,
+    "preview_guard_checks": 5,
+    "library_state_checks": 9,
+    "payload_checks": 2277,
+    "environment_checks": 381,
+    "stdio": {
+      "passed": true,
+      "checks": [
+        "plugin_mcp_19_tools",
+        "base_mcp_9_tools",
+        "knowledge_search_has_sources",
+        "knowledge_source_readback",
+        "task_source_copied",
+        "checkpoint_saved",
+        "new_stdio_session_resume",
+        "unexecuted_material_stage_pending",
+        "changed_binding_invalidates_pass",
+        "production_not_released"
+      ],
+      "check_count": 10,
+      "native_executed": false,
+      "other_pc_tested": false
+    },
+    "capp_example_status": "needs_review",
+    "capp_unplanned_features": []
+  },
+  "native": {
+    "passed": true,
+    "run_id": "contour-a2868e799ae5",
+    "fixture": "synthetic 60 x 40 mm rectangle, one 2D contour",
+    "fresh_create_and_reopen_processes": true,
+    "native_tool_and_geometry_bound": true,
+    "toolpath_regenerated": true,
+    "parameter_chain_and_nci_summary_match": true,
+    "typed_mc_inspect_passed": true,
+    "owned_processes_closed_normally": 2,
+    "inspection_session_saved_to_separate_copy": true,
+    "verified_model_unchanged_after_cleanup": true,
+    "model_sha256": "ae62efda7e9a0c6709325bf86742adb471b16d05d6555c28ae5790628f20e24c",
+    "receipt_sha256": {
+      "create.json": "db9fea37be774de23be86bb867c52c9a0afb322ef158d46b3198bf377693fe98",
+      "reopen.json": "33f5c3611b9440bca02039077b61082e4529ff4d0bfc4ba4c64d5fe7e23e643c",
+      "verification.json": "ec7e464f565f23166fb8ea1a3fd3c68677343c0b1004672d8d9e69c75a1e8ee5",
+      "plugin-inspect.json": "8e4d118590499f4ae4ac1baf090ba9c7537a0fafee02483897a07c13fd1a3329",
+      "inspection-save.json": "461458adb821504b7b555ccc45f6f9eab68bc7f74ecf5f3bd202808bf86a9897"
+    },
+    "cleanup_receipt_sha256": [
+      "cd2d56d58f4ffe8562d0d265f7022e76bd9cd3037756d20e32bffdcf086c60f1",
+      "fe1664a7091d67f21c6d8c2c829c2c209b4af2e979374fb1da829a5aa04bd18f"
+    ],
+    "scope": "one synthetic contour; native NCI bounds/time, not full motion or material verification"
+  },
+  "known_issues_resolved": [
+    "API29 pipe reads five-byte blocks; pad ASCII commands so relocated job paths complete",
+    "Readback can mark session modified; save a separate inspection copy before normal close",
+    "Standalone replay runner owns host lifetime outside a one-shot MCP client"
+  ],
+  "not_tested_this_release": [
+    "second physical computer",
+    "unseen STEP end-to-end success rate",
+    "material removal",
+    "gouge and holder/fixture/machine collision",
+    "CIMCO replay",
+    "production post/NC release",
+    "all 44 historical typed actions"
+  ],
+  "aagnet_weights_included": false,
+  "aagnet_inference_executed": false,
+  "production_released": false,
+  "raw_native_receipts_public": false
+}

@@ -1,0 +1,141 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$defs": {
+    "ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "sha256"
+      ],
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      }
+    },
+    "task": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "task_id",
+        "created_at",
+        "goal",
+        "source",
+        "requirements",
+        "production_released"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "mastercam-agent-task/1.0"
+        },
+        "task_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{0,79}$"
+        },
+        "created_at": {
+          "type": "string"
+        },
+        "goal": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source": {
+          "$ref": "#/$defs/ref"
+        },
+        "requirements": {
+          "type": "object"
+        },
+        "production_released": {
+          "const": false
+        }
+      }
+    },
+    "event": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "event_id",
+        "stage",
+        "state",
+        "summary",
+        "artifacts",
+        "bindings",
+        "next_action"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "mastercam-agent-event/1.0"
+        },
+        "event_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{0,79}$"
+        },
+        "stage": {
+          "enum": [
+            "input",
+            "geometry",
+            "planning",
+            "native_project",
+            "toolpath",
+            "save_reopen",
+            "material_simulation",
+            "gouge",
+            "holder_collision",
+            "fixture_collision",
+            "machine_simulation",
+            "nc",
+            "nc_simulation",
+            "dimensions",
+            "production_release"
+          ]
+        },
+        "state": {
+          "enum": [
+            "pending",
+            "running",
+            "pass",
+            "fail",
+            "unknown",
+            "not_applicable"
+          ]
+        },
+        "summary": {
+          "type": "string",
+          "minLength": 1
+        },
+        "artifacts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ref"
+          }
+        },
+        "bindings": {
+          "type": "object",
+          "required": [
+            "source"
+          ],
+          "properties": {
+            "source": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          },
+          "additionalProperties": {
+            "$ref": "#/$defs/ref"
+          }
+        },
+        "next_action": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

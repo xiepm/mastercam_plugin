@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "version": "2027.10.28.2",
+  "version": "2027.11.01.1",
   "mastercam": "2027",
   "api": 29,
   "platform": "windows-x64",
@@ -22,6 +22,10 @@
     {
       "path": "PSKERNEL.dll",
       "sha256": "44B9A90D60DB1ED231D171EBAD1BC68EED79B39DFB2088D8E3B341E57FD148A5"
+    },
+    {
+      "path": "chooks/MCNetScripting/IPCServer.dll",
+      "sha256": "8FE0F6EAED60FB0628E570557D4906937660953D0FBAB719818B8F0FDAFEF6BD"
     }
   ],
   "files": [
@@ -538,8 +542,8 @@
     },
     {
       "path": "chooks/MC2027SuiteStartup/MC2027SuiteStartup.dll",
-      "bytes": 5120,
-      "sha256": "D442C260303BFEA36D31D4A5092F7031BD839DD7F67C78DBED4B917B6E10A51C",
+      "bytes": 7168,
+      "sha256": "614B0038FAB5E1D1D5757F832223D9B799F153E118F0CD879023A5C8DB09F763",
       "assemblyVersion": "1.0.0.0",
       "nativeFileVersion": null
     },
