@@ -1,0 +1,2 @@
+# CPython 3.9, Linux x86_64; numpy is pinned in the explicit conda environment.
+manifold3d==3.5.4 --hash=sha256:e985b56662467a041a7b8855aabf8047bb12860f7b18590f43affe28d0866602

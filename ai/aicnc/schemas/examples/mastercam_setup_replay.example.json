@@ -1,0 +1,7 @@
+{
+  "schema_version": "aicnc.mastercam-setup-replay-request/0.1",
+  "source_model": "D:/MC-Validation/run/stand-2setup.mcam",
+  "source_model_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+  "machine_definition": "C:/Users/Public/Documents/Shared Mastercam 2027/CNC_Machines/MILL 3 - AXIS VMC MM.mcam-mmd",
+  "machine_sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+}

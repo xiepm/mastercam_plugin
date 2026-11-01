@@ -1,6 +1,6 @@
 # 把本机 Codex 的 Mastercam 工程能力迁移到另一台电脑
 
-本次版本：2027.11.01.1。目标是让新电脑获得同一套工具、操作知识和上下文恢复入口，而不是复制聊天记录或承诺相同的通用成功率。
+本次版本：2027.11.01.2。目标是让新电脑获得同一套工具、操作知识和上下文恢复入口，而不是复制聊天记录或承诺相同的通用成功率。
 
 ## 用户指定的六项
 
@@ -48,6 +48,8 @@
 
 ## 在新电脑重放与验收
 
+现有支座的 STEP → 两装夹九工序 → 完整 Verify → 过切/刀柄检查 → 两次冷重开，使用 [专用重放说明](STEP_REPLAY.md)。这包含额外的锁定 P01 环境、原生页签名称提交和独立验收记录。下面的 contour cycle 仍是较小的连接/持久性冒烟测试。
+
 先关闭自己正在编辑的 Mastercam 文档并正常退出。以下 cycle 只在没有现有宿主时创建自己的测试进程，然后生成新的矩形轮廓原生工程、计算刀路、保存、正常关闭所拥有的宿主、启动新进程重开并核验。原生检查可能使会话变为“已修改”；验证后将会话另存 inspection-session.mcam，再正常退出，原验收文件 contour.mcam 的哈希不变。测试进程由独立运行器持有，失败时保留窗口，不随一次性 MCP 客户端退出而被杀死。
 
 ```powershell
@@ -77,4 +79,4 @@
 - typed 请求超时查询 mc_request_status；基础脚本超时查询 mastercam_request_status。未知请求不得再次提交。私有 mastercam/active.json 会阻止新的原生写入。核对宿主和回执、正常退出宿主后，可执行 `ai/tools/recover_request.py --config <配置> --request-id <原请求ID> --reason <核对说明>`。任何 Mastercam 进程仍在运行时工具均拒绝；恢复记录仍为 unknown。
 - MCP 注册冲突或 Skill 被用户改过时安装器拒绝覆盖；先检查差异。与本包无关的模型设置、MCP 和审批选项保持原样。
 - 关闭 IPC 自动启动可以把本机 LocalAppData/MC2027PluginSuite/agent-enabled.json 中 enabled 设为 false；这是运行配置，不在公开包内。重启宿主后生效。
-- 历史工件/仿真回执的路径和摘要不改写为新电脑证据。本轮实际结果见 ai/validation/portable-acceptance.json，跨电脑状态单独登记。
+- 历史工件/仿真回执的路径和摘要不改写为新电脑证据。历史单轮廓结果见 ai/validation/portable-acceptance.json，九工序结果见 ai/validation/stand-replay-acceptance.json，跨电脑状态单独登记。

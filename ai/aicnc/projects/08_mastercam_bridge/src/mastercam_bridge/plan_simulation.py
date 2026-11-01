@@ -555,13 +555,16 @@ def validate_bound_stand_simulation(final):
         require(all(v[k]['IsCollisionChecked'] and not v[k]['RapidCollisionReportSuppressed'] and not v[k]['RemovesMaterial'] for k in ('holder','shaft','arbor')),'Assembly collision checks disabled')
 
 
-def execute_bound_stand_2027(directory,label,mode):
+def execute_bound_stand_2027(directory,label,mode,*,native_only=False,model_name='stand-2setup.mcam',close_simulator=False):
     """Source-locked profile in the existing P08 executor; no general STEP compiler."""
     global _client
     directory=Path(directory).resolve()
     require(directory.is_relative_to(Path(runtime_config()['workspace']).resolve()),'Trial workspace required')
     require(label and all(c.isalnum() or c in '-_' for c in label),'Invalid run label')
-    require(mode in ('create','reopen'),'Invalid stand mode')
+    require(mode in ('create','reopen','simulate'),'Invalid stand mode')
+    require(Path(model_name).name==model_name and model_name.endswith('.mcam'),'Model must be a local MCAM filename')
+    require(mode=='simulate' or model_name=='stand-2setup.mcam','Native creation/readback uses the original factory filename')
+    require(not native_only or mode in ('create','reopen'),'Native-only requires a native phase')
     validate_bound_stand_2027(directory)
     def note(message):print(message,flush=True)
     def native(stage,template,values):
@@ -572,8 +575,9 @@ def execute_bound_stand_2027(directory,label,mode):
         _client=client
         try:
             note('Native '+mode)
-            result=native('native','aicnc_bound_stand_2027.csx',dict(ROOT=str(directory),MODE=mode))
-            model=directory/'stand-2setup.mcam'
+            result=None if mode=='simulate' else native('native','aicnc_bound_stand_2027.csx',dict(ROOT=str(directory),MODE=mode))
+            if native_only:return dict(native=result)
+            model=directory/model_name
             framework=Path(os.environ.get('WINDIR','C:/Windows'))/'Microsoft.NET/Framework64/v4.0.30319'
             sources=[NATIVE/'SimulationDomainBridge.cs',NATIVE/'SimulationFrameworkEntry.cs']
             dll=directory/('SimulationBridgeHost.'+hashlib.sha256(b''.join(p.read_bytes() for p in sources)).hexdigest()[:12]+'.dll')
@@ -625,6 +629,7 @@ def execute_bound_stand_2027(directory,label,mode):
             final=sim('export','export',directory/(label+'-ipw.stl'))
             schema(final,'simulator_receipt')
             validate_bound_stand_simulation(final)
+            if close_simulator:sim('close','close')
             note('Complete: '+str(directory/(label+'-ipw.stl')))
             return dict(native=result,simulation=final)
         finally:_client=None

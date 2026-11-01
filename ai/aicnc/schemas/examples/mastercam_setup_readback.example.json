@@ -1,0 +1,1170 @@
+{
+  "ok": true,
+  "mode": "read",
+  "pid": 1,
+  "production_released": false,
+  "machine_name": "C:/Mastercam/MILL 3 - AXIS VMC MM.mcam-mmd",
+  "stock": {
+    "origin": [
+      0,
+      0,
+      10
+    ],
+    "size": [
+      18,
+      18,
+      10
+    ],
+    "plane": {
+      "id": 1,
+      "name": "俯视图",
+      "origin": [
+        0,
+        0,
+        0
+      ],
+      "x": [
+        1,
+        0,
+        0
+      ],
+      "y": [
+        0,
+        1,
+        0
+      ],
+      "z": [
+        0,
+        0,
+        1
+      ],
+      "work_offset": -1
+    }
+  },
+  "operations": [
+    {
+      "id": 1,
+      "name": "S1_external",
+      "group_id": 2,
+      "group_name": "装夹1_正面_3道",
+      "wcs": {
+        "id": 54,
+        "name": "S1_TOP_G54",
+        "origin": [
+          0,
+          0,
+          10
+        ],
+        "x": [
+          1,
+          0,
+          0
+        ],
+        "y": [
+          0,
+          1,
+          0
+        ],
+        "z": [
+          0,
+          0,
+          1
+        ],
+        "work_offset": 0
+      },
+      "tool_plane": {
+        "id": 54,
+        "name": "S1_TOP_G54",
+        "origin": [
+          0,
+          0,
+          10
+        ],
+        "x": [
+          1,
+          0,
+          0
+        ],
+        "y": [
+          0,
+          1,
+          0
+        ],
+        "z": [
+          0,
+          0,
+          1
+        ],
+        "work_offset": 0
+      },
+      "construction_plane": {
+        "id": 54,
+        "name": "S1_TOP_G54",
+        "origin": [
+          0,
+          0,
+          10
+        ],
+        "x": [
+          1,
+          0,
+          0
+        ],
+        "y": [
+          0,
+          1,
+          0
+        ],
+        "z": [
+          0,
+          0,
+          1
+        ],
+        "work_offset": 0
+      },
+      "program": 1001,
+      "top": 0,
+      "depth": -10.05,
+      "clearance": 5,
+      "retract": 5,
+      "feed_plane": 2,
+      "dirty": false,
+      "world_min": [
+        -9.8,
+        -9.8,
+        -0.05000000000000249
+      ],
+      "world_max": [
+        9.8,
+        9.8,
+        15
+      ],
+      "cycle_seconds": 311.7011500512689,
+      "tool_number": 1,
+      "tool_diameter": 4,
+      "home_enabled": true,
+      "home": [
+        0,
+        0,
+        15
+      ],
+      "feed": 150,
+      "rpm": 3000,
+      "plunge": 60,
+      "retract_rate": 500,
+      "tool_assembly": {
+        "length": 40,
+        "flute_length": 15,
+        "shoulder_length": 20,
+        "shank_diameter": 4,
+        "holder_diameter": 20,
+        "holder_length": 40,
+        "tip_angle": 0,
+        "length_offset": 1,
+        "diameter_offset": 1
+      }
+    },
+    {
+      "id": 2,
+      "name": "S1_through",
+      "group_id": 2,
+      "group_name": "装夹1_正面_3道",
+      "wcs": {
+        "id": 54,
+        "name": "S1_TOP_G54",
+        "origin": [
+          0,
+          0,
+          10
+        ],
+        "x": [
+          1,
+          0,
+          0
+        ],
+        "y": [
+          0,
+          1,
+          0
+        ],
+        "z": [
+          0,
+          0,
+          1
+        ],
+        "work_offset": 0
+      },
+      "tool_plane": {
+        "id": 54,
+        "name": "S1_TOP_G54",
+        "origin": [
+          0,
+          0,
+          10
+        ],
+        "x": [
+          1,
+          0,
+          0
+        ],
+        "y": [
+          0,
+          1,
+          0
+        ],
+        "z": [
+          0,
+          0,
+          1
+        ],
+        "work_offset": 0
+      },
+      "construction_plane": {
+        "id": 54,
+        "name": "S1_TOP_G54",
+        "origin": [
+          0,
+          0,
+          10
+        ],
+        "x": [
+          1,
+          0,
+          0
+        ],
+        "y": [
+          0,
+          1,
+          0
+        ],
+        "z": [
+          0,
+          0,
+          1
+        ],
+        "work_offset": 0
+      },
+      "program": 1001,
+      "top": 0,
+      "depth": -12,
+      "clearance": 5,
+      "retract": 5,
+      "feed_plane": 2,
+      "dirty": false,
+      "world_min": [
+        0,
+        0,
+        -2
+      ],
+      "world_max": [
+        0,
+        0,
+        15
+      ],
+      "cycle_seconds": 5.696,
+      "tool_number": 2,
+      "tool_diameter": 6.2,
+      "home_enabled": true,
+      "home": [
+        0,
+        0,
+        15
+      ],
+      "feed": 150,
+      "rpm": 3000,
+      "plunge": 60,
+      "retract_rate": 500,
+      "tool_assembly": {
+        "length": 40,
+        "flute_length": 15,
+        "shoulder_length": 20,
+        "shank_diameter": 6.2,
+        "holder_diameter": 20,
+        "holder_length": 40,
+        "tip_angle": 118,
+        "length_offset": 2,
+        "diameter_offset": 2
+      }
+    },
+    {
+      "id": 3,
+      "name": "S1_top_chamfer",
+      "group_id": 2,
+      "group_name": "装夹1_正面_3道",
+      "wcs": {
+        "id": 54,
+        "name": "S1_TOP_G54",
+        "origin": [
+          0,
+          0,
+          10
+        ],
+        "x": [
+          1,
+          0,
+          0
+        ],
+        "y": [
+          0,
+          1,
+          0
+        ],
+        "z": [
+          0,
+          0,
+          1
+        ],
+        "work_offset": 0
+      },
+      "tool_plane": {
+        "id": 54,
+        "name": "S1_TOP_G54",
+        "origin": [
+          0,
+          0,
+          10
+        ],
+        "x": [
+          1,
+          0,
+          0
+        ],
+        "y": [
+          0,
+          1,
+          0
+        ],
+        "z": [
+          0,
+          0,
+          1
+        ],
+        "work_offset": 0
+      },
+      "construction_plane": {
+        "id": 54,
+        "name": "S1_TOP_G54",
+        "origin": [
+          0,
+          0,
+          10
+        ],
+        "x": [
+          1,
+          0,
+          0
+        ],
+        "y": [
+          0,
+          1,
+          0
+        ],
+        "z": [
+          0,
+          0,
+          1
+        ],
+        "work_offset": 0
+      },
+      "program": 1001,
+      "top": 0,
+      "depth": 0,
+      "clearance": 5,
+      "retract": 5,
+      "feed_plane": 2,
+      "dirty": false,
+      "world_min": [
+        -8.549999999999999,
+        -8.549999999999999,
+        9.3
+      ],
+      "world_max": [
+        8.549999999999999,
+        8.549999999999999,
+        15
+      ],
+      "cycle_seconds": 27.663883136195004,
+      "tool_number": 3,
+      "tool_diameter": 6,
+      "home_enabled": true,
+      "home": [
+        0,
+        0,
+        15
+      ],
+      "feed": 150,
+      "rpm": 3000,
+      "plunge": 60,
+      "retract_rate": 500,
+      "tool_assembly": {
+        "length": 40,
+        "flute_length": 2.75,
+        "shoulder_length": 20,
+        "shank_diameter": 6,
+        "holder_diameter": 20,
+        "holder_length": 40,
+        "tip_angle": 45,
+        "length_offset": 3,
+        "diameter_offset": 3
+      }
+    },
+    {
+      "id": 4,
+      "name": "S2_counterbore",
+      "group_id": 3,
+      "group_name": "装夹2_翻面_6道",
+      "wcs": {
+        "id": 55,
+        "name": "S2_FLIP_G55",
+        "origin": [
+          0,
+          0,
+          0
+        ],
+        "x": [
+          1,
+          0,
+          0
+        ],
+        "y": [
+          0,
+          -1,
+          0
+        ],
+        "z": [
+          0,
+          0,
+          -1
+        ],
+        "work_offset": 1
+      },
+      "tool_plane": {
+        "id": 55,
+        "name": "S2_FLIP_G55",
+        "origin": [
+          0,
+          0,
+          0
+        ],
+        "x": [
+          1,
+          0,
+          0
+        ],
+        "y": [
+          0,
+          -1,
+          0
+        ],
+        "z": [
+          0,
+          0,
+          -1
+        ],
+        "work_offset": 1
+      },
+      "construction_plane": {
+        "id": 55,
+        "name": "S2_FLIP_G55",
+        "origin": [
+          0,
+          0,
+          0
+        ],
+        "x": [
+          1,
+          0,
+          0
+        ],
+        "y": [
+          0,
+          -1,
+          0
+        ],
+        "z": [
+          0,
+          0,
+          -1
+        ],
+        "work_offset": 1
+      },
+      "program": 1002,
+      "top": 0,
+      "depth": -6.4,
+      "clearance": 5,
+      "retract": 5,
+      "feed_plane": 2,
+      "dirty": false,
+      "world_min": [
+        -3.125,
+        -3.125,
+        -5
+      ],
+      "world_max": [
+        3.125,
+        3.125,
+        6.400000000000001
+      ],
+      "cycle_seconds": 149.53912058289848,
+      "tool_number": 1,
+      "tool_diameter": 4,
+      "home_enabled": true,
+      "home": [
+        0,
+        0,
+        -5
+      ],
+      "feed": 150,
+      "rpm": 3000,
+      "plunge": 60,
+      "retract_rate": 500,
+      "tool_assembly": {
+        "length": 40,
+        "flute_length": 15,
+        "shoulder_length": 20,
+        "shank_diameter": 4,
+        "holder_diameter": 20,
+        "holder_length": 40,
+        "tip_angle": 0,
+        "length_offset": 1,
+        "diameter_offset": 1
+      }
+    },
+    {
+      "id": 5,
+      "name": "S2_blind_14",
+      "group_id": 3,
+      "group_name": "装夹2_翻面_6道",
+      "wcs": {
+        "id": 55,
+        "name": "S2_FLIP_G55",
+        "origin": [
+          0,
+          0,
+          0
+        ],
+        "x": [
+          1,
+          0,
+          0
+        ],
+        "y": [
+          0,
+          -1,
+          0
+        ],
+        "z": [
+          0,
+          0,
+          -1
+        ],
+        "work_offset": 1
+      },
+      "tool_plane": {
+        "id": 55,
+        "name": "S2_FLIP_G55",
+        "origin": [
+          0,
+          0,
+          0
+        ],
+        "x": [
+          1,
+          0,
+          0
+        ],
+        "y": [
+          0,
+          -1,
+          0
+        ],
+        "z": [
+          0,
+          0,
+          -1
+        ],
+        "work_offset": 1
+      },
+      "construction_plane": {
+        "id": 55,
+        "name": "S2_FLIP_G55",
+        "origin": [
+          0,
+          0,
+          0
+        ],
+        "x": [
+          1,
+          0,
+          0
+        ],
+        "y": [
+          0,
+          -1,
+          0
+        ],
+        "z": [
+          0,
+          0,
+          -1
+        ],
+        "work_offset": 1
+      },
+      "program": 1002,
+      "top": 0,
+      "depth": -8.115882134503249,
+      "clearance": 5,
+      "retract": 5,
+      "feed_plane": 2,
+      "dirty": false,
+      "world_min": [
+        -5,
+        -5,
+        -5
+      ],
+      "world_max": [
+        -5,
+        -5,
+        8.115882134503249
+      ],
+      "cycle_seconds": 4.123709088046915,
+      "tool_number": 4,
+      "tool_diameter": 2.05,
+      "home_enabled": true,
+      "home": [
+        0,
+        0,
+        -5
+      ],
+      "feed": 150,
+      "rpm": 3000,
+      "plunge": 60,
+      "retract_rate": 500,
+      "tool_assembly": {
+        "length": 40,
+        "flute_length": 15,
+        "shoulder_length": 20,
+        "shank_diameter": 2.05,
+        "holder_diameter": 20,
+        "holder_length": 40,
+        "tip_angle": 118,
+        "length_offset": 4,
+        "diameter_offset": 4
+      }
+    },
+    {
+      "id": 6,
+      "name": "S2_blind_16",
+      "group_id": 3,
+      "group_name": "装夹2_翻面_6道",
+      "wcs": {
+        "id": 55,
+        "name": "S2_FLIP_G55",
+        "origin": [
+          0,
+          0,
+          0
+        ],
+        "x": [
+          1,
+          0,
+          0
+        ],
+        "y": [
+          0,
+          -1,
+          0
+        ],
+        "z": [
+          0,
+          0,
+          -1
+        ],
+        "work_offset": 1
+      },
+      "tool_plane": {
+        "id": 55,
+        "name": "S2_FLIP_G55",
+        "origin": [
+          0,
+          0,
+          0
+        ],
+        "x": [
+          1,
+          0,
+          0
+        ],
+        "y": [
+          0,
+          -1,
+          0
+        ],
+        "z": [
+          0,
+          0,
+          -1
+        ],
+        "work_offset": 1
+      },
+      "construction_plane": {
+        "id": 55,
+        "name": "S2_FLIP_G55",
+        "origin": [
+          0,
+          0,
+          0
+        ],
+        "x": [
+          1,
+          0,
+          0
+        ],
+        "y": [
+          0,
+          -1,
+          0
+        ],
+        "z": [
+          0,
+          0,
+          -1
+        ],
+        "work_offset": 1
+      },
+      "program": 1002,
+      "top": 0,
+      "depth": -8.115882134503249,
+      "clearance": 5,
+      "retract": 5,
+      "feed_plane": 2,
+      "dirty": false,
+      "world_min": [
+        5,
+        -5,
+        -5
+      ],
+      "world_max": [
+        5,
+        -5,
+        8.115882134503249
+      ],
+      "cycle_seconds": 4.123709088046915,
+      "tool_number": 4,
+      "tool_diameter": 2.05,
+      "home_enabled": true,
+      "home": [
+        0,
+        0,
+        -5
+      ],
+      "feed": 150,
+      "rpm": 3000,
+      "plunge": 60,
+      "retract_rate": 500,
+      "tool_assembly": {
+        "length": 40,
+        "flute_length": 15,
+        "shoulder_length": 20,
+        "shank_diameter": 2.05,
+        "holder_diameter": 20,
+        "holder_length": 40,
+        "tip_angle": 118,
+        "length_offset": 4,
+        "diameter_offset": 4
+      }
+    },
+    {
+      "id": 7,
+      "name": "S2_blind_18",
+      "group_id": 3,
+      "group_name": "装夹2_翻面_6道",
+      "wcs": {
+        "id": 55,
+        "name": "S2_FLIP_G55",
+        "origin": [
+          0,
+          0,
+          0
+        ],
+        "x": [
+          1,
+          0,
+          0
+        ],
+        "y": [
+          0,
+          -1,
+          0
+        ],
+        "z": [
+          0,
+          0,
+          -1
+        ],
+        "work_offset": 1
+      },
+      "tool_plane": {
+        "id": 55,
+        "name": "S2_FLIP_G55",
+        "origin": [
+          0,
+          0,
+          0
+        ],
+        "x": [
+          1,
+          0,
+          0
+        ],
+        "y": [
+          0,
+          -1,
+          0
+        ],
+        "z": [
+          0,
+          0,
+          -1
+        ],
+        "work_offset": 1
+      },
+      "construction_plane": {
+        "id": 55,
+        "name": "S2_FLIP_G55",
+        "origin": [
+          0,
+          0,
+          0
+        ],
+        "x": [
+          1,
+          0,
+          0
+        ],
+        "y": [
+          0,
+          -1,
+          0
+        ],
+        "z": [
+          0,
+          0,
+          -1
+        ],
+        "work_offset": 1
+      },
+      "program": 1002,
+      "top": 0,
+      "depth": -8.115882134503249,
+      "clearance": 5,
+      "retract": 5,
+      "feed_plane": 2,
+      "dirty": false,
+      "world_min": [
+        5,
+        5,
+        -5
+      ],
+      "world_max": [
+        5,
+        5,
+        8.115882134503249
+      ],
+      "cycle_seconds": 4.123709088046915,
+      "tool_number": 4,
+      "tool_diameter": 2.05,
+      "home_enabled": true,
+      "home": [
+        0,
+        0,
+        -5
+      ],
+      "feed": 150,
+      "rpm": 3000,
+      "plunge": 60,
+      "retract_rate": 500,
+      "tool_assembly": {
+        "length": 40,
+        "flute_length": 15,
+        "shoulder_length": 20,
+        "shank_diameter": 2.05,
+        "holder_diameter": 20,
+        "holder_length": 40,
+        "tip_angle": 118,
+        "length_offset": 4,
+        "diameter_offset": 4
+      }
+    },
+    {
+      "id": 8,
+      "name": "S2_blind_20",
+      "group_id": 3,
+      "group_name": "装夹2_翻面_6道",
+      "wcs": {
+        "id": 55,
+        "name": "S2_FLIP_G55",
+        "origin": [
+          0,
+          0,
+          0
+        ],
+        "x": [
+          1,
+          0,
+          0
+        ],
+        "y": [
+          0,
+          -1,
+          0
+        ],
+        "z": [
+          0,
+          0,
+          -1
+        ],
+        "work_offset": 1
+      },
+      "tool_plane": {
+        "id": 55,
+        "name": "S2_FLIP_G55",
+        "origin": [
+          0,
+          0,
+          0
+        ],
+        "x": [
+          1,
+          0,
+          0
+        ],
+        "y": [
+          0,
+          -1,
+          0
+        ],
+        "z": [
+          0,
+          0,
+          -1
+        ],
+        "work_offset": 1
+      },
+      "construction_plane": {
+        "id": 55,
+        "name": "S2_FLIP_G55",
+        "origin": [
+          0,
+          0,
+          0
+        ],
+        "x": [
+          1,
+          0,
+          0
+        ],
+        "y": [
+          0,
+          -1,
+          0
+        ],
+        "z": [
+          0,
+          0,
+          -1
+        ],
+        "work_offset": 1
+      },
+      "program": 1002,
+      "top": 0,
+      "depth": -8.115882134503249,
+      "clearance": 5,
+      "retract": 5,
+      "feed_plane": 2,
+      "dirty": false,
+      "world_min": [
+        -5,
+        5,
+        -5
+      ],
+      "world_max": [
+        -5,
+        5,
+        8.115882134503249
+      ],
+      "cycle_seconds": 4.123709088046915,
+      "tool_number": 4,
+      "tool_diameter": 2.05,
+      "home_enabled": true,
+      "home": [
+        0,
+        0,
+        -5
+      ],
+      "feed": 150,
+      "rpm": 3000,
+      "plunge": 60,
+      "retract_rate": 500,
+      "tool_assembly": {
+        "length": 40,
+        "flute_length": 15,
+        "shoulder_length": 20,
+        "shank_diameter": 2.05,
+        "holder_diameter": 20,
+        "holder_length": 40,
+        "tip_angle": 118,
+        "length_offset": 4,
+        "diameter_offset": 4
+      }
+    },
+    {
+      "id": 9,
+      "name": "S2_bottom_chamfer",
+      "group_id": 3,
+      "group_name": "装夹2_翻面_6道",
+      "wcs": {
+        "id": 55,
+        "name": "S2_FLIP_G55",
+        "origin": [
+          0,
+          0,
+          0
+        ],
+        "x": [
+          1,
+          0,
+          0
+        ],
+        "y": [
+          0,
+          -1,
+          0
+        ],
+        "z": [
+          0,
+          0,
+          -1
+        ],
+        "work_offset": 1
+      },
+      "tool_plane": {
+        "id": 55,
+        "name": "S2_FLIP_G55",
+        "origin": [
+          0,
+          0,
+          0
+        ],
+        "x": [
+          1,
+          0,
+          0
+        ],
+        "y": [
+          0,
+          -1,
+          0
+        ],
+        "z": [
+          0,
+          0,
+          -1
+        ],
+        "work_offset": 1
+      },
+      "construction_plane": {
+        "id": 55,
+        "name": "S2_FLIP_G55",
+        "origin": [
+          0,
+          0,
+          0
+        ],
+        "x": [
+          1,
+          0,
+          0
+        ],
+        "y": [
+          0,
+          -1,
+          0
+        ],
+        "z": [
+          0,
+          0,
+          -1
+        ],
+        "work_offset": 1
+      },
+      "program": 1002,
+      "top": 0,
+      "depth": 0,
+      "clearance": 5,
+      "retract": 5,
+      "feed_plane": 2,
+      "dirty": false,
+      "world_min": [
+        -8.549999999999999,
+        -8.549999999999999,
+        -5
+      ],
+      "world_max": [
+        8.549999999999999,
+        8.549999999999999,
+        0.7000000000000002
+      ],
+      "cycle_seconds": 27.663883136195004,
+      "tool_number": 3,
+      "tool_diameter": 6,
+      "home_enabled": true,
+      "home": [
+        0,
+        0,
+        -5
+      ],
+      "feed": 150,
+      "rpm": 3000,
+      "plunge": 60,
+      "retract_rate": 500,
+      "tool_assembly": {
+        "length": 40,
+        "flute_length": 2.75,
+        "shoulder_length": 20,
+        "shank_diameter": 6,
+        "holder_diameter": 20,
+        "holder_length": 40,
+        "tip_angle": 45,
+        "length_offset": 3,
+        "diameter_offset": 3
+      }
+    }
+  ],
+  "view_sheets": [
+    {
+      "index": 0,
+      "name": "装夹1_正面_G54",
+      "wcs_id": 54,
+      "tool_plane_id": 54,
+      "construction_plane_id": 54,
+      "graphics_plane_id": 54,
+      "has_bookmark": true
+    },
+    {
+      "index": 1,
+      "name": "装夹2_翻面_G55",
+      "wcs_id": 55,
+      "tool_plane_id": 55,
+      "construction_plane_id": 55,
+      "graphics_plane_id": 55,
+      "has_bookmark": true
+    }
+  ],
+  "view_label_ui_commit_required": false,
+  "model": "D:/MC-Validation/example/stand-3axis-2setups.mcam",
+  "model_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+  "original_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+  "stage": "readback",
+  "example_only": true
+}

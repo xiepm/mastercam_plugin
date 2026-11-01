@@ -239,9 +239,17 @@
       ]
     },
     {
+      "path": "projects/08_mastercam_bridge/src/mastercam/aicnc_stand_save_views_2027.csx",
+      "source_sha256": "d48b2f635282dceb825ffdbbb5634db342f773b7c1ac77f5b416a7c5bbcf5edf",
+      "distributed_sha256": "b35fed1723619c0ec7d1c5163d7aca82c5358fb83573e6ac5ba8d96cbe68c323",
+      "adaptations": [
+        "Render .NET assembly reference using locally installed .NET 10 runtime"
+      ]
+    },
+    {
       "path": "projects/08_mastercam_bridge/src/mastercam/aicnc_stand_setups_2027.csx",
-      "source_sha256": "64ab5ec5deab38ae93fe6f59c73f96a3870f1d82d4d356816b5b879640893923",
-      "distributed_sha256": "b7b41fbdcf1d93db99b54dffe842017e20d660110af402cb7045ea1e62460d49",
+      "source_sha256": "c6296ce924fb4d60f02de8aee82d175040897c87e0df8252ba892aad04baf896",
+      "distributed_sha256": "dd36eeb512f7d07e17e5b9078aab81c659766c443604ee2a3e29f1628a60c21a",
       "adaptations": [
         "Render .NET assembly reference using locally installed .NET 10 runtime"
       ]
@@ -292,8 +300,8 @@
     },
     {
       "path": "projects/08_mastercam_bridge/src/mastercam_bridge/plan_simulation.py",
-      "source_sha256": "bf839aa7c9b83795df8b9a6f913e1a6e191d2c0113525e9d17814a98ec94e33a",
-      "distributed_sha256": "a0501d5c8e06fa4ecc354a1c14aef89f57373498a8e3ce333cd36e948ee154d7",
+      "source_sha256": "4cc25b1a7424020f66b6bf12b943ad4e918ffbe3777a9ef21db080baffedb65e",
+      "distributed_sha256": "931fce2c2cb04b126d6b8d9b1c85660da43a7aef68cdfee25879f355b9d389f1",
       "adaptations": [
         "Portable runtime/workspace/MCP/static compiler references; native plan semantics unchanged",
         "ZIP runtime reads recorded upstream base commit instead of requiring .git"
@@ -303,6 +311,18 @@
       "path": "projects/08_mastercam_bridge/src/mastercam_bridge/readonly_export.py",
       "source_sha256": "840fa38d79b47102833364edf7c4f37e05cac5a707b9d4630840a83039a3c3ca",
       "distributed_sha256": "840fa38d79b47102833364edf7c4f37e05cac5a707b9d4630840a83039a3c3ca",
+      "adaptations": []
+    },
+    {
+      "path": "projects/08_mastercam_bridge/src/mastercam_bridge/stand_replay.py",
+      "source_sha256": "f0fc1cd1abd13c818519337f123cb72a9d83fc740f1dca8dcdd6c4c2db9b288e",
+      "distributed_sha256": "f0fc1cd1abd13c818519337f123cb72a9d83fc740f1dca8dcdd6c4c2db9b288e",
+      "adaptations": []
+    },
+    {
+      "path": "projects/08_mastercam_bridge/tools/compare_simulation_stls.py",
+      "source_sha256": "ad14f9fb39b5ef9b3fa83e8fdd8405d6ff4c9738cab80ad2ca2106558e7d315c",
+      "distributed_sha256": "ad14f9fb39b5ef9b3fa83e8fdd8405d6ff4c9738cab80ad2ca2106558e7d315c",
       "adaptations": []
     },
     {
@@ -329,8 +349,8 @@
     },
     {
       "path": "projects/08_mastercam_bridge/tools/prepare_stand_trial.py",
-      "source_sha256": "ba349b65977561d74844221099997b428488c26152d306d996be2e3e60dabb0c",
-      "distributed_sha256": "ba349b65977561d74844221099997b428488c26152d306d996be2e3e60dabb0c",
+      "source_sha256": "eaa530828cf0d0bdb1d73062c6db3459f704288eaaf1fc327083b3f5cbee20cd",
+      "distributed_sha256": "eaa530828cf0d0bdb1d73062c6db3459f704288eaaf1fc327083b3f5cbee20cd",
       "adaptations": []
     },
     {
@@ -394,6 +414,18 @@
       "adaptations": []
     },
     {
+      "path": "schemas/examples/mastercam_setup_readback.example.json",
+      "source_sha256": "58ec9f7c2463558344f561bad4e8b87aedf2a3545f1cb3bb3f9a1994f07d27c0",
+      "distributed_sha256": "58ec9f7c2463558344f561bad4e8b87aedf2a3545f1cb3bb3f9a1994f07d27c0",
+      "adaptations": []
+    },
+    {
+      "path": "schemas/examples/mastercam_setup_replay.example.json",
+      "source_sha256": "e2844b30da37027431ac2d6e1f809b64ad4a35414feb91f106633d051d858de3",
+      "distributed_sha256": "e2844b30da37027431ac2d6e1f809b64ad4a35414feb91f106633d051d858de3",
+      "adaptations": []
+    },
+    {
       "path": "schemas/feature_taxonomy.schema.json",
       "source_sha256": "60949c631d0aa0473e261c4ed18b88b82395082395d8083f06e3745585b8d2a4",
       "distributed_sha256": "60949c631d0aa0473e261c4ed18b88b82395082395d8083f06e3745585b8d2a4",
@@ -443,8 +475,14 @@
     },
     {
       "path": "schemas/mastercam_setup_readback.schema.json",
-      "source_sha256": "d1a747ee766e276ffda90ebb09e8841ef04610f5c0c60ac34e1419edad22eff7",
-      "distributed_sha256": "d1a747ee766e276ffda90ebb09e8841ef04610f5c0c60ac34e1419edad22eff7",
+      "source_sha256": "795a5e6e7e0def88a95a64869c62060cadc1a34ac7b5f99b820a0dee668e4c33",
+      "distributed_sha256": "795a5e6e7e0def88a95a64869c62060cadc1a34ac7b5f99b820a0dee668e4c33",
+      "adaptations": []
+    },
+    {
+      "path": "schemas/mastercam_setup_replay.schema.json",
+      "source_sha256": "07224b0c0ce9a5dbece0110143281b71ec4356c3945007f9f881d9a385a1cef4",
+      "distributed_sha256": "07224b0c0ce9a5dbece0110143281b71ec4356c3945007f9f881d9a385a1cef4",
       "adaptations": []
     },
     {

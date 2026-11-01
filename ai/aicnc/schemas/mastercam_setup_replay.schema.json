@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aicnc.local/schemas/mastercam_setup_replay.schema.json",
+  "type": "object", "additionalProperties": false,
+  "required": ["schema_version", "source_model", "source_model_sha256", "machine_definition", "machine_sha256"],
+  "properties": {
+    "schema_version": {"const": "aicnc.mastercam-setup-replay-request/0.1"},
+    "source_model": {"type": "string", "minLength": 1},
+    "source_model_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "machine_definition": {"type": "string", "minLength": 1},
+    "machine_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+  }
+}

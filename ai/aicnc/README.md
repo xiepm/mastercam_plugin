@@ -10,3 +10,5 @@
 修改这些源文件时，应在所属 P01/P07/P08 上游评审，再使用 `tools/Import-AICNC.py --source <上游工作区>` 生成受控快照。原回执不能改路径后当成新电脑验收。发布适配需要重新测试，source-manifest 的 adaptations 明确列出变化。
 
 全新的 STEP 通常从 Mastercam 原生实体检查和已支持插件动作开始，或由兼容 P01/模型路线提供明确 features；详见 mastercam-project Skill。包不含 AAGNet 权重、客户 STEP/MCAM、机床后处理正文、厂商 SDK 或许可证。
+
+来源绑定支座的可重放入口、P01 环境安装与原生 UI 边界见 [STEP_REPLAY](../../docs/STEP_REPLAY.md)。P08 新增 stand_replay 校验与静默保存辅助，继续使用同一原生执行器和 P01/P07；模型推理没有参与该用例。

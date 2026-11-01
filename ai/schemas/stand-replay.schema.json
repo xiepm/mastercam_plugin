@@ -1,0 +1,35 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"https://aicnc.local/portable/stand-replay.schema.json",
+  "$defs":{
+    "hash":{"type":"string","pattern":"^[a-f0-9]{64}$"},
+    "request":{
+      "type":"object","additionalProperties":false,
+      "required":["schema_version","source_sha256","machine_sha256","p01_python","wsl_distro","source_manifest_sha256","production_released","model_inference_used","task_id"],
+      "properties":{
+        "schema_version":{"const":"aicnc.mastercam-stand-replay-request/0.1"},
+        "source_sha256":{"$ref":"#/$defs/hash"},"machine_sha256":{"$ref":"#/$defs/hash"},
+        "source_manifest_sha256":{"$ref":"#/$defs/hash"},
+        "p01_python":{"type":"string","pattern":"^/"},"wsl_distro":{"type":"string","minLength":1},
+        "production_released":{"const":false},"model_inference_used":{"const":false},"task_id":{"type":"string"}
+      }
+    },
+    "acceptance":{
+      "type":"object",
+      "required":["schema_version","passed","model_sha256","ipw_sha256","source_sha256","source_manifest_sha256","fresh_pids","setups","operations","moves","identical_native_parameters","identical_ipw_bytes","native_gouges","native_excess","native_collision_reports","simulation_settings_and_target_reapplied","production_released","machine_kinematics_verified","physical_fixtures_verified","unseen_STEP_supported","another_physical_computer_tested","evidence"],
+      "properties":{
+        "schema_version":{"const":"aicnc.mastercam-stand-replay/0.1"},"passed":{"const":true},
+        "model_sha256":{"$ref":"#/$defs/hash"},"ipw_sha256":{"$ref":"#/$defs/hash"},
+        "source_sha256":{"$ref":"#/$defs/hash"},"source_manifest_sha256":{"$ref":"#/$defs/hash"},
+        "fresh_pids":{"type":"array","minItems":3,"maxItems":3,"uniqueItems":true,"items":{"type":"integer","minimum":1}},
+        "setups":{"const":2},"operations":{"const":9},"moves":{"const":233},
+        "identical_native_parameters":{"const":true},"identical_ipw_bytes":{"const":true},
+        "native_gouges":{"const":0},"native_excess":{"const":0},"native_collision_reports":{"const":0},
+        "simulation_settings_and_target_reapplied":{"const":true},"production_released":{"const":false},
+        "machine_kinematics_verified":{"const":false},"physical_fixtures_verified":{"const":false},
+        "unseen_STEP_supported":{"const":false},"another_physical_computer_tested":{"const":false},
+        "evidence":{"type":"object","minProperties":10,"additionalProperties":{"$ref":"#/$defs/hash"}}
+      }
+    }
+  }
+}
