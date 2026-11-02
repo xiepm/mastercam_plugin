@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "aicnc:local-reference-catalog:0.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "production_enabled",
+    "cases"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "aicnc.local-reference-catalog/0.1"
+    },
+    "production_enabled": {
+      "const": false
+    },
+    "cases": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "case_id",
+          "title",
+          "library",
+          "report",
+          "library_sha256",
+          "templates",
+          "status"
+        ],
+        "properties": {
+          "case_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1
+          },
+          "library": {
+            "type": "string",
+            "minLength": 1
+          },
+          "report": {
+            "type": "string",
+            "minLength": 1
+          },
+          "library_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "templates": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "status": {
+            "const": "reference_candidate"
+          }
+        }
+      }
+    }
+  }
+}

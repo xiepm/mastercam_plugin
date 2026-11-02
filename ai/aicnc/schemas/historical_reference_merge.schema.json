@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "aicnc:historical-reference-merge:0.1",
+  "type": "object", "additionalProperties": false,
+  "required": ["schema_version", "production_enabled", "families", "conflicts", "gaps"],
+  "properties": {
+    "schema_version": {"const": "aicnc.historical-reference-merge/0.1"},
+    "production_enabled": {"const": false},
+    "families": {"type": "array", "items": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "title", "summary", "members"],
+      "properties": {
+        "id": {"$ref": "#/$defs/text"}, "title": {"$ref": "#/$defs/text"},
+        "summary": {"$ref": "#/$defs/text"},
+        "members": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/text"}}
+      }
+    }},
+    "conflicts": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/text"}},
+    "gaps": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/text"}}
+  },
+  "$defs": {"text": {"type": "string", "minLength": 1}}
+}

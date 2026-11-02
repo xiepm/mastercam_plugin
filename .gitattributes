@@ -8,3 +8,4 @@
 *.zip binary
 payload/** -text -diff
 ai/aicnc/** -text
+ai/samples/planning/*.step binary

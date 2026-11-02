@@ -7,6 +7,8 @@ Read `references/connection.json` for this machine's repository, config and work
 
 ## Start or resume
 
+For a new STEP/STP plus drawing, first invoke the installed `aicnc-plan-new-part` Skill. It reads this machine's separate planning connection, checks geometry/drawing requirements, retrieves historical templates before planning, and audits every adopted/rejected reference plus conflicts and missing items afterwards. `docs/PLANNING_WORKFLOW.md` describes installation and replay. If this planning Skill or its real knowledge library is missing, report that gap rather than claiming history was used. A planning audit is not a replacement for features.json/cam_plan or native validation. When the user also requests an MCAM project, continue the execution workflow below after planning; preserve audit open items.
+
 1. Run the installed environment doctor if readiness is unknown. A catalog response alone does not prove a working native bridge. Call `mastercam_inspect` or `mc_inspect` when the host is ready. Do not reinstall a working environment.
 2. If the user names a task, call `mc_task_resume`. Read its goal, source hash, per-stage evidence and next actions. Reconcile native state before continuing a timed-out action. Previous conversation text is not required and is not an execution receipt.
 3. For a new task call `mc_task_create` with the user's actual source path and requirements. This copies the file to a private task directory. Use the copy, preserve the original and put new scripts/results under that directory. `requirements` records the user's context; it does not replace features.json, cam_plan or native operation parameters.

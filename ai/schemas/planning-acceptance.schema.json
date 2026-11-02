@@ -1,0 +1,14 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "type":"object","additionalProperties":false,
+  "required":["schema_version","passed","fixture","installed_in_clean_codex_home","installation_idempotent","relocated_knowledge_verified","positive_status","references","selected_templates","negative_checks","geometry_execution_tested","codex_new_session_tested","native_cam_executed","simulation_performed","production_enabled"],
+  "properties":{
+    "schema_version":{"const":"mastercam.planning-acceptance/1"},
+    "passed":{"const":true},"fixture":{"const":"public_synthetic"},
+    "installed_in_clean_codex_home":{"const":true},"installation_idempotent":{"const":true},"relocated_knowledge_verified":{"const":true},
+    "positive_status":{"const":"complete_with_open_items"},"references":{"const":3},
+    "selected_templates":{"type":"array","items":{"type":"string"},"minItems":1},
+    "negative_checks":{"type":"array","minItems":3,"uniqueItems":true,"items":{"enum":["missing_conflict_rejected","missing_requirement_citation_rejected","changed_evidence_rejected"]}},
+    "geometry_execution_tested":{"const":false},"codex_new_session_tested":{"const":false},"native_cam_executed":{"const":false},"simulation_performed":{"const":false},"production_enabled":{"const":false}
+  }
+}

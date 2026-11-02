@@ -1,5 +1,7 @@
 # Mastercam 插件 AI 接入
 
+2026-11-02：新增[STEP/二维图纸规划、历史模板检索与审查](../docs/PLANNING_WORKFLOW.md)。`Install-Planning.ps1`可独立安装，`Install-AI.ps1`也会安装该Skill。真实经验库通过私有哈希包迁移，公开合成验收命令为`ai/tools/accept_planning.py`；工艺语义由Codex核对，审查不代表CAM或仿真通过。
+
 2026-11-01：新增完整的 [可移植 Agent 安装与重放入口](../docs/PORTABLE_AGENT.md)。新电脑优先使用 `Install-AI.cmd`，它安装基础 mastercam 桥接与本页的插件 MCP；下方 local_setup.py 继续用于已有上游桥接的兼容安装。插件 MCP 现在有 19 个工具，新增知识搜索/读取和任务创建/记录/恢复；44 类加工动作未扩充验收范围。
 
 这部分把插件的功能含义、输入要求、使用步骤与已验证接口整理成 AI 可检索、可执行的能力。

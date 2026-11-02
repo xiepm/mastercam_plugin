@@ -1,0 +1,225 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "aicnc:historical-process-reference:0.1",
+  "title": "Single-case historical planning references; never executable CAM or approved knowledge",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "aicnc.historical-process-reference/0.1"
+    },
+    "case_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "part_name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "evidence_root": {
+      "const": ".."
+    },
+    "source_step_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "source_mcam_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "frozen_initial_plan_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "planning_reference_only": {
+          "const": true
+        },
+        "production_enabled": {
+          "const": false
+        },
+        "training_authorized": {
+          "const": false
+        },
+        "simulation_performed": {
+          "const": false
+        }
+      },
+      "required": [
+        "planning_reference_only",
+        "production_enabled",
+        "training_authorized",
+        "simulation_performed"
+      ]
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "path": {
+            "type": "string",
+            "minLength": 1
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          }
+        },
+        "required": [
+          "path",
+          "sha256"
+        ]
+      },
+      "minItems": 1
+    },
+    "templates": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1
+          },
+          "kind": {
+            "enum": [
+              "input_gap",
+              "agreement_refinement",
+              "sequence_refinement",
+              "strategy_change",
+              "parameter_refinement",
+              "role_refinement",
+              "missing_stage",
+              "historical_conflict",
+              "geometry_difference",
+              "granularity_refinement",
+              "order_difference",
+              "extractor_correction"
+            ]
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "minItems": 1,
+            "uniqueItems": true
+          },
+          "conditions": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "minItems": 1,
+            "uniqueItems": true
+          },
+          "exclusions": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "minItems": 1,
+            "uniqueItems": true
+          },
+          "initial_plan": {
+            "type": "string",
+            "minLength": 1
+          },
+          "historical_observation": {
+            "type": "string",
+            "minLength": 1
+          },
+          "planning_advice": {
+            "type": "string",
+            "minLength": 1
+          },
+          "operation_ids": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "uniqueItems": true
+          },
+          "feature_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "uniqueItems": true
+          },
+          "evidence_paths": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "minItems": 1,
+            "uniqueItems": true
+          },
+          "status": {
+            "const": "reference_candidate"
+          },
+          "production_enabled": {
+            "const": false
+          },
+          "simulation_performed": {
+            "const": false
+          },
+          "applicability_confirmed_for_new_part": {
+            "const": false
+          },
+          "case_count": {
+            "const": 1
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "kind",
+          "tags",
+          "conditions",
+          "exclusions",
+          "initial_plan",
+          "historical_observation",
+          "planning_advice",
+          "operation_ids",
+          "feature_ids",
+          "evidence_paths",
+          "status",
+          "production_enabled",
+          "simulation_performed",
+          "applicability_confirmed_for_new_part",
+          "case_count"
+        ]
+      },
+      "minItems": 1
+    }
+  },
+  "required": [
+    "schema_version",
+    "case_id",
+    "part_name",
+    "evidence_root",
+    "source_step_sha256",
+    "source_mcam_sha256",
+    "frozen_initial_plan_sha256",
+    "policy",
+    "evidence",
+    "templates"
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "schema_version": "aicnc.local-reference-catalog/0.1",
+  "production_enabled": false,
+  "cases": [
+    {
+      "case_id": "synthetic-example",
+      "title": "Synthetic planning reference",
+      "library": "cases/synthetic-example/05_templates/reference_library.json",
+      "report": "cases/synthetic-example/report.md",
+      "library_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "templates": 1,
+      "status": "reference_candidate"
+    }
+  ]
+}

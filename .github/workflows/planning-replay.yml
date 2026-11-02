@@ -1,0 +1,32 @@
+name: Planning reference replay
+on:
+  pull_request:
+  push:
+    branches: [main, 'codex/planning-reference-workflow']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  offline-replay:
+    strategy:
+      matrix:
+        os: [windows-latest, ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install -r ai/environments/requirements-planning.lock.txt
+      - name: Portable installation and public fixture tests
+        run: python -m unittest discover -s ai/tests -p test_planning_portable.py -v
+      - name: Original P07 reference contracts
+        env:
+          PYTHONPATH: ai/aicnc/projects/07_capp_planner/src
+        run: python -m unittest discover -s ai/aicnc/projects/07_capp_planner/tests -p "test_*reference*.py" -v
+      - name: Replay from a fresh private directory
+        run: python ai/tools/accept_planning.py --output "${{ runner.temp }}/planning replay"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: synthetic-planning-receipt-${{ matrix.os }}
+          path: ${{ runner.temp }}/planning replay/acceptance.json

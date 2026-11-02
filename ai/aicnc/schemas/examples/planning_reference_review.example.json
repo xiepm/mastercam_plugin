@@ -1,0 +1,80 @@
+{
+  "schema_version": "aicnc.planning-reference-review/0.1",
+  "packet_sha256": "7dba33040c9b22f25ef8bec16ede1357e1821788ae535e439449e44543f0ceb1",
+  "plan_path": "plan.md",
+  "requirement_reviews": [
+    {
+      "requirement_id": "R01",
+      "status": "addressed",
+      "reason": "Hole route covered in the plan",
+      "plan_sections": [
+        "P01"
+      ],
+      "evidence": [
+        {
+          "source_id": "drawing",
+          "locator": "page 1 hole callout"
+        }
+      ]
+    }
+  ],
+  "reference_decisions": [
+    {
+      "reason": "New drawing supports this condition; evaluated explicitly",
+      "requirement_ids": [
+        "R01"
+      ],
+      "plan_sections": [
+        "P01"
+      ],
+      "evidence": [
+        {
+          "source_id": "drawing",
+          "locator": "page 1 hole callout"
+        }
+      ],
+      "reference_id": "family:holes",
+      "disposition": "adapt",
+      "selected_source_ids": [
+        "experience"
+      ]
+    },
+    {
+      "reason": "New drawing supports this condition; evaluated explicitly",
+      "requirement_ids": [
+        "R01"
+      ],
+      "plan_sections": [
+        "P01"
+      ],
+      "evidence": [
+        {
+          "source_id": "drawing",
+          "locator": "page 1 hole callout"
+        }
+      ],
+      "reference_id": "conflict",
+      "disposition": "not_applicable",
+      "selected_source_ids": []
+    },
+    {
+      "reason": "New drawing supports this condition; evaluated explicitly",
+      "requirement_ids": [
+        "R01"
+      ],
+      "plan_sections": [
+        "P01"
+      ],
+      "evidence": [
+        {
+          "source_id": "drawing",
+          "locator": "page 1 hole callout"
+        }
+      ],
+      "reference_id": "gap",
+      "disposition": "unresolved",
+      "selected_source_ids": []
+    }
+  ],
+  "additional_findings": []
+}

@@ -1,0 +1,37 @@
+{
+  "schema_version": "aicnc.planning-reference-intake/0.1",
+  "part_name": "Synthetic plate",
+  "material": "unknown",
+  "sources": [
+    {
+      "id": "cad",
+      "role": "step",
+      "path": "sample.step"
+    },
+    {
+      "id": "drawing",
+      "role": "drawing",
+      "path": "sample.pdf"
+    }
+  ],
+  "requirements": [
+    {
+      "id": "R01",
+      "description": "Four through holes; datum and final diameter come from drawing",
+      "tags": [
+        "孔",
+        "定位",
+        "装夹"
+      ],
+      "evidence": [
+        {
+          "source_id": "drawing",
+          "locator": "page 1, hole callout"
+        }
+      ]
+    }
+  ],
+  "known_unknowns": [
+    "stock, fixture and approved cutter assembly"
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "type":"object","additionalProperties":false,
+  "required":["schema_version","repository","workspace","knowledge_root","python","p01"],
+  "properties":{
+    "schema_version":{"const":"mastercam.planning-config/1"},
+    "repository":{"type":"string","minLength":1},
+    "workspace":{"type":"string","minLength":1},
+    "knowledge_root":{"type":["string","null"]},
+    "python":{"type":"string","minLength":1},
+    "p01":{"oneOf":[{"type":"null"},{"type":"object","additionalProperties":false,"required":["distro","python"],"properties":{"distro":{"type":"string","minLength":1},"python":{"type":"string","pattern":"^/"}}}]}
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "schema_version": "mastercam.planning-acceptance/1",
+  "passed": true,
+  "fixture": "public_synthetic",
+  "installed_in_clean_codex_home": true,
+  "installation_idempotent": true,
+  "relocated_knowledge_verified": true,
+  "positive_status": "complete_with_open_items",
+  "references": 3,
+  "selected_templates": [
+    "experience"
+  ],
+  "negative_checks": [
+    "missing_conflict_rejected",
+    "missing_requirement_citation_rejected",
+    "changed_evidence_rejected"
+  ],
+  "geometry_execution_tested": false,
+  "codex_new_session_tested": false,
+  "native_cam_executed": false,
+  "simulation_performed": false,
+  "production_enabled": false
+}
