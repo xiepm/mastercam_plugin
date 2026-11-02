@@ -1,0 +1,159 @@
+{
+  "schema_version": "aicnc.planning-reference-packet/0.1",
+  "created_utc": "2026-11-02T03:31:06.566342+00:00",
+  "part_name": "Synthetic plate",
+  "intake_sha256": "d45e5249c1f58324dc7cb4b533f5055e016fa3f4014c2daa7db5ea883518abf5",
+  "index_sha256": "8ee77fe854846078c704ca43bddca60a02073e00a5cbf275623018c828892858",
+  "sources": [
+    {
+      "id": "cad",
+      "role": "step",
+      "path": "inputs/cad.step",
+      "original_path": "synthetic/cad",
+      "sha256": "3801c0b1e2593addc8213f09ebd0fa599e2673bff3034f5c0318c4852c6bf6e3"
+    },
+    {
+      "id": "drawing",
+      "role": "drawing",
+      "path": "inputs/drawing.pdf",
+      "original_path": "synthetic/drawing",
+      "sha256": "4dd1fe1afcf887dd6c36a92d5e7be9346ef359d38d6b508b4f0ea10e97d3214c"
+    }
+  ],
+  "terms": [
+    "孔"
+  ],
+  "references": [
+    {
+      "id": "family:holes",
+      "category": "family",
+      "title": "孔加工",
+      "summary": "Conditional stages",
+      "sources": [
+        {
+          "case_id": "synthetic",
+          "part_name": "Synthetic demonstration only",
+          "source_step_sha256": "1111111111111111111111111111111111111111111111111111111111111111",
+          "source_mcam_sha256": "1111111111111111111111111111111111111111111111111111111111111111",
+          "library": "cases/synthetic/05_templates/reference_library.json",
+          "library_sha256": "5a2b843ca57854b61f15f8782e1dc69fc4db1cc3e0441a9270f94853c70c2810",
+          "record": {
+            "id": "experience",
+            "title": "孔加工experience",
+            "kind": "agreement_refinement",
+            "tags": [
+              "孔"
+            ],
+            "conditions": [
+              "STEP不含可靠PMI或图纸要求未进入输入"
+            ],
+            "exclusions": [
+              "仅凭几何孔径不能确认螺纹、配合和后处理要求"
+            ],
+            "initial_plan": "只依据几何规划普通孔。",
+            "historical_observation": "配套图纸标注螺纹。",
+            "planning_advice": "补齐螺纹要求后再选工艺。",
+            "operation_ids": [],
+            "feature_ids": [],
+            "evidence_paths": [
+              "02_initial_plan/独立工艺初稿.md"
+            ],
+            "status": "reference_candidate",
+            "production_enabled": false,
+            "simulation_performed": false,
+            "applicability_confirmed_for_new_part": false,
+            "case_count": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "conflict",
+      "category": "conflicts",
+      "title": "孔加工conflict",
+      "summary": "补齐螺纹要求后再选工艺。",
+      "sources": [
+        {
+          "case_id": "synthetic",
+          "part_name": "Synthetic demonstration only",
+          "source_step_sha256": "1111111111111111111111111111111111111111111111111111111111111111",
+          "source_mcam_sha256": "1111111111111111111111111111111111111111111111111111111111111111",
+          "library": "cases/synthetic/05_templates/reference_library.json",
+          "library_sha256": "5a2b843ca57854b61f15f8782e1dc69fc4db1cc3e0441a9270f94853c70c2810",
+          "record": {
+            "id": "conflict",
+            "title": "孔加工conflict",
+            "kind": "historical_conflict",
+            "tags": [
+              "孔"
+            ],
+            "conditions": [
+              "STEP不含可靠PMI或图纸要求未进入输入"
+            ],
+            "exclusions": [
+              "仅凭几何孔径不能确认螺纹、配合和后处理要求"
+            ],
+            "initial_plan": "只依据几何规划普通孔。",
+            "historical_observation": "配套图纸标注螺纹。",
+            "planning_advice": "补齐螺纹要求后再选工艺。",
+            "operation_ids": [],
+            "feature_ids": [],
+            "evidence_paths": [
+              "02_initial_plan/独立工艺初稿.md"
+            ],
+            "status": "reference_candidate",
+            "production_enabled": false,
+            "simulation_performed": false,
+            "applicability_confirmed_for_new_part": false,
+            "case_count": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "gap",
+      "category": "gaps",
+      "title": "孔加工gap",
+      "summary": "补齐螺纹要求后再选工艺。",
+      "sources": [
+        {
+          "case_id": "synthetic",
+          "part_name": "Synthetic demonstration only",
+          "source_step_sha256": "1111111111111111111111111111111111111111111111111111111111111111",
+          "source_mcam_sha256": "1111111111111111111111111111111111111111111111111111111111111111",
+          "library": "cases/synthetic/05_templates/reference_library.json",
+          "library_sha256": "5a2b843ca57854b61f15f8782e1dc69fc4db1cc3e0441a9270f94853c70c2810",
+          "record": {
+            "id": "gap",
+            "title": "孔加工gap",
+            "kind": "missing_stage",
+            "tags": [
+              "孔"
+            ],
+            "conditions": [
+              "STEP不含可靠PMI或图纸要求未进入输入"
+            ],
+            "exclusions": [
+              "仅凭几何孔径不能确认螺纹、配合和后处理要求"
+            ],
+            "initial_plan": "只依据几何规划普通孔。",
+            "historical_observation": "配套图纸标注螺纹。",
+            "planning_advice": "补齐螺纹要求后再选工艺。",
+            "operation_ids": [],
+            "feature_ids": [],
+            "evidence_paths": [
+              "02_initial_plan/独立工艺初稿.md"
+            ],
+            "status": "reference_candidate",
+            "production_enabled": false,
+            "simulation_performed": false,
+            "applicability_confirmed_for_new_part": false,
+            "case_count": 1
+          }
+        }
+      ]
+    }
+  ],
+  "production_enabled": false,
+  "simulation_performed": false
+}

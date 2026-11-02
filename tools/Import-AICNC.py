@@ -30,6 +30,13 @@ def export(source):
     for package,project in packages.items():add(f'projects/{project}/src/{package}/__init__.py')
     for name in ('core','constructive_templates','faceted_material_difference'):
         add(f'projects/01_cad_core/src/cad_core/{name}.py')
+    for name in ('historical_reference','historical_reference_index','planning_reference_workflow'):
+        add(f'projects/07_capp_planner/src/capp_planner/{name}.py')
+        add(f'projects/07_capp_planner/tests/test_{name}.py')
+    for name in ('historical_process_reference','local_reference_catalog','historical_reference_merge','historical_reference_index','planning_reference_workflow'):
+        add('schemas/'+name+'.schema.json')
+    for name in ('historical_process_reference','local_reference_catalog','historical_reference_merge','historical_reference_index','planning_reference_intake','planning_reference_packet','planning_reference_review','planning_reference_audit'):
+        add('schemas/examples/'+name+'.example.json')
     for name in ('contour_smoke','plan_simulation','plan_multi','configuration_audit','cimco_setup','stand_replay'):
         add(f'projects/08_mastercam_bridge/src/mastercam_bridge/{name}.py')
     for name in ('prepare_stand_trial.py','run_bound_stand_2027.py','verify_bound_stand_2027.py',

@@ -490,6 +490,149 @@
       "source_sha256": "cd3534d0ca63eaba1a8bb75bcf76413ff64b0d1a7f329bfe7b750c36f06e89d0",
       "distributed_sha256": "cd3534d0ca63eaba1a8bb75bcf76413ff64b0d1a7f329bfe7b750c36f06e89d0",
       "adaptations": []
+    },
+    {
+      "path": "projects/07_capp_planner/src/capp_planner/historical_reference.py",
+      "source_sha256": "8e8025814c6d5560fbade93757bef4aae042e28a094822b0c8ba50df2b741964",
+      "distributed_sha256": "8e8025814c6d5560fbade93757bef4aae042e28a094822b0c8ba50df2b741964",
+      "adaptations": []
+    },
+    {
+      "path": "projects/07_capp_planner/src/capp_planner/historical_reference_index.py",
+      "source_sha256": "1315f33d76df43e39b86c538f5727e80f3ba33270cc8668100ee1c9a4e5cc1e3",
+      "distributed_sha256": "1315f33d76df43e39b86c538f5727e80f3ba33270cc8668100ee1c9a4e5cc1e3",
+      "adaptations": []
+    },
+    {
+      "path": "projects/07_capp_planner/src/capp_planner/planning_reference_workflow.py",
+      "source_sha256": "5cb6bc35cfdbb1a9e463b9ddb4cc23d4512729d52f555ad0e229700bf1ccd1d4",
+      "distributed_sha256": "5cb6bc35cfdbb1a9e463b9ddb4cc23d4512729d52f555ad0e229700bf1ccd1d4",
+      "adaptations": []
+    },
+    {
+      "path": "projects/07_capp_planner/tests/test_historical_reference.py",
+      "source_sha256": "6f831e57de19f2748fda2939e86fcb9997e51fe1eb3450a0d10536cf9cb45e27",
+      "distributed_sha256": "6f831e57de19f2748fda2939e86fcb9997e51fe1eb3450a0d10536cf9cb45e27",
+      "adaptations": []
+    },
+    {
+      "path": "projects/07_capp_planner/tests/test_historical_reference_index.py",
+      "source_sha256": "dc66c6f7fa2eb19748fe06c7ee7a71d61d5e3fb4519920cc2cca2d544791a08d",
+      "distributed_sha256": "dc66c6f7fa2eb19748fe06c7ee7a71d61d5e3fb4519920cc2cca2d544791a08d",
+      "adaptations": []
+    },
+    {
+      "path": "projects/07_capp_planner/tests/test_planning_reference_workflow.py",
+      "source_sha256": "e2cc98e2cba20b8eae95ba2e4a5cf2b62eb917e935a0ce01cac785ed80d3a8fc",
+      "distributed_sha256": "e2cc98e2cba20b8eae95ba2e4a5cf2b62eb917e935a0ce01cac785ed80d3a8fc",
+      "adaptations": []
+    },
+    {
+      "path": "schemas/historical_process_reference.schema.json",
+      "source_sha256": "26e7908886a39cb763b97dedf95dd36fe5463645d889ca3cdc5914407b454ecd",
+      "distributed_sha256": "26e7908886a39cb763b97dedf95dd36fe5463645d889ca3cdc5914407b454ecd",
+      "adaptations": []
+    },
+    {
+      "path": "schemas/local_reference_catalog.schema.json",
+      "source_sha256": "46620316cac7bc0fcc5ec08dea3846f21f2efb45710cfd8f8fb6a2dbdbd62649",
+      "distributed_sha256": "46620316cac7bc0fcc5ec08dea3846f21f2efb45710cfd8f8fb6a2dbdbd62649",
+      "adaptations": []
+    },
+    {
+      "path": "schemas/historical_reference_merge.schema.json",
+      "source_sha256": "938811f29b79e393c2af01e017abfb5da5f892070cd5067ead5535f568c56630",
+      "distributed_sha256": "938811f29b79e393c2af01e017abfb5da5f892070cd5067ead5535f568c56630",
+      "adaptations": []
+    },
+    {
+      "path": "schemas/historical_reference_index.schema.json",
+      "source_sha256": "49c8c0c569529c5079634ca5129156b402e7f5ab00ba2dc030db4d0184b1a129",
+      "distributed_sha256": "49c8c0c569529c5079634ca5129156b402e7f5ab00ba2dc030db4d0184b1a129",
+      "adaptations": []
+    },
+    {
+      "path": "schemas/planning_reference_workflow.schema.json",
+      "source_sha256": "f959b227853f056f0c587f4e5f749763273d795f8407c5046ef8d5d548905926",
+      "distributed_sha256": "f959b227853f056f0c587f4e5f749763273d795f8407c5046ef8d5d548905926",
+      "adaptations": []
+    },
+    {
+      "path": "schemas/examples/historical_process_reference.example.json",
+      "source_sha256": "209a7fcf0218fa5d88210b9fa06c7b8abf45ccbe3b1da6a49af9b1aba513a961",
+      "distributed_sha256": "209a7fcf0218fa5d88210b9fa06c7b8abf45ccbe3b1da6a49af9b1aba513a961",
+      "adaptations": []
+    },
+    {
+      "path": "schemas/examples/local_reference_catalog.example.json",
+      "source_sha256": "def860f73f1466bc2843de79db8499dde9f11fa2c8d945d22ae42a8c9bd2aa8d",
+      "distributed_sha256": "def860f73f1466bc2843de79db8499dde9f11fa2c8d945d22ae42a8c9bd2aa8d",
+      "adaptations": []
+    },
+    {
+      "path": "schemas/examples/historical_reference_merge.example.json",
+      "source_sha256": "cd2241da1fc7ca8ae273cdc1e54f8e7eedb96f53799bf1995cee09c184b4d37f",
+      "distributed_sha256": "cd2241da1fc7ca8ae273cdc1e54f8e7eedb96f53799bf1995cee09c184b4d37f",
+      "adaptations": []
+    },
+    {
+      "path": "schemas/examples/historical_reference_index.example.json",
+      "source_sha256": "d98ba3daacdf659a0e9c556bb848e514ddafb32dfca36b1e1f3675f26775f77f",
+      "distributed_sha256": "d98ba3daacdf659a0e9c556bb848e514ddafb32dfca36b1e1f3675f26775f77f",
+      "adaptations": []
+    },
+    {
+      "path": "schemas/examples/planning_reference_intake.example.json",
+      "source_sha256": "d5d99c908c1cdc698bd80f1a383f0e3e2e9a132af45817041e17fa921e1d6a80",
+      "distributed_sha256": "d5d99c908c1cdc698bd80f1a383f0e3e2e9a132af45817041e17fa921e1d6a80",
+      "adaptations": []
+    },
+    {
+      "path": "schemas/examples/planning_reference_packet.example.json",
+      "source_sha256": "10ba0ffa9bac8f1ae644c98f143bcbf9390b52b53b89e3f10d1f1da93c16cf50",
+      "distributed_sha256": "10ba0ffa9bac8f1ae644c98f143bcbf9390b52b53b89e3f10d1f1da93c16cf50",
+      "adaptations": []
+    },
+    {
+      "path": "schemas/examples/planning_reference_review.example.json",
+      "source_sha256": "f08d17f99ae7586a0e85dfd3525383d84bd456ad207329fcf76a432a11de5ea2",
+      "distributed_sha256": "f08d17f99ae7586a0e85dfd3525383d84bd456ad207329fcf76a432a11de5ea2",
+      "adaptations": []
+    },
+    {
+      "path": "schemas/examples/planning_reference_audit.example.json",
+      "source_sha256": "c9c8ad754dbeac92fbc4d4f1a69a65686c55e81127f44414e80f55127ba66827",
+      "distributed_sha256": "c9c8ad754dbeac92fbc4d4f1a69a65686c55e81127f44414e80f55127ba66827",
+      "adaptations": []
+    }
+  ],
+  "source_batches": [
+    {
+      "id": "planning-reference-20261102",
+      "source": "AI-CNC P07 current workspace",
+      "source_base_commit": "19309a6d6a0bd5e1d1fc19247a75c685dd5ef29a",
+      "identity": "individual file hashes; includes uncommitted upstream files",
+      "files": [
+        "projects/07_capp_planner/src/capp_planner/historical_reference.py",
+        "projects/07_capp_planner/src/capp_planner/historical_reference_index.py",
+        "projects/07_capp_planner/src/capp_planner/planning_reference_workflow.py",
+        "projects/07_capp_planner/tests/test_historical_reference.py",
+        "projects/07_capp_planner/tests/test_historical_reference_index.py",
+        "projects/07_capp_planner/tests/test_planning_reference_workflow.py",
+        "schemas/historical_process_reference.schema.json",
+        "schemas/local_reference_catalog.schema.json",
+        "schemas/historical_reference_merge.schema.json",
+        "schemas/historical_reference_index.schema.json",
+        "schemas/planning_reference_workflow.schema.json",
+        "schemas/examples/historical_process_reference.example.json",
+        "schemas/examples/local_reference_catalog.example.json",
+        "schemas/examples/historical_reference_merge.example.json",
+        "schemas/examples/historical_reference_index.example.json",
+        "schemas/examples/planning_reference_intake.example.json",
+        "schemas/examples/planning_reference_packet.example.json",
+        "schemas/examples/planning_reference_review.example.json",
+        "schemas/examples/planning_reference_audit.example.json"
+      ]
     }
   ]
 }

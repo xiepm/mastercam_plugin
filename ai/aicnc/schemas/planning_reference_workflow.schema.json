@@ -1,0 +1,575 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "aicnc:planning-reference-workflow:0.1",
+  "title": "Planning evidence and review sidecars, not executable manufacturing IR",
+  "oneOf": [
+    {
+      "$ref": "#/$defs/intake"
+    },
+    {
+      "$ref": "#/$defs/packet"
+    },
+    {
+      "$ref": "#/$defs/review"
+    },
+    {
+      "$ref": "#/$defs/audit"
+    }
+  ],
+  "$defs": {
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_id",
+        "locator"
+      ],
+      "properties": {
+        "source_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"
+        },
+        "locator": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "intake": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "part_name",
+        "material",
+        "sources",
+        "requirements",
+        "known_unknowns"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "aicnc.planning-reference-intake/0.1"
+        },
+        "part_name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "material": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sources": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "role",
+              "path"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"
+              },
+              "role": {
+                "enum": [
+                  "step",
+                  "drawing",
+                  "geometry",
+                  "notes"
+                ]
+              },
+              "path": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          },
+          "minItems": 1
+        },
+        "requirements": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "description",
+              "tags",
+              "evidence"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"
+              },
+              "description": {
+                "type": "string",
+                "minLength": 1
+              },
+              "tags": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "minItems": 1,
+                "uniqueItems": true
+              },
+              "evidence": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/evidence"
+                },
+                "minItems": 1
+              }
+            }
+          },
+          "minItems": 1
+        },
+        "known_unknowns": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 0
+        }
+      }
+    },
+    "reference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "category",
+        "title",
+        "summary",
+        "sources"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "category": {
+          "enum": [
+            "family",
+            "conflicts",
+            "gaps"
+          ]
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "summary": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sources": {
+          "type": "array",
+          "items": {
+            "$ref": "aicnc:historical-reference-index:0.1#/$defs/variant"
+          },
+          "minItems": 1
+        }
+      }
+    },
+    "packet": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "created_utc",
+        "part_name",
+        "intake_sha256",
+        "index_sha256",
+        "sources",
+        "terms",
+        "references",
+        "production_enabled",
+        "simulation_performed"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "aicnc.planning-reference-packet/0.1"
+        },
+        "created_utc": {
+          "type": "string",
+          "minLength": 1
+        },
+        "part_name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "intake_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "index_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "sources": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "role",
+              "path",
+              "original_path",
+              "sha256"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"
+              },
+              "role": {
+                "enum": [
+                  "step",
+                  "drawing",
+                  "geometry",
+                  "notes"
+                ]
+              },
+              "path": {
+                "type": "string",
+                "minLength": 1
+              },
+              "original_path": {
+                "type": "string",
+                "minLength": 1
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              }
+            }
+          },
+          "minItems": 1
+        },
+        "terms": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "references": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/reference"
+          },
+          "minItems": 0
+        },
+        "production_enabled": {
+          "const": false
+        },
+        "simulation_performed": {
+          "const": false
+        }
+      }
+    },
+    "review": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "packet_sha256",
+        "plan_path",
+        "requirement_reviews",
+        "reference_decisions",
+        "additional_findings"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "aicnc.planning-reference-review/0.1"
+        },
+        "packet_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "plan_path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "requirement_reviews": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "requirement_id",
+              "status",
+              "reason",
+              "plan_sections",
+              "evidence"
+            ],
+            "properties": {
+              "requirement_id": {
+                "type": "string",
+                "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"
+              },
+              "status": {
+                "enum": [
+                  "addressed",
+                  "deferred",
+                  "not_applicable"
+                ]
+              },
+              "reason": {
+                "type": "string",
+                "minLength": 8
+              },
+              "plan_sections": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"
+                },
+                "minItems": 1,
+                "uniqueItems": true
+              },
+              "evidence": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/evidence"
+                },
+                "minItems": 1
+              }
+            }
+          },
+          "minItems": 0
+        },
+        "reference_decisions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "reference_id",
+              "disposition",
+              "reason",
+              "requirement_ids",
+              "plan_sections",
+              "selected_source_ids",
+              "evidence"
+            ],
+            "properties": {
+              "reference_id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "disposition": {
+                "enum": [
+                  "adopt",
+                  "adapt",
+                  "reject",
+                  "defer",
+                  "resolved",
+                  "not_applicable",
+                  "unresolved"
+                ]
+              },
+              "reason": {
+                "type": "string",
+                "minLength": 8
+              },
+              "requirement_ids": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"
+                },
+                "minItems": 1,
+                "uniqueItems": true
+              },
+              "plan_sections": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"
+                },
+                "minItems": 1,
+                "uniqueItems": true
+              },
+              "selected_source_ids": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "minItems": 0,
+                "uniqueItems": true
+              },
+              "evidence": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/evidence"
+                },
+                "minItems": 1
+              }
+            }
+          },
+          "minItems": 0
+        },
+        "additional_findings": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "description",
+              "evidence"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"
+              },
+              "description": {
+                "type": "string",
+                "minLength": 1
+              },
+              "evidence": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/evidence"
+                },
+                "minItems": 1
+              }
+            }
+          },
+          "minItems": 0
+        }
+      }
+    },
+    "audit": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "status",
+        "packet_sha256",
+        "review_sha256",
+        "plan_sha256",
+        "references_considered",
+        "requirements_considered",
+        "adopted_families",
+        "selected_template_ids",
+        "errors",
+        "open_items",
+        "semantic_review_by",
+        "automated_check_scope",
+        "production_enabled",
+        "ready_for_cam_execution",
+        "simulation_performed"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "aicnc.planning-reference-audit/0.1"
+        },
+        "status": {
+          "enum": [
+            "incomplete",
+            "complete_with_open_items",
+            "complete"
+          ]
+        },
+        "packet_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "review_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "plan_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "references_considered": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "requirements_considered": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "adopted_families": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 0,
+          "uniqueItems": true
+        },
+        "selected_template_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 0,
+          "uniqueItems": true
+        },
+        "errors": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 0
+        },
+        "open_items": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "reason"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "reason": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          },
+          "minItems": 0
+        },
+        "semantic_review_by": {
+          "const": "codex"
+        },
+        "automated_check_scope": {
+          "type": "string",
+          "minLength": 1
+        },
+        "production_enabled": {
+          "const": false
+        },
+        "ready_for_cam_execution": {
+          "const": false
+        },
+        "simulation_performed": {
+          "const": false
+        }
+      }
+    }
+  }
+}

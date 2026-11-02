@@ -1,0 +1,21 @@
+{
+  "description": "Known unmodified predecessor skill bytes eligible for backed-up migration",
+  "files": {
+    "mastercam-project/SKILL.md": [
+      "0026dc0fdb072696fd6af9d21aefbeb504b93017486672026b6c18db02701e77",
+      "d9946cf5cd719e44f2e0a6fbd3028599a585105f6ece7a86b3cbd8546b2e9f07"
+    ],
+    "mastercam-project/agents/openai.yaml": [
+      "acf0e4ad0fd32b74d717c4da0bb33d47df21ba8684c814dcd9e5882646ffdc7b",
+      "fb437eb80b038e630d6f4634661ed287168c367f58a2a08aeefa44f84c5eb11e"
+    ],
+    "aicnc-plan-new-part/SKILL.md": [
+      "234211cb9d701b5cda8136d1e2987ecdfbf380d841717c4dfb0b778857268934",
+      "789474e71426def017979e22f57c5f77ef14e7f8ea923880eb2f5b74a8aa3e4b"
+    ],
+    "aicnc-plan-new-part/agents/openai.yaml": [
+      "1c06eb7e47e80f52373c7a59a898aa54725242388fc46b29104f8362cc34e62b",
+      "f9b39c6850d63c21a2f6bb17a9b7dccbf07dfb2f6962002e07686b2d604542e2"
+    ]
+  }
+}

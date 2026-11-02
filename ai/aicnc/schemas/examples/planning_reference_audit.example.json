@@ -1,0 +1,27 @@
+{
+  "schema_version": "aicnc.planning-reference-audit/0.1",
+  "status": "complete_with_open_items",
+  "packet_sha256": "7dba33040c9b22f25ef8bec16ede1357e1821788ae535e439449e44543f0ceb1",
+  "review_sha256": "f08d17f99ae7586a0e85dfd3525383d84bd456ad207329fcf76a432a11de5ea2",
+  "plan_sha256": "62a92945c43e723fdfc13c1d5546dcc7fcf9ac986125f86374b0800516445a23",
+  "references_considered": 3,
+  "requirements_considered": 1,
+  "adopted_families": [
+    "family:holes"
+  ],
+  "selected_template_ids": [
+    "experience"
+  ],
+  "errors": [],
+  "open_items": [
+    {
+      "id": "gap",
+      "reason": "New drawing supports this condition; evaluated explicitly"
+    }
+  ],
+  "semantic_review_by": "codex",
+  "automated_check_scope": "source integrity, retrieval replay, disposition and declared requirement coverage; not engineering correctness",
+  "production_enabled": false,
+  "ready_for_cam_execution": false,
+  "simulation_performed": false
+}

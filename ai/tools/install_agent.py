@@ -3,7 +3,7 @@ from __future__ import annotations
 import argparse, json, os, shutil, sys, tomllib
 from pathlib import Path
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
-from portable.common import ROOT, VERSION, load, write_new
+from portable.common import ROOT, VERSION, load, write_new, sha
 
 def install(mastercam_root, workspace, codex_home, python=None, enable_startup=True):
     mc=Path(mastercam_root).resolve(); work=Path(workspace).resolve(); home=Path(codex_home).resolve()
@@ -28,7 +28,8 @@ def install(mastercam_root, workspace, codex_home, python=None, enable_startup=T
             raise ValueError('Existing '+name+' registration differs; preserve it and review migration before replacement')
     if runtime_path.exists() and load(runtime_path)!=runtime:
         raise ValueError('Existing runtime configuration differs; choose a new workspace or review it')
-    skills=[]
+    skills=[];updates=[]
+    legacy=load(ROOT/'ai/skills/managed-previous.json')['files']
     connection={'repository':str(ROOT),'runtime_config':str(runtime_path),'workspace':str(work),
                 'mcp_server':'mastercam-plugins','execution_policy':'preview_first'}
     for name in ('mastercam-plugin-suite','mastercam-project'):
@@ -37,7 +38,9 @@ def install(mastercam_root, workspace, codex_home, python=None, enable_startup=T
             if f.is_file() and dest.exists():
                 target=dest/f.relative_to(source)
                 if not target.is_file() or target.read_bytes()!=f.read_bytes():
-                    raise ValueError('Existing skill differs: '+str(target))
+                    key=name+'/'+f.relative_to(source).as_posix()
+                    if target.is_file() and sha(target) in legacy.get(key,[]):updates.append((f,target))
+                    else:raise ValueError('Existing skill differs: '+str(target))
         old_connection=dest/'references/connection.json'
         if old_connection.exists() and load(old_connection)!=connection:
             raise ValueError('Existing skill connection differs: '+str(old_connection))
@@ -59,6 +62,11 @@ def install(mastercam_root, workspace, codex_home, python=None, enable_startup=T
     if before and not (work/'codex-before-agent.toml').exists():
         with (work/'codex-before-agent.toml').open('xb') as f:f.write(before)
     if not runtime_path.exists():write_new(runtime_path,runtime)
+    for source,target in updates:
+        backup=work/'skill-backups'/sha(target)/target.name
+        backup.parent.mkdir(parents=True,exist_ok=True)
+        if not backup.exists():shutil.copy2(target,backup)
+        shutil.copy2(source,target)
     for source,dest in skills:
         if not dest.exists():shutil.copytree(source,dest)
         if not (dest/'references/connection.json').exists():write_new(dest/'references/connection.json',connection)

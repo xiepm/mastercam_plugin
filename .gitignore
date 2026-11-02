@@ -7,6 +7,12 @@ __pycache__/
 ai/bridge/bin/MastercamPluginAI.dll
 ai/bridge/bin/MastercamPluginAI101.dll
 .ai-venv/
+.planning-venv/
+**/planning-config.json
+**/planning-config.before-*.json
+**/installed-files.json
+**/private-reference*.zip
+**/private-reference*.zip.sha256
 **/codex-before-agent.toml
 **/agent-enabled.json
 **/mastercam/requests/

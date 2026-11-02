@@ -1,0 +1,8 @@
+{
+  "schema_version":"mastercam.planning-config/1",
+  "repository":"E:/Tools/mastercam_plugin",
+  "workspace":"E:/Private/MastercamAgent",
+  "knowledge_root":"E:/Private/ProcessReferences",
+  "python":"E:/Tools/mastercam_plugin/.planning-venv/Scripts/python.exe",
+  "p01":null
+}

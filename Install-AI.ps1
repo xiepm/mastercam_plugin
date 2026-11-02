@@ -1,4 +1,4 @@
-param([string]$MastercamRoot,[string]$Workspace,[string]$CodexHome,[string]$Python)
+param([string]$MastercamRoot,[string]$Workspace,[string]$CodexHome,[string]$Python,[string]$KnowledgeRoot,[string]$P01Python,[string]$P01Distro='Ubuntu-22.04')
 $ErrorActionPreference='Stop'
 $packageRoot=$PSScriptRoot
 if (!$Workspace) { $Workspace=Join-Path $env:LOCALAPPDATA 'MastercamAgent\workspace' }
@@ -29,4 +29,5 @@ if ($LASTEXITCODE -ne 0) { throw 'Dependency installation failed.' }
 if ($LASTEXITCODE -ne 0) { throw 'Agent configuration failed; see the conflict or missing requirement above.' }
 & $agentPython (Join-Path $packageRoot 'ai\tools\doctor.py') --config (Join-Path $Workspace 'plugin-ai-config.json')
 if ($LASTEXITCODE -ne 0) { throw 'Environment check failed. Install the matching plugin package with Install.cmd, then retry.' }
-Write-Output 'AI configured. Restart Mastercam, reload Codex MCP tools, then use $mastercam-project.'
+& (Join-Path $packageRoot 'Install-Planning.ps1') -Workspace $Workspace -CodexHome $CodexHome -Python $Python -KnowledgeRoot $KnowledgeRoot -P01Python $P01Python -P01Distro $P01Distro
+Write-Output 'AI and planning Skill configured. Restart Mastercam, reload Codex MCP tools, then supply STEP and drawing paths.'

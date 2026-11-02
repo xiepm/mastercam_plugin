@@ -2,6 +2,24 @@
   "version": "2027.11.01.1",
   "documents": [
     {
+      "path": "docs/PLANNING_WORKFLOW.md",
+      "title": "新工件规划、历史模板检索与审查",
+      "tags": [
+        "STEP",
+        "二维图纸",
+        "工艺规划",
+        "模板",
+        "孔加工",
+        "知识库",
+        "Skill",
+        "迁移",
+        "审查",
+        "冲突",
+        "缺项"
+      ],
+      "status": "planning_reference_only"
+    },
+    {
       "path": "docs/STEP_REPLAY.md",
       "title": "STEP两装夹九工序完整仿真重放",
       "tags": [

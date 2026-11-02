@@ -1,0 +1,51 @@
+{
+  "schema_version": "aicnc.historical-process-reference/0.1",
+  "case_id": "synthetic-reference-example",
+  "part_name": "Synthetic demonstration only",
+  "evidence_root": "..",
+  "source_step_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+  "source_mcam_sha256": "1111111111111111111111111111111111111111111111111111111111111111",
+  "frozen_initial_plan_sha256": "2222222222222222222222222222222222222222222222222222222222222222",
+  "policy": {
+    "planning_reference_only": true,
+    "production_enabled": false,
+    "training_authorized": false,
+    "simulation_performed": false
+  },
+  "evidence": [
+    {
+      "path": "02_initial_plan/独立工艺初稿.md",
+      "sha256": "2222222222222222222222222222222222222222222222222222222222222222"
+    }
+  ],
+  "templates": [
+    {
+      "id": "synthetic-drawing-gap",
+      "title": "检查3D未携带的图纸要求",
+      "kind": "input_gap",
+      "tags": [
+        "图纸",
+        "螺纹"
+      ],
+      "conditions": [
+        "STEP不含可靠PMI或图纸要求未进入输入"
+      ],
+      "exclusions": [
+        "仅凭几何孔径不能确认螺纹、配合和后处理要求"
+      ],
+      "initial_plan": "只依据几何规划普通孔。",
+      "historical_observation": "配套图纸标注螺纹。",
+      "planning_advice": "补齐螺纹要求后再选工艺。",
+      "operation_ids": [],
+      "feature_ids": [],
+      "evidence_paths": [
+        "02_initial_plan/独立工艺初稿.md"
+      ],
+      "status": "reference_candidate",
+      "production_enabled": false,
+      "simulation_performed": false,
+      "applicability_confirmed_for_new_part": false,
+      "case_count": 1
+    }
+  ]
+}
