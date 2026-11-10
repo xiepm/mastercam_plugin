@@ -5,7 +5,7 @@ using System.Windows.Forms;
 using Mastercam.App;
 using Mastercam.App.Types;
 using Mastercam.Support;
-[assembly: System.Reflection.AssemblyVersion("1.0.0.0")]
+[assembly: System.Reflection.AssemblyVersion("1.0.1.0")]
 [assembly: System.Runtime.Versioning.TargetFramework(".NETCoreApp,Version=v10.0")]
 namespace MC2027Suite.Bootstrap;
 public sealed class StartupHook : NetHook3App
@@ -17,6 +17,7 @@ public sealed class StartupHook : NetHook3App
     public override int Version(int p) => (int)MCamDefines.NetHookLibraryVersion;
     public override MCamReturn Init(int p)
     {
+        MC2027Suite.PluginDependencies.Register();
         try
         {
             string root = AgentRoot();
@@ -32,6 +33,7 @@ public sealed class StartupHook : NetHook3App
     }
     public override MCamReturn Run(int p)
     {
+        MC2027Suite.PluginDependencies.Register();
         if (started) return MCamReturn.NoErrors;
         started = true;
         if (agentHook == null) Init(p);

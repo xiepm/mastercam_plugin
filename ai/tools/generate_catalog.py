@@ -5,7 +5,13 @@ def read(p):return json.loads(p.read_text('utf-8-sig'))
 modules=read(ROOT/'catalog/modules.json')
 manifest=read(ROOT/'catalog/package.json')
 knowledge=[]
-for path in sorted((ROOT/'ai/knowledge').glob('*.json')):knowledge.extend(read(path))
+for path in sorted((ROOT/'ai/knowledge').glob('*.json')):
+    if path.name == 'index.json':  # Document-search index, not module workflow records.
+        continue
+    records=read(path)
+    if not isinstance(records,list) or any(not isinstance(row,dict) or 'module' not in row for row in records):
+        raise ValueError(f'Invalid module knowledge: {path.name}')
+    knowledge.extend(records)
 by_module={r['module']:r for r in knowledge}
 doc=(ROOT/'docs/PLUGINS.md').read_text('utf-8-sig')
 rows={m[0]:m[1:] for m in re.findall(r'^\| ([^|]+) \| ([^|]+) \| ([^|]+) \|$',doc,re.M)}

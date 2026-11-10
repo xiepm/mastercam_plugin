@@ -18,7 +18,8 @@ if ([Reflection.AssemblyName]::GetAssemblyName($api).Version.Major -ne 29) { thr
 $references.Add([Microsoft.CodeAnalysis.MetadataReference]::CreateFromFile($api))
 $options = [Microsoft.CodeAnalysis.CSharp.CSharpCompilationOptions]::new([Microsoft.CodeAnalysis.OutputKind]::DynamicallyLinkedLibrary).WithPlatform([Microsoft.CodeAnalysis.Platform]::X64).WithOptimizationLevel([Microsoft.CodeAnalysis.OptimizationLevel]::Release).WithDeterministic($true)
 foreach ($item in @(@{Source='Workshop';Name='Workshop2027'},@{Source='Bootstrap';Name='MC2027SuiteStartup'})) {
-    $trees = [Microsoft.CodeAnalysis.SyntaxTree[]]@(Get-ChildItem (Join-Path $root ('src\'+$item.Source)) -Filter '*.cs' | Sort-Object Name | ForEach-Object { [Microsoft.CodeAnalysis.CSharp.CSharpSyntaxTree]::ParseText([IO.File]::ReadAllText($_.FullName),$null,$_.Name) })
+    $sourceDirectories = @((Join-Path $root ('src\'+$item.Source)), (Join-Path $root 'src\Shared'))
+    $trees = [Microsoft.CodeAnalysis.SyntaxTree[]]@(Get-ChildItem -LiteralPath $sourceDirectories -Filter '*.cs' | Sort-Object FullName | ForEach-Object { [Microsoft.CodeAnalysis.CSharp.CSharpSyntaxTree]::ParseText([IO.File]::ReadAllText($_.FullName),$null,$_.Name) })
     $comp = [Microsoft.CodeAnalysis.CSharp.CSharpCompilation]::Create($item.Name,$trees,$references,$options)
     $destination = Join-Path $root ('payload\chooks\'+$item.Name)
     New-Item -ItemType Directory -Path $destination -Force | Out-Null
