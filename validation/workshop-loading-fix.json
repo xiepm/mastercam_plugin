@@ -1,0 +1,92 @@
+{
+  "release": "2027.11.10.1",
+  "date": "2026-11-10",
+  "passed": true,
+  "issue": "ReflectionTypeLoadException resolving AdvancedDrill2027 0.1.2.0 and OperationTools2027 1.0.3.0 in sibling plugin directories.",
+  "changes": {
+    "Workshop2027": "2.8.1.0",
+    "MC2027SuiteStartup": "1.0.1.0",
+    "businessBinariesChanged": false
+  },
+  "installation": {
+    "normalHostRestart": true,
+    "verifyPassed": true,
+    "installedFilesVerified": 296
+  },
+  "nativeValidation": {
+    "loadedAssemblies": [
+      {
+        "Name": "MC2027SuiteStartup, Version=1.0.1.0, Culture=neutral, PublicKeyToken=null",
+        "Mvid": "44ab7392-01d2-4dc9-bc01-b33be54eb0fc",
+        "TypeCount": 6,
+        "Context": "Default",
+        "Sha256": "E07A1D6D4132079115EB3734E99F597CD94806097DC954E4E96ABA1AB505F7DF"
+      },
+      {
+        "Name": "Workshop2027, Version=2.8.1.0, Culture=neutral, PublicKeyToken=null",
+        "Mvid": "666900fe-aee2-4283-8a1f-bff720082738",
+        "TypeCount": 45,
+        "Context": "Default",
+        "Sha256": "144364EFE1695DC0EFDB471910AA246EA00862A6646BF40D0DE70728693106A4"
+      },
+      {
+        "Name": "OperationTools2027, Version=1.0.3.0, Culture=neutral, PublicKeyToken=null",
+        "Mvid": "98f548b0-c0e7-47ed-bc35-01ee1746cdfc",
+        "TypeCount": 66,
+        "Context": "Default",
+        "Sha256": "26074B7E8EEBEE2C6B2CA52D1ED9744F42DDC894D245B86B4610E71C656A4B50"
+      },
+      {
+        "Name": "AdvancedDrill2027, Version=0.1.2.0, Culture=neutral, PublicKeyToken=null",
+        "Mvid": "9bda7aa2-b7b6-4fb7-8ce3-487af9a19228",
+        "TypeCount": 49,
+        "Context": "Default",
+        "Sha256": "BFE58820F988BEB388E9896EEFC06C970A5E056EEEEE071513EB016FC35DAA95"
+      },
+      {
+        "Name": "PorscheAdvanced2027, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+        "Mvid": "5f6060b4-d0d1-4a91-a1b0-b4f8ae53cd7b",
+        "TypeCount": 97,
+        "Context": "Default",
+        "Sha256": "DA8E4F21100013EB766CB5C62DF47768A039E59A8CB5E986FB2D7A2FA2F231CE"
+      },
+      {
+        "Name": "MPRebuild2027, Version=1.0.1.0, Culture=neutral, PublicKeyToken=null",
+        "Mvid": "40f10154-91b1-49a3-8c8e-813228f0120a",
+        "TypeCount": 42,
+        "Context": "Default",
+        "Sha256": "6935E289BC9D8DC39EEB564A9723B5CAF574870C333D1492490B0F2635224564"
+      }
+    ],
+    "geometryCount": 0,
+    "operationCount": 0,
+    "errors": [],
+    "typeEnumerationPassed": true
+  },
+  "guiValidation": {
+    "command": "Workshop2027.PorscheHoles",
+    "panelOpened": true,
+    "tabsVerified": [
+      "实体自动轮廓",
+      "自动删孔补面",
+      "复杂孔→工序"
+    ],
+    "emptySelectionPreview": "未完成：请勾选至少一个实体。",
+    "assemblyErrorObserved": false,
+    "panelClosedNormally": true
+  },
+  "automatedValidation": {
+    "dependencyScenarios": 8,
+    "installerChecks": 37,
+    "packageChecks": 2277,
+    "aiCatalogTests": 7,
+    "allPassed": true
+  },
+  "scope": "Loading, installed identity, native type enumeration, panel navigation and empty-selection handling only. No production operations created, toolpaths generated, NC posted, material removal or machine collision validation. The GUI check does not establish the exact first-command load order after restart.",
+  "sourceSha256": {
+    "src/Shared/PluginDependencies.cs": "37FE50D31DCAA6603CBB25AE5D97367ADB8ED4A769E907C3D5F730D66B2241E6",
+    "src/Bootstrap/Startup.cs": "637B99E104F73C7D885025C187993496B90408599E278FED468EA256427CC63B",
+    "src/Workshop/Workshop.cs": "997F098B7041A76D16253209476FBE75CD91A815EC804B60B567AF75E551C788",
+    "tools/Build-Integration.ps1": "3523ECE38F753939F509D5B5D02C34CF95B20D0F980EDD16C7A15E76416D6646"
+  }
+}

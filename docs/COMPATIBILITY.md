@@ -20,6 +20,8 @@ MPRebuild2027 的精确选择保护复用冻结 Porsche 模块，因此同样检
 
 ## 常见问题
 
+**复杂孔自动工序提示找不到 AdvancedDrill2027 / OperationTools2027**：2027.11.10.1 已修复跨插件子目录的依赖解析。完整安装新版并重启 Mastercam；不要只复制单个业务 DLL 或靠先点其他插件预热。详见 [加载修复记录](WORKSHOP-LOADING-FIX.md)。
+
 **安装后没有页签**：确认启动项已配置且 Mastercam 已重新启动。查看 `%LOCALAPPDATA%\MC2027PluginSuite\startup.log`，也可通过“运行用户应用程序”加载 `chooks\MC2027SuiteStartup\MC2027SuiteStartup.dll`。手动模式不会改启动项。
 
 **没有“X+ 原版”**：2027.10.28.2 已包含 15 个原版入口。确认完整解压并安装，通过 `Verify.cmd` 检查 `XPlusReuse2027.*.ft` 与 X+ 子目录，再重启 Mastercam。重建功能另在“X+ 工具”页。

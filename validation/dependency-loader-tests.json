@@ -1,0 +1,38 @@
+{
+  "passed": true,
+  "scenarios": [
+    {
+      "scenario": "cold-resolve",
+      "passed": true
+    },
+    {
+      "scenario": "forward-transitive",
+      "passed": true
+    },
+    {
+      "scenario": "missing-file",
+      "passed": true
+    },
+    {
+      "scenario": "wrong-file-version",
+      "passed": true
+    },
+    {
+      "scenario": "loaded-other-location",
+      "passed": true
+    },
+    {
+      "scenario": "requested-other-version",
+      "passed": true
+    },
+    {
+      "scenario": "unknown-not-intercepted",
+      "passed": true
+    },
+    {
+      "scenario": "unrelated-command",
+      "passed": true
+    }
+  ],
+  "scope": "Isolated .NET 10 processes with synthetic cross-module assemblies; not a Mastercam machining test."
+}

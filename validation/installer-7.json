@@ -1,7 +1,7 @@
 {
   "suite": "Portable installer",
-  "date": "2026-10-28",
-  "powershell": "7.6.5",
+  "date": "2026-11-10",
+  "powershell": "7.6.9",
   "payloadFiles": 295,
   "checks": [
     {

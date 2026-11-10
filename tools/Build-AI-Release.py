@@ -2,7 +2,8 @@
 from pathlib import Path
 import hashlib,json,zipfile
 ROOT=Path(__file__).resolve().parents[1]
-NAME='Mastercam2027-PluginSuite-AI-2027.11.01.2'
+VERSION=json.loads((ROOT/'catalog/package.json').read_text('utf-8-sig'))['version']
+NAME='Mastercam2027-PluginSuite-AI-'+VERSION
 TOP={'README.md','CHANGELOG.md','AGENTS.md','Manage.ps1','Install.cmd','Install-AI.cmd','Install-AI.ps1','Uninstall.cmd','Verify.cmd'}
 DIRS={'payload','catalog','docs','scripts','src','tools','tests','validation','ai'}
 identity=json.loads((ROOT/'ai/bridge/identity.json').read_text('utf-8-sig'))
@@ -18,6 +19,7 @@ for p in ROOT.rglob('*'):
  files.append(p)
 files.sort(key=lambda p:p.relative_to(ROOT).as_posix())
 out=ROOT/'artifacts';out.mkdir(exist_ok=True);archive=out/(NAME+'.zip')
+if archive.exists():raise FileExistsError(f'Release already exists: {archive}')
 with zipfile.ZipFile(archive,'w',compression=zipfile.ZIP_DEFLATED,compresslevel=9) as z:
  for p in files:
   info=zipfile.ZipInfo(NAME+'/'+p.relative_to(ROOT).as_posix(),(2026,11,1,0,0,0));info.compress_type=zipfile.ZIP_DEFLATED;info.external_attr=0o100644<<16;z.writestr(info,p.read_bytes())

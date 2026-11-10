@@ -13,14 +13,14 @@ using Mastercam.IO;
 using Mastercam.Operations;
 using Mastercam.Support;
 
-[assembly: System.Reflection.AssemblyVersion("2.8.0.0")]
+[assembly: System.Reflection.AssemblyVersion("2.8.1.0")]
 [assembly: System.Runtime.Versioning.TargetFramework(".NETCoreApp,Version=v10.0")]
 namespace Workshop2027;
 
 public sealed partial class Main : NetHook3App
 {
     public override int Version(int p) => (int)MCamDefines.NetHookLibraryVersion;
-    public override MCamReturn Init(int p) => MCamReturn.NoErrors;
+    public override MCamReturn Init(int p) { MC2027Suite.PluginDependencies.Register(); return MCamReturn.NoErrors; }
     public override MCamReturn Run(int p) => OpenHub(p);
     public MCamReturn OpenHub(int p) => Call(Ui.Hub);
     public MCamReturn InstallRibbon(int p) => Call(() => { if(!Ribbon.Install()) throw new InvalidOperationException("无法添加工艺助手功能区。"); });
@@ -41,7 +41,7 @@ public sealed partial class Main : NetHook3App
     public MCamReturn SetupSheet(int p) => Forward("SetupSheets2027","Show");
     public MCamReturn MiddleConfirm(int p) => Forward("MiddleConfirm2027","Configure");
     public MCamReturn Usage(int p) => Call(() => Ui.OpenFolder(Path.GetDirectoryName(typeof(Main).Assembly.Location)));
-    static MCamReturn Forward(string app,string command) => Call(() => { if(!ExternalAppsManager.RunFTCommand(app,command)) throw new InvalidOperationException(app+"."+command+" 未成功执行，请查看安装记录。"); });
+    static MCamReturn Forward(string app,string command) => Call(() => { MC2027Suite.PluginDependencies.EnsureForCommand(app); if(!ExternalAppsManager.RunFTCommand(app,command)) throw new InvalidOperationException(app+"."+command+" 未成功执行，请查看安装记录。"); });
     static MCamReturn Call(Action action) { try { action(); return MCamReturn.NoErrors; } catch(Exception e) { Ui.Error(e); return MCamReturn.ErrorOccurred; } }
 }
 

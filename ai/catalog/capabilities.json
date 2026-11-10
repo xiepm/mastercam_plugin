@@ -1,6 +1,6 @@
 {
   "version": "1.4.0",
-  "plugin_release": "2027.10.28.2",
+  "plugin_release": "2027.11.10.1",
   "module_count": 27,
   "capability_count": 184,
   "ft_route_count": 170,
@@ -55,7 +55,7 @@
       "id": "module.Workshop2027",
       "module": "Workshop2027",
       "title": "工艺助手、X+、HSM、MP 菜单",
-      "summary": "2.8.0公开仓库整合版：批量参数/三面/群组、视图与毛坯有本模块实现；其余57个Forward方法是目标模块路由。",
+      "summary": "2.8.1公开仓库整合版：批量参数/三面/群组、视图与毛坯有本模块实现；其余57个Forward方法是目标模块路由。 新增跨模块依赖加载与版本诊断。",
       "automation": "reference",
       "concepts": [
         "public Work/Workflow提供部分真实typed候选；Main(int p)通常打开模态UI或转发。",
@@ -670,7 +670,7 @@
             {
               "kind": "source",
               "path": "repo:src/Workshop/Workshop.cs",
-              "sha256": "82FB62ACB5E2C626FA6B2523C32201C4CFDDA125D977938BDE8E7D49C3931ACA",
+              "sha256": "997F098B7041A76D16253209476FBE75CD91A815EC804B60B567AF75E551C788",
               "lines": [
                 53,
                 54,
@@ -689,8 +689,8 @@
             {
               "kind": "payload_identity",
               "path": "repo:payload/chooks/Workshop2027/Workshop2027.dll",
-              "assemblyVersion": "2.8.0.0",
-              "sha256": "4E9B1E0836D46A69068FD3D5429A37551CA631CF3449E886D3CDE1C6F196E384",
+              "assemblyVersion": "2.8.1.0",
+              "sha256": "144364EFE1695DC0EFDB471910AA246EA00862A6646BF40D0DE70728693106A4",
               "manifestMatch": true
             }
           ]
@@ -736,7 +736,7 @@
             {
               "kind": "source",
               "path": "repo:src/Workshop/Workshop.cs",
-              "sha256": "82FB62ACB5E2C626FA6B2523C32201C4CFDDA125D977938BDE8E7D49C3931ACA",
+              "sha256": "997F098B7041A76D16253209476FBE75CD91A815EC804B60B567AF75E551C788",
               "lines": [
                 84,
                 28
@@ -753,8 +753,8 @@
             {
               "kind": "payload_identity",
               "path": "repo:payload/chooks/Workshop2027/Workshop2027.dll",
-              "assemblyVersion": "2.8.0.0",
-              "sha256": "4E9B1E0836D46A69068FD3D5429A37551CA631CF3449E886D3CDE1C6F196E384",
+              "assemblyVersion": "2.8.1.0",
+              "sha256": "144364EFE1695DC0EFDB471910AA246EA00862A6646BF40D0DE70728693106A4",
               "manifestMatch": true
             }
           ]
@@ -795,7 +795,7 @@
             {
               "kind": "source",
               "path": "repo:src/Workshop/Workshop.cs",
-              "sha256": "82FB62ACB5E2C626FA6B2523C32201C4CFDDA125D977938BDE8E7D49C3931ACA",
+              "sha256": "997F098B7041A76D16253209476FBE75CD91A815EC804B60B567AF75E551C788",
               "lines": [
                 105,
                 30
@@ -812,8 +812,8 @@
             {
               "kind": "payload_identity",
               "path": "repo:payload/chooks/Workshop2027/Workshop2027.dll",
-              "assemblyVersion": "2.8.0.0",
-              "sha256": "4E9B1E0836D46A69068FD3D5429A37551CA631CF3449E886D3CDE1C6F196E384",
+              "assemblyVersion": "2.8.1.0",
+              "sha256": "144364EFE1695DC0EFDB471910AA246EA00862A6646BF40D0DE70728693106A4",
               "manifestMatch": true
             }
           ]
@@ -857,7 +857,7 @@
             {
               "kind": "source",
               "path": "repo:src/Workshop/Workshop.cs",
-              "sha256": "82FB62ACB5E2C626FA6B2523C32201C4CFDDA125D977938BDE8E7D49C3931ACA",
+              "sha256": "997F098B7041A76D16253209476FBE75CD91A815EC804B60B567AF75E551C788",
               "lines": [
                 114,
                 27
@@ -882,8 +882,8 @@
             {
               "kind": "payload_identity",
               "path": "repo:payload/chooks/Workshop2027/Workshop2027.dll",
-              "assemblyVersion": "2.8.0.0",
-              "sha256": "4E9B1E0836D46A69068FD3D5429A37551CA631CF3449E886D3CDE1C6F196E384",
+              "assemblyVersion": "2.8.1.0",
+              "sha256": "144364EFE1695DC0EFDB471910AA246EA00862A6646BF40D0DE70728693106A4",
               "manifestMatch": true
             }
           ]
@@ -945,7 +945,7 @@
             {
               "kind": "source",
               "path": "repo:src/Workshop/Workshop.cs",
-              "sha256": "82FB62ACB5E2C626FA6B2523C32201C4CFDDA125D977938BDE8E7D49C3931ACA",
+              "sha256": "997F098B7041A76D16253209476FBE75CD91A815EC804B60B567AF75E551C788",
               "lines": [
                 31
               ]
@@ -961,8 +961,8 @@
             {
               "kind": "payload_identity",
               "path": "repo:payload/chooks/Workshop2027/Workshop2027.dll",
-              "assemblyVersion": "2.8.0.0",
-              "sha256": "4E9B1E0836D46A69068FD3D5429A37551CA631CF3449E886D3CDE1C6F196E384",
+              "assemblyVersion": "2.8.1.0",
+              "sha256": "144364EFE1695DC0EFDB471910AA246EA00862A6646BF40D0DE70728693106A4",
               "manifestMatch": true
             }
           ]
@@ -1024,8 +1024,8 @@
             {
               "kind": "payload_identity",
               "path": "repo:payload/chooks/Workshop2027/Workshop2027.dll",
-              "assemblyVersion": "2.8.0.0",
-              "sha256": "4E9B1E0836D46A69068FD3D5429A37551CA631CF3449E886D3CDE1C6F196E384",
+              "assemblyVersion": "2.8.1.0",
+              "sha256": "144364EFE1695DC0EFDB471910AA246EA00862A6646BF40D0DE70728693106A4",
               "manifestMatch": true
             }
           ]
@@ -1074,7 +1074,7 @@
             {
               "kind": "source",
               "path": "repo:src/Workshop/Workshop.cs",
-              "sha256": "82FB62ACB5E2C626FA6B2523C32201C4CFDDA125D977938BDE8E7D49C3931ACA",
+              "sha256": "997F098B7041A76D16253209476FBE75CD91A815EC804B60B567AF75E551C788",
               "lines": [
                 25,
                 40,
@@ -1092,8 +1092,8 @@
             {
               "kind": "payload_identity",
               "path": "repo:payload/chooks/Workshop2027/Workshop2027.dll",
-              "assemblyVersion": "2.8.0.0",
-              "sha256": "4E9B1E0836D46A69068FD3D5429A37551CA631CF3449E886D3CDE1C6F196E384",
+              "assemblyVersion": "2.8.1.0",
+              "sha256": "144364EFE1695DC0EFDB471910AA246EA00862A6646BF40D0DE70728693106A4",
               "manifestMatch": true
             }
           ]
@@ -1217,8 +1217,8 @@
             {
               "kind": "payload_identity",
               "path": "repo:payload/chooks/Workshop2027/Workshop2027.dll",
-              "assemblyVersion": "2.8.0.0",
-              "sha256": "4E9B1E0836D46A69068FD3D5429A37551CA631CF3449E886D3CDE1C6F196E384",
+              "assemblyVersion": "2.8.1.0",
+              "sha256": "144364EFE1695DC0EFDB471910AA246EA00862A6646BF40D0DE70728693106A4",
               "manifestMatch": true
             }
           ]
@@ -1297,7 +1297,7 @@
             {
               "kind": "source",
               "path": "repo:src/Workshop/Workshop.cs",
-              "sha256": "82FB62ACB5E2C626FA6B2523C32201C4CFDDA125D977938BDE8E7D49C3931ACA",
+              "sha256": "997F098B7041A76D16253209476FBE75CD91A815EC804B60B567AF75E551C788",
               "lines": [
                 32,
                 33,
@@ -1324,8 +1324,8 @@
             {
               "kind": "payload_identity",
               "path": "repo:payload/chooks/Workshop2027/Workshop2027.dll",
-              "assemblyVersion": "2.8.0.0",
-              "sha256": "4E9B1E0836D46A69068FD3D5429A37551CA631CF3449E886D3CDE1C6F196E384",
+              "assemblyVersion": "2.8.1.0",
+              "sha256": "144364EFE1695DC0EFDB471910AA246EA00862A6646BF40D0DE70728693106A4",
               "manifestMatch": true
             }
           ]
@@ -1497,8 +1497,8 @@
             {
               "kind": "payload_identity",
               "path": "repo:payload/chooks/Workshop2027/Workshop2027.dll",
-              "assemblyVersion": "2.8.0.0",
-              "sha256": "4E9B1E0836D46A69068FD3D5429A37551CA631CF3449E886D3CDE1C6F196E384",
+              "assemblyVersion": "2.8.1.0",
+              "sha256": "144364EFE1695DC0EFDB471910AA246EA00862A6646BF40D0DE70728693106A4",
               "manifestMatch": true
             }
           ]
@@ -1566,7 +1566,7 @@
             {
               "kind": "source",
               "path": "repo:src/Workshop/Workshop.cs",
-              "sha256": "82FB62ACB5E2C626FA6B2523C32201C4CFDDA125D977938BDE8E7D49C3931ACA",
+              "sha256": "997F098B7041A76D16253209476FBE75CD91A815EC804B60B567AF75E551C788",
               "lines": [
                 41,
                 42
@@ -1587,8 +1587,8 @@
             {
               "kind": "payload_identity",
               "path": "repo:payload/chooks/Workshop2027/Workshop2027.dll",
-              "assemblyVersion": "2.8.0.0",
-              "sha256": "4E9B1E0836D46A69068FD3D5429A37551CA631CF3449E886D3CDE1C6F196E384",
+              "assemblyVersion": "2.8.1.0",
+              "sha256": "144364EFE1695DC0EFDB471910AA246EA00862A6646BF40D0DE70728693106A4",
               "manifestMatch": true
             }
           ]
@@ -1741,8 +1741,8 @@
             {
               "kind": "payload_identity",
               "path": "repo:payload/chooks/Workshop2027/Workshop2027.dll",
-              "assemblyVersion": "2.8.0.0",
-              "sha256": "4E9B1E0836D46A69068FD3D5429A37551CA631CF3449E886D3CDE1C6F196E384",
+              "assemblyVersion": "2.8.1.0",
+              "sha256": "144364EFE1695DC0EFDB471910AA246EA00862A6646BF40D0DE70728693106A4",
               "manifestMatch": true
             }
           ]
@@ -1782,7 +1782,7 @@
             {
               "kind": "source",
               "path": "repo:src/Workshop/Workshop.cs",
-              "sha256": "82FB62ACB5E2C626FA6B2523C32201C4CFDDA125D977938BDE8E7D49C3931ACA",
+              "sha256": "997F098B7041A76D16253209476FBE75CD91A815EC804B60B567AF75E551C788",
               "lines": [
                 26,
                 181
@@ -1807,14 +1807,14 @@
             {
               "kind": "payload_identity",
               "path": "repo:payload/chooks/Workshop2027/Workshop2027.dll",
-              "assemblyVersion": "2.8.0.0",
-              "sha256": "4E9B1E0836D46A69068FD3D5429A37551CA631CF3449E886D3CDE1C6F196E384",
+              "assemblyVersion": "2.8.1.0",
+              "sha256": "144364EFE1695DC0EFDB471910AA246EA00862A6646BF40D0DE70728693106A4",
               "manifestMatch": true
             }
           ]
         }
       ],
-      "scope": "统一入口、批量参数、三面检查、正交视图、矩形毛坯；发布整合版 2.8.0",
+      "scope": "统一入口、批量参数、三面检查、正交视图、矩形毛坯；发布整合版 2.8.1",
       "files": [
         "chooks/Workshop2027/AdvancedDrill16.png",
         "chooks/Workshop2027/AdvancedDrill32.png",
@@ -1984,7 +1984,7 @@
         {
           "kind": "source",
           "path": "repo:src/Workshop/Workshop.cs",
-          "sha256": "82FB62ACB5E2C626FA6B2523C32201C4CFDDA125D977938BDE8E7D49C3931ACA",
+          "sha256": "997F098B7041A76D16253209476FBE75CD91A815EC804B60B567AF75E551C788",
           "lines": [
             53,
             54,
@@ -2003,8 +2003,8 @@
         {
           "kind": "payload_identity",
           "path": "repo:payload/chooks/Workshop2027/Workshop2027.dll",
-          "assemblyVersion": "2.8.0.0",
-          "sha256": "4E9B1E0836D46A69068FD3D5429A37551CA631CF3449E886D3CDE1C6F196E384",
+          "assemblyVersion": "2.8.1.0",
+          "sha256": "144364EFE1695DC0EFDB471910AA246EA00862A6646BF40D0DE70728693106A4",
           "manifestMatch": true
         }
       ]
@@ -2052,7 +2052,7 @@
         {
           "kind": "source",
           "path": "repo:src/Workshop/Workshop.cs",
-          "sha256": "82FB62ACB5E2C626FA6B2523C32201C4CFDDA125D977938BDE8E7D49C3931ACA",
+          "sha256": "997F098B7041A76D16253209476FBE75CD91A815EC804B60B567AF75E551C788",
           "lines": [
             84,
             28
@@ -2069,8 +2069,8 @@
         {
           "kind": "payload_identity",
           "path": "repo:payload/chooks/Workshop2027/Workshop2027.dll",
-          "assemblyVersion": "2.8.0.0",
-          "sha256": "4E9B1E0836D46A69068FD3D5429A37551CA631CF3449E886D3CDE1C6F196E384",
+          "assemblyVersion": "2.8.1.0",
+          "sha256": "144364EFE1695DC0EFDB471910AA246EA00862A6646BF40D0DE70728693106A4",
           "manifestMatch": true
         }
       ]
@@ -2113,7 +2113,7 @@
         {
           "kind": "source",
           "path": "repo:src/Workshop/Workshop.cs",
-          "sha256": "82FB62ACB5E2C626FA6B2523C32201C4CFDDA125D977938BDE8E7D49C3931ACA",
+          "sha256": "997F098B7041A76D16253209476FBE75CD91A815EC804B60B567AF75E551C788",
           "lines": [
             105,
             30
@@ -2130,8 +2130,8 @@
         {
           "kind": "payload_identity",
           "path": "repo:payload/chooks/Workshop2027/Workshop2027.dll",
-          "assemblyVersion": "2.8.0.0",
-          "sha256": "4E9B1E0836D46A69068FD3D5429A37551CA631CF3449E886D3CDE1C6F196E384",
+          "assemblyVersion": "2.8.1.0",
+          "sha256": "144364EFE1695DC0EFDB471910AA246EA00862A6646BF40D0DE70728693106A4",
           "manifestMatch": true
         }
       ]
@@ -2177,7 +2177,7 @@
         {
           "kind": "source",
           "path": "repo:src/Workshop/Workshop.cs",
-          "sha256": "82FB62ACB5E2C626FA6B2523C32201C4CFDDA125D977938BDE8E7D49C3931ACA",
+          "sha256": "997F098B7041A76D16253209476FBE75CD91A815EC804B60B567AF75E551C788",
           "lines": [
             114,
             27
@@ -2202,8 +2202,8 @@
         {
           "kind": "payload_identity",
           "path": "repo:payload/chooks/Workshop2027/Workshop2027.dll",
-          "assemblyVersion": "2.8.0.0",
-          "sha256": "4E9B1E0836D46A69068FD3D5429A37551CA631CF3449E886D3CDE1C6F196E384",
+          "assemblyVersion": "2.8.1.0",
+          "sha256": "144364EFE1695DC0EFDB471910AA246EA00862A6646BF40D0DE70728693106A4",
           "manifestMatch": true
         }
       ]
@@ -2267,7 +2267,7 @@
         {
           "kind": "source",
           "path": "repo:src/Workshop/Workshop.cs",
-          "sha256": "82FB62ACB5E2C626FA6B2523C32201C4CFDDA125D977938BDE8E7D49C3931ACA",
+          "sha256": "997F098B7041A76D16253209476FBE75CD91A815EC804B60B567AF75E551C788",
           "lines": [
             31
           ]
@@ -2283,8 +2283,8 @@
         {
           "kind": "payload_identity",
           "path": "repo:payload/chooks/Workshop2027/Workshop2027.dll",
-          "assemblyVersion": "2.8.0.0",
-          "sha256": "4E9B1E0836D46A69068FD3D5429A37551CA631CF3449E886D3CDE1C6F196E384",
+          "assemblyVersion": "2.8.1.0",
+          "sha256": "144364EFE1695DC0EFDB471910AA246EA00862A6646BF40D0DE70728693106A4",
           "manifestMatch": true
         }
       ]
@@ -2348,8 +2348,8 @@
         {
           "kind": "payload_identity",
           "path": "repo:payload/chooks/Workshop2027/Workshop2027.dll",
-          "assemblyVersion": "2.8.0.0",
-          "sha256": "4E9B1E0836D46A69068FD3D5429A37551CA631CF3449E886D3CDE1C6F196E384",
+          "assemblyVersion": "2.8.1.0",
+          "sha256": "144364EFE1695DC0EFDB471910AA246EA00862A6646BF40D0DE70728693106A4",
           "manifestMatch": true
         }
       ]
@@ -2400,7 +2400,7 @@
         {
           "kind": "source",
           "path": "repo:src/Workshop/Workshop.cs",
-          "sha256": "82FB62ACB5E2C626FA6B2523C32201C4CFDDA125D977938BDE8E7D49C3931ACA",
+          "sha256": "997F098B7041A76D16253209476FBE75CD91A815EC804B60B567AF75E551C788",
           "lines": [
             25,
             40,
@@ -2418,8 +2418,8 @@
         {
           "kind": "payload_identity",
           "path": "repo:payload/chooks/Workshop2027/Workshop2027.dll",
-          "assemblyVersion": "2.8.0.0",
-          "sha256": "4E9B1E0836D46A69068FD3D5429A37551CA631CF3449E886D3CDE1C6F196E384",
+          "assemblyVersion": "2.8.1.0",
+          "sha256": "144364EFE1695DC0EFDB471910AA246EA00862A6646BF40D0DE70728693106A4",
           "manifestMatch": true
         }
       ]
@@ -2545,8 +2545,8 @@
         {
           "kind": "payload_identity",
           "path": "repo:payload/chooks/Workshop2027/Workshop2027.dll",
-          "assemblyVersion": "2.8.0.0",
-          "sha256": "4E9B1E0836D46A69068FD3D5429A37551CA631CF3449E886D3CDE1C6F196E384",
+          "assemblyVersion": "2.8.1.0",
+          "sha256": "144364EFE1695DC0EFDB471910AA246EA00862A6646BF40D0DE70728693106A4",
           "manifestMatch": true
         }
       ]
@@ -2627,7 +2627,7 @@
         {
           "kind": "source",
           "path": "repo:src/Workshop/Workshop.cs",
-          "sha256": "82FB62ACB5E2C626FA6B2523C32201C4CFDDA125D977938BDE8E7D49C3931ACA",
+          "sha256": "997F098B7041A76D16253209476FBE75CD91A815EC804B60B567AF75E551C788",
           "lines": [
             32,
             33,
@@ -2654,8 +2654,8 @@
         {
           "kind": "payload_identity",
           "path": "repo:payload/chooks/Workshop2027/Workshop2027.dll",
-          "assemblyVersion": "2.8.0.0",
-          "sha256": "4E9B1E0836D46A69068FD3D5429A37551CA631CF3449E886D3CDE1C6F196E384",
+          "assemblyVersion": "2.8.1.0",
+          "sha256": "144364EFE1695DC0EFDB471910AA246EA00862A6646BF40D0DE70728693106A4",
           "manifestMatch": true
         }
       ]
@@ -2829,8 +2829,8 @@
         {
           "kind": "payload_identity",
           "path": "repo:payload/chooks/Workshop2027/Workshop2027.dll",
-          "assemblyVersion": "2.8.0.0",
-          "sha256": "4E9B1E0836D46A69068FD3D5429A37551CA631CF3449E886D3CDE1C6F196E384",
+          "assemblyVersion": "2.8.1.0",
+          "sha256": "144364EFE1695DC0EFDB471910AA246EA00862A6646BF40D0DE70728693106A4",
           "manifestMatch": true
         }
       ]
@@ -2900,7 +2900,7 @@
         {
           "kind": "source",
           "path": "repo:src/Workshop/Workshop.cs",
-          "sha256": "82FB62ACB5E2C626FA6B2523C32201C4CFDDA125D977938BDE8E7D49C3931ACA",
+          "sha256": "997F098B7041A76D16253209476FBE75CD91A815EC804B60B567AF75E551C788",
           "lines": [
             41,
             42
@@ -2921,8 +2921,8 @@
         {
           "kind": "payload_identity",
           "path": "repo:payload/chooks/Workshop2027/Workshop2027.dll",
-          "assemblyVersion": "2.8.0.0",
-          "sha256": "4E9B1E0836D46A69068FD3D5429A37551CA631CF3449E886D3CDE1C6F196E384",
+          "assemblyVersion": "2.8.1.0",
+          "sha256": "144364EFE1695DC0EFDB471910AA246EA00862A6646BF40D0DE70728693106A4",
           "manifestMatch": true
         }
       ]
@@ -3077,8 +3077,8 @@
         {
           "kind": "payload_identity",
           "path": "repo:payload/chooks/Workshop2027/Workshop2027.dll",
-          "assemblyVersion": "2.8.0.0",
-          "sha256": "4E9B1E0836D46A69068FD3D5429A37551CA631CF3449E886D3CDE1C6F196E384",
+          "assemblyVersion": "2.8.1.0",
+          "sha256": "144364EFE1695DC0EFDB471910AA246EA00862A6646BF40D0DE70728693106A4",
           "manifestMatch": true
         }
       ]
@@ -3120,7 +3120,7 @@
         {
           "kind": "source",
           "path": "repo:src/Workshop/Workshop.cs",
-          "sha256": "82FB62ACB5E2C626FA6B2523C32201C4CFDDA125D977938BDE8E7D49C3931ACA",
+          "sha256": "997F098B7041A76D16253209476FBE75CD91A815EC804B60B567AF75E551C788",
           "lines": [
             26,
             181
@@ -3145,8 +3145,8 @@
         {
           "kind": "payload_identity",
           "path": "repo:payload/chooks/Workshop2027/Workshop2027.dll",
-          "assemblyVersion": "2.8.0.0",
-          "sha256": "4E9B1E0836D46A69068FD3D5429A37551CA631CF3449E886D3CDE1C6F196E384",
+          "assemblyVersion": "2.8.1.0",
+          "sha256": "144364EFE1695DC0EFDB471910AA246EA00862A6646BF40D0DE70728693106A4",
           "manifestMatch": true
         }
       ]

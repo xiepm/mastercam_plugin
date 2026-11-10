@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "version": "2027.11.01.1",
+  "version": "2027.11.10.1",
   "mastercam": "2027",
   "api": 29,
   "platform": "windows-x64",
@@ -542,9 +542,9 @@
     },
     {
       "path": "chooks/MC2027SuiteStartup/MC2027SuiteStartup.dll",
-      "bytes": 7168,
-      "sha256": "614B0038FAB5E1D1D5757F832223D9B799F153E118F0CD879023A5C8DB09F763",
-      "assemblyVersion": "1.0.0.0",
+      "bytes": 9728,
+      "sha256": "E07A1D6D4132079115EB3734E99F597CD94806097DC954E4E96ABA1AB505F7DF",
+      "assemblyVersion": "1.0.1.0",
       "nativeFileVersion": null
     },
     {
@@ -1795,9 +1795,9 @@
     },
     {
       "path": "chooks/Workshop2027/Workshop2027.dll",
-      "bytes": 63488,
-      "sha256": "4E9B1E0836D46A69068FD3D5429A37551CA631CF3449E886D3CDE1C6F196E384",
-      "assemblyVersion": "2.8.0.0",
+      "bytes": 66048,
+      "sha256": "144364EFE1695DC0EFDB471910AA246EA00862A6646BF40D0DE70728693106A4",
+      "assemblyVersion": "2.8.1.0",
       "nativeFileVersion": null
     },
     {
